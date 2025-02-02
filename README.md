@@ -9,6 +9,7 @@
 | Integrante | Contacto |
 | ------------- | ------------- |
 | Rodríguez Fuertes, Claudia  | <a href="https://github.com/claudiaRFS"><img src="https://img.shields.io/badge/uo288406-Claudia Rodríguez-red"></a>  |
+| Puente García, Jorge  | <a href="https://github.com/JorgeePG"><img src="https://img.shields.io/badge/uo294228-Jorge Puente-blue"></a>  |
 
 <p float="left">
 <img src="https://blog.wildix.com/wp-content/uploads/2020/06/react-logo.jpg" height="100">
