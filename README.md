@@ -4,9 +4,9 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_es6c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_es6c)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_es6c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_es6c)
 
-## Integrantes:
+## Contributors:
 
-| Integrante | Contacto |
+| Contributor | Profile |
 | ------------- | ------------- |
 | Rodríguez Fuertes, Claudia  | <a href="https://github.com/claudiaRFS"><img src="https://img.shields.io/badge/uo288406-Claudia Rodríguez-red"></a>  |
 | Puente García, Jorge  | <a href="https://github.com/JorgeePG"><img src="https://img.shields.io/badge/uo294228-Jorge Puente-blue"></a>  |
