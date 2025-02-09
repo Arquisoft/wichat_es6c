@@ -1,7 +1,7 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-architecture-constraints]]
-== Architecture Constraints
+== Restricciones arquitectonicas
 
 
 ifdef::arc42help[]
@@ -27,3 +27,10 @@ See https://docs.arc42.org/section-2/[Architecture Constraints] in the arc42 doc
 
 ****
 endif::arc42help[]
+
+=== Documentación
+
+=== Técnicas
+
+=== Organizativas
+
