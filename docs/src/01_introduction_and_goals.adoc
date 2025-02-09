@@ -17,6 +17,14 @@ Estos incluyen:
 ****
 endif::arc42help[]
 
+La aplicación WIChat permite a los usuarios participar a un concurso online de preguntas y respuestas similar a "Saber y Ganar". 
+
+El usuario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de que lugar se trata.
+
+El usuario puede recibir pistas sobre la imagen hablando con el chat con inteligencia artificial incluido en el juego.
+
+Tanto las pistas como las imágenes son generadas automaticamnete a partir de Wikidata (https://www.wikidata.org/)
+
 === Resumen de Requisitos
 
 ifdef::arc42help[]
@@ -38,7 +46,19 @@ Mantén estos extractos lo más breves posible. Equilibra la legibilidad de este
 Consulta https://docs.arc42.org/section-1/[Introducción y Objetivos] en la documentación de arc42.  
 
 ****
+
 endif::arc42help[]
+
+* Se deberá poder acceder desde la web.
+* El sitema mostrará imagenes, las respuestas y un sistema de psitas.
+* Los usuarios podrán registrarse en el sitema.
+* Los usuarios registrados podrán ver su historial de participaciones.
+* Se podrá interactuar con la aplicación para obtener pistas gracias a un modelo de lenguaje.
+* Las preguntas y las pistas serán genrados automaticamente a partir de los datos de Wikidata.
+* El sitema permitirá acceder a los datos de los usuarios y de las preguntas generadas mediante una API.
+* Abrá un plazo de tiempo determinado para responder a las preguntas.
+
+
 
 === Objetivos de Calidad
 
