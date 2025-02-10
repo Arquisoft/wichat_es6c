@@ -28,9 +28,31 @@ See https://docs.arc42.org/section-2/[Architecture Constraints] in the arc42 doc
 ****
 endif::arc42help[]
 
-=== Documentación
-
-=== Técnicas
-
-=== Organizativas
+=== 📄 Documentación
+[options="header"]
+|===
+| Restricción | Descripción
+| Arc42 | El proyecto debe seguir la estructura de documentación de Arc42.
+|===
+=== 🛠️ Técnicas
+[options="header"]
+|===
+| Restricción | Descripción
+| Gestión de usuarios | Los usuarios podrán registrarse e iniciar sesión en el sistema para jugar. 
+También, podrán consultar su histórico de participación, que incluirá el número de juegos, preguntas acertadas/falladas, tiempos.
+| Acceso a datos | La información de los usuarios deberá ser accesible a través de una API para garantizar la seguridad de los datos.
+| APIs externas | La aplicación hará uso de la API de Wikidata para obtener los datos necesarios y generar imágenes y preguntas
+de los lugares. Además, se integrará con la API del LLM externo Empathy AI para generar pistas sobre las imagenes de forma conversacional.
+| Despliegue | La aplicación debe estar desplegada y accesible en la web.
+|===
+=== ⚙️ Organizativas
+[options="header"]
+|===
+| Restricción | Descripción
+| Evaluación | El proyecto será evaluado cada tres semanas, por lo que cada módulo avanzará a través de varias versiones,
+ las cuales estarán alineadas con las evaluaciones parciales.
+| Git y GitHub | El uso de Git como sistema de control de versiones es obligatorio. 
+El proyecto se alojará en un repositorio público en la plataforma GitHub, y todo el trabajo realizado, así como
+las decisiones tomadas deben reflejarse en dicho repositorio. 
+|===
 
