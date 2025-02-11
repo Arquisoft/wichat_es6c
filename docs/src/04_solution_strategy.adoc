@@ -1,7 +1,7 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-solution-strategy]]
-== Solution Strategy
+== Estrategia de solución
 
 
 ifdef::arc42help[]
@@ -32,3 +32,35 @@ See https://docs.arc42.org/section-4/[Solution Strategy] in the arc42 documentat
 
 ****
 endif::arc42help[]
+
+=== Decisiones tecnológicas
+Para el desarrollo de la aplicación se decidió utilizar las siguientes tecnologías:
+
+* JavaScript será el lenguaje de programación principal.
+* React.js para construir interfaces de usuario.
+* Node.js para construir el back-end.
+* GitHub para el control de versiones.
+* Wikidata API para obtener los datos necesarios y poder generar las imagenes y preguntas.
+* Empathy API modelo largo de lenguaje (LLM) para ofrecer la posibilidad de obtener pistas de las imagenes de forma conversacional.
+* Docker
+* Azure
+
+Se ha considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js.
+
+=== Descomposición de alto nivel
+
+=== Decisiones para alcanzar objetivos de máxima calidad
+[coptions="header",cols ="1,2"]
+|===
+|Objetivo de calidad | Decisión 
+|Usabilidad| 
+|Disponibilidad|
+|Accesibilidad|
+|Mantenibilidad|
+|Rendimiento|
+|===
+
+=== Decisiones de organización relevantes
+El flujo de trabajo se organizará en reuniones semanales, que se llevarán a cabo según sea necesario.
+Una reunión se realizará durante la clase de laboratorio para decisiones y tareas menores. Las reuniones 
+posteriores se relaizarán de forma remota y estarán dedicadas a deciones y tareas mas detalladas y exhaustivas.
