@@ -54,6 +54,6 @@ de los lugares. Además, se integrará con la API del LLM externo Empathy AI par
 El proyecto se alojará en un repositorio público en la plataforma GitHub, y todo el trabajo realizado, así como
 las decisiones tomadas deben reflejarse en dicho repositorio. 
 | Equipo | El equipo estará formado por 4 personas.
-| Reuniones | Se realizará obligatoriamente una reunión semanal
+| Reuniones | Se realizará obligatoriamente una reunión semanal.
 |===
 
