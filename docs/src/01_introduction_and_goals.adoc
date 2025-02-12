@@ -83,6 +83,16 @@ Una tabla con objetivos de calidad y escenarios concretos, ordenados por priorid
 ****
 endif::arc42help[]
 
+[options="header",cols="1,2,10"]
+|===
+|Prioridad|Objetivos de calidad|Escenarios concretos|
+1|Seguridad|Los datos de los usuarios (credenciales, historial de juegos) deben estar cifrados. El sistema debe prevenir ataques comunes (SQL injection, XSS).|
+2|Usabilidad|Los usuarios deben poder interactuar con el sistema de manera intuitiva, registrarse, jugar y obtener pistas con la menor dificultad posible. El tiempo de respuesta para mostrar una pregunta o pista no debe superar los 2 segundos.|
+3|Fiabilidad|El sistema debe garantizar una disponibilidad del 99%. Las pistas generadas por el LLM deben ser correctas en un 95% de los casos, minimizando alucinaciones y respuestas erróneas.|
+4|Rendimiento|El sistema debe soportar hasta 100 usuarios concurrentes sin degradación del rendimiento. El tiempo de respuesta de la API de Wikidata y del LLM no debe superar los 1000 ms en el 95% de las solicitudes.|
+5|Mantenibilidad|El código debe estar documentado y modularizado, permitiendo que todos los implicados en el desarrollo puedan trabajar con ello lo mejor posible.|
+|===
+
 === Partes Interesadas
 
 ifdef::arc42help[]
@@ -112,7 +122,7 @@ endif::arc42help[]
 |Rol/Nombre|Contacto|Expectativas
 | Profesor/Jose Emilio Labra Gayo | _<http://labra.weso.es/>_ | Que se emplee el conocimiento lo mejor posible para tomar las decisiones arquitectónicas más adecuadas favoreciendo el aprendizaje.
 | Profesor/Pablo González | _<https://pglez82.github.io/>_ | Que se emplee el conocimiento lo mejor posible para tomar las decisiones arquitectónicas más adecuadas favoreciendo el aprendizaje.
-| Profesor/Irene Cid Rico / | _<https://www.linkedin.com/in/irene-cid-81158148/>_ | Que se emplee el conocimiento lo mejor posible para tomar las decisiones arquitectónicas más adecuadas favoreciendo el aprendizaje.
+| Profesor/Irene Cid Rico | _<https://www.linkedin.com/in/irene-cid-81158148/>_ | Que se emplee el conocimiento lo mejor posible para tomar las decisiones arquitectónicas más adecuadas favoreciendo el aprendizaje.
 | Universidad/Uniovi | _<http://uniovi.es/>_ | Que se emplee el conocimiento lo mejor posible para tomar las decisiones arquitectónicas más adecuadas favoreciendo el aprendizaje.
 | Cliente/RTVE | _<https://www.rtve.es/>_ | Que las decisiones arquitectónicas sean las más adecuadas para que la aplicación funcione de la manera que esperan. 
 | Empresa/ChattySw | _<http://ChattySw.es/>_ | Que las decisiones arquitectónicas sean las más adecuadas para que la aplicación funcione de la manera que esperan los clientes. 
