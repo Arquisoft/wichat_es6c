@@ -55,8 +55,7 @@ Se ha considerado otras tecnologías para el desarrollo back-end como Spting Boo
 |Objetivo de calidad | Decisión 
 |Usabilidad| 
 |Disponibilidad|
-|Accesibilidad|
-|Mantenibilidad|
+|Testabilidad|
 |Rendimiento|
 |===
 
