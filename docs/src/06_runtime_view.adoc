@@ -64,8 +64,10 @@ endif::arc42help[]
 
 === Jugar
 
-image:06_play.png["Diagrama 6.4: Jugar"]
+image:06_play.png["Diagrama 6.3: Jugar"]
 
 === Consultar historial
 
 === Interactuar con el chat
+
+image:06_userLlm.png["Diagrama 6.5: Jugar"]

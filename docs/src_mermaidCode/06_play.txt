@@ -3,23 +3,24 @@ config:
   theme: forest
 ---
 sequenceDiagram
-  participant Usuario as Usuario
-  participant WebApp as WebApp
-  participant WikiData as WikiData
-  participant LLM as LLM
-  participant MongoDB as MongoDB
-  participant BD as BD
+  participant Usuario
+  participant WebApp 
+  participant WikiData 
+  participant LLM 
+  participant MongoDB
+
   Note over Usuario, WebApp: El usuario debe estar en sesión
+
   Usuario ->> WebApp: Solicita jugar
   WebApp -->> WikiData: Pide información
-  WikiData ->> BD: Guarda la información
-  BD -->> WebApp: Devuelve la información
+  WikiData ->> MongoDB: Guarda la información
+  MongoDB -->> WebApp: Devuelve la información
   Usuario ->> WebApp: Solicita pista
   WebApp ->> LLM: Pide pista
-  LLM ->> BD: Pide información
-  BD -->> LLM: Devuelve la información
+  LLM ->> MongoDB: Pide información
+  MongoDB -->> LLM: Devuelve la información
   LLM ->> WebApp: Proporciona la pista
   Usuario ->> WebApp: Responde
   WebApp -->> Usuario: Valida respuesta (correcta/incorrecta)
-  Usuario ->> BD: Guarda resultado
+  Usuario ->> MongoDB: Guarda resultado
   Usuario ->> Usuario: Decide continuar o salir
