@@ -53,7 +53,7 @@ endif::arc42help[]
 
 WIChat es una aplicación web de preguntas y respuestas basada en imágenes, desarrollada por ChattySw para RTVE. La aplicación permite a los usuarios registrarse, jugar y obtener premios por responder correctamente a preguntas sobre imágenes generadas automáticamente. Además, tendrá integrado un modelo de lenguaje (LLM) que proporcionará pistas para ayudar a los concursantes a responder correctamente.
 
-image:03_businessContext.jpg["Diagram 3.1: Contexto de negocio"]
+image:03_businessContext.png["Diagram 3.1: Contexto de negocio"]
 
 **Usuario:** Identidad que iteractúa con el sistema.
 
