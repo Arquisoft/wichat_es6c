@@ -50,13 +50,13 @@ Consulta https://docs.arc42.org/section-1/[Introducción y Objetivos] en la docu
 endif::arc42help[]
 
 * Se deberá poder acceder desde la web.
-* El sitema mostrará imagenes, las respuestas y un sistema de psitas.
-* Los usuarios podrán registrarse en el sitema.
+* El sistema mostrará imagenes, las respuestas y un sistema de pistas.
+* Los usuarios podrán registrarse en el sistema.
 * Los usuarios registrados podrán ver su historial de participaciones.
 * Se podrá interactuar con la aplicación para obtener pistas gracias a un modelo de lenguaje.
 * Las preguntas y las pistas serán genrados automaticamente a partir de los datos de Wikidata.
-* El sitema permitirá acceder a los datos de los usuarios y de las preguntas generadas mediante una API.
-* Abrá un plazo de tiempo determinado para responder a las preguntas.
+* El sistema permitirá acceder a los datos de los usuarios y de las preguntas generadas mediante una API.
+* Habrá un plazo de tiempo determinado para responder a las preguntas.
 
 
 
