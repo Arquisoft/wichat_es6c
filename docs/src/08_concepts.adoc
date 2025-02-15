@@ -1,7 +1,7 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-concepts]]
-== Cross-cutting Concepts
+== Conceptos tranversales
 
 
 ifdef::arc42help[]
@@ -57,18 +57,30 @@ See https://docs.arc42.org/section-8/[Concepts] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== _<Concept 1>_
+=== _Modelo del dominio_
 
-_<explanation>_
+_Consultar nuestro Modelo del Dominio en " "_
 
+=== _Conceptos de experiencia de usuario (UX)_
 
+_Aunque el desarrollo aún no ha comenzado, se tiene como objetivo crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida._
 
-=== _<Concept 2>_
+=== _Conceptos de seguridad y protección_
 
-_<explanation>_
+_Aún sin desarrollar_
 
-...
+=== _Patrones de arquitectura y diseño_
 
-=== _<Concept n>_
+_Aún sin desarrollar_
 
-_<explanation>_
+=== _Conceptos técnicos_
+
+_Aún sin desarrollar_
+
+=== _Conceptos de desarrollo_
+
+_Hemos decidido empezar nuestro proyecto de cero pero basándonos en proyectos del año anterior. Esto nos permitirá tener una base más sólida para implementar la nueva funcionalidad de pistas generadas por la AI y poder incluso realizar una desarrollo mas eficiente._
+
+=== _Conceptos operativos_
+
+_Aún sin desarrollar_
