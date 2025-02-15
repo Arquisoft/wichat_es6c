@@ -51,9 +51,9 @@ Para el desarrollo de la aplicación se decidió utilizar las siguientes tecnolo
 * Wikidata API.
     - Se ha seleccionado Wikidata API para obtener información sobre las imágenes de forma programática.
 * Empathy API. 
-    - modelo largo de lenguaje (LLM) para ofrecer la posibilidad de obtener pistas de las imagenes de forma conversacional.
+    - Modelo largo de lenguaje (LLM) para ofrecer la posibilidad de obtener pistas de las imagenes de forma conversacional.
 
-Se ha considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js.
+Se han considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js.
 
 === Descomposición de alto nivel
 
@@ -73,4 +73,4 @@ El flujo de trabajo se organizará en reuniones semanales, que se llevarán a ca
 Una de las reuniones se realizará durante la clase de laboratorio y se centrará en decisiones y tareas menores. Las reuniones posteriores se relaizarán de manera remota y estarán dedicadas a deciones mas detalladas y exhaustivas.
 
 Cada tarea asignada, así como problemas encontrados, se documentará como un Issue en GitHub. Además se utilizará GitHub Projects para la organización de las tareas del equipo. 
-No habrá una división estricta entre front-end y back-end, todos los miembros del equipo trabajarán en ambas áreas. Parta cada tarea asiganada, se creará una rama específica, y el trabajo realizado se volcará una rama develop mediante pull requests. Una vez que se haya completado una funcionalidad, se fusionará la rama develop con la rama master.
+No habrá una división estricta entre front-end y back-end, todos los miembros del equipo trabajarán en ambas áreas. Para cada tarea asiganada, se creará una rama específica, y el trabajo realizado se volcará una rama develop mediante pull requests. Una vez que se haya completado una funcionalidad, se fusionará la rama develop con la rama master.
