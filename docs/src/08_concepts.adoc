@@ -71,7 +71,13 @@ _Aún sin desarrollar_
 
 === _Patrones de arquitectura y diseño_
 
-_Aún sin desarrollar_
+_Serán utilizados dos patrones:_
+
+*API Gateway:* _Este actúa como punto de entrada único para todas las solicitudes que realice el usuario delegandolas en sus servicios correspondientes._
+
+*Patrón de Micoservicios:* _Cada componente, como AuthService, UserService y LLM, es un servicio independiente que se enfoca en una funcionalidad específica, facilitando el mantenimiento del sistema._
+
+_Consultar los patrones utilizadoe en " "_
 
 === _Conceptos técnicos_
 
