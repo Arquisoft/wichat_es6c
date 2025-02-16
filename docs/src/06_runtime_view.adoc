@@ -63,6 +63,8 @@ image:06_register.png["Diagrama 6.1: Registro"]
 
 === Inicio de sesión
 
+image:06_login.png["Diagrama 6.2: Login"]
+
 === Jugar
 
 image:06_play.png["Diagrama 6.3: Jugar"]
