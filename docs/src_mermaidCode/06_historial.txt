@@ -1,0 +1,21 @@
+---
+config:
+  theme: forest
+---
+
+sequenceDiagram
+    participant Usuario
+    participant WebApp
+    participant API Gateway
+    participant Game Service
+    participant MongoDB 
+    Note over Usuario, WebApp: El usuario debe estar en sesión
+
+    Usuario->>WebApp: Solicita ver historial de partidas
+    WebApp->>API Gateway: GET /history/{userId}
+    API Gateway->>Game Service: GET /history/{userId}
+    Game Service->>MongoDB: Consulta partidas del usuario
+    MongoDB-->>Game Service: Retorna historial de partidas
+    Game Service-->>API Gateway: Retorna historial de partidas
+    API Gateway-->>WebApp: Envía historial de partidas
+    WebApp-->>Usuario: Muestra historial de partidas
