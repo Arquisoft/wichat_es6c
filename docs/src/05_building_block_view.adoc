@@ -44,6 +44,7 @@ endif::arc42help[]
 
 === Whitebox Overall System
 
+
 ifdef::arc42help[]
 [role="arc42help"]
 ****
@@ -67,7 +68,7 @@ In the best case you will get away with examples or simple signatures.
 ****
 endif::arc42help[]
 
-_**<Overview Diagram>**_
+image:05_whitebox.jpg["Diagram 5.1: Resumen del Sistema"]
 
 Motivation::
 
@@ -75,7 +76,18 @@ _<text explanation>_
 
 
 Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
+|===
+|Building Blocks |Description
+
+|WICHAT
+|Parte principal de la aplicación, que controla el juego y la conexión con el resto de bloques.
+|BD
+|Base de datos encargada de almacenar los datos relacionados con los usuarios.
+|Wikidata
+|Fuente de datos a la que se conecta la aplicacion para obtener las imágenes de las preguntas.
+|LLM
+|Mondelo de lenguaje con el que el usuario puede interactuar para obtener pistas sobre las preguntas del juego.
+|===
 
 Important Interfaces::
 _<Description of important interfaces>_
