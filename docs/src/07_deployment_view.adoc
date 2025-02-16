@@ -54,7 +54,7 @@ Para múltiples entornos o despliegues alternativos, copia y adapta esta secció
 ****
 endif::arc42help[]
 
-_**<Diagrama General>**_
+image:03_technicalContext.png["Diagram 7.1: Infraestructura"]
 
 Motivación::  
 
