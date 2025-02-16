@@ -83,8 +83,5 @@ together with a mapping table showing the relationships between channels and inp
 ****
 endif::arc42help[]
 
-**<Diagram or Table>**
+image:03_technicalContext.png["Diagram 3.2: Contexto Tencológico"]
 
-**<optionally: Explanation of technical interfaces>**
-
-**<Mapping Input/Output to Channels>**
