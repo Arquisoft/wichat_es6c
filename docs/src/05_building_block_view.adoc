@@ -72,7 +72,7 @@ image:05_whitebox.jpg["Diagram 5.1: Resumen del Sistema"]
 
 Motivation::
 
-_<text explanation>_
+El propósito principal del sistema es ejecutar un juego de preguntas con imágenes utilizando información obtenida dinámicamente de la Wikidata API y además teniendo la posibilidad de interactuar con un LLM para solicitar su ayuda. Esto permite a los usuarios interactuar con datos reales y actualizados, mejorando la experiencia de usuario y la utilidad de la aplicación. 
 
 
 Contained Building Blocks::
@@ -90,7 +90,12 @@ Contained Building Blocks::
 |===
 
 Important Interfaces::
-_<Description of important interfaces>_
+* Frontend ↔ API Gateway: Interfaz RESTful para la comunicación entre el frontend y el backend.
+
+* API Gateway ↔ Backend: Interfaz interna para enrutar solicitudes a los microservicios.
+
+* Backend ↔ Base de Datos: Interfaz para acceder y gestionar los datos almacenados.
+
 
 ifdef::arc42help[]
 [role="arc42help"]
