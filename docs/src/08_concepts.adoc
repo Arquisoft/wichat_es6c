@@ -65,9 +65,23 @@ _Consultar nuestro Modelo del Dominio en " "_
 
 _Aunque el desarrollo aún no ha comenzado, se tiene como objetivo crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida._
 
+* Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla.
+
+* Accesibilidad: Cumplimiento de estándares WCAG para garantizar que la aplicación sea usable por personas con discapacidades.
+
+* Feedback Visual: Proporcionar retroalimentación visual inmediata para las acciones del usuario.
+
+* Prototipos: "url prototipos"
+
 === _Conceptos de seguridad y protección_
 
-_Aún sin desarrollar_
+Aún sin desarrollar. Sin embargo, se contemplan las siguientes consideraciones iniciales:
+
+* Autenticación y Autorización: Se buscará realizrar una correcta autenticación de usuarios.
+
+* Protección de Datos: Garantizar la privacidad de los usuarios.
+
+* Cifrado: Uso de HTTPS para la transmisión de datos y cifrado de datos sensibles.
 
 === _Patrones de arquitectura y diseño_
 
@@ -81,12 +95,26 @@ _Consultar los patrones utilizadoe en " "_
 
 === _Conceptos técnicos_
 
-_Aún sin desarrollar_
+Aún sin desarrollar. Sin embargo, se contemplan las siguientes tecnologías y herramientas:
+
+* Lenguajes de Programación: JavaScript para el frontend.
+
+* Frameworks: React para el frontend.
+
+* Bases de Datos: MongoDB para la gestión de datos.
+
+* Despliegue: Uso de Docker para la contenerización y orquestación de servicios.
 
 === _Conceptos de desarrollo_
 
 _Hemos decidido empezar nuestro proyecto de cero pero basándonos en proyectos del año anterior. Esto nos permitirá tener una base más sólida para implementar la nueva funcionalidad de pistas generadas por la AI y poder incluso realizar una desarrollo mas eficiente._
 
+* Metodología Ágil: Uso de Scrum para la gestión del proyecto.
+
+* Control de Versiones: Uso de Git y GitHub para el control de versiones y colaboración.
+
+* Integración Continua: Con total intención de automatizar pruebas y despliegues.
+
 === _Conceptos operativos_
 
-_Aún sin desarrollar_
+* Monitorización: Es importante asegurarse de que el sistema funcione correctamente en todo momento. Para ello, se utilizarán herramientas que permitan supervisar el rendimiento del sistema, detectar errores y medir el uso de recursos. Esto nos ayudará a identificar problemas antes de que afecten a los usuarios.
