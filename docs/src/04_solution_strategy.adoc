@@ -66,6 +66,8 @@ Se han considerado otras tecnologías para el desarrollo back-end como Spting Bo
 |Fiabilidad| Se ha tomado la decisión de realizar pruebas de regresión y pruebas de integración para garantizar la fiabilidad de la aplicación.
 |Rendimiento| Se realizarán pruebas de carga para garantizar el rendimiento de la aplicación para poder tener al menos 100 usuarios a la vez.
 |Mantenibilidad| Se utilizarán patrones de diseño y  buenas prácticas de programación para garantizar la mantenibilidad de la aplicación.
+|Eficiencia| Se optimizará el uso de recursos para garantizar que la aplicación funcione de manera eficiente donde se despliegue, además de usar los recursos externos también de manera eficiente.
+|Portabilidad| La aplicación se desarrollará utilizando tecnologías y frameworks multiplataforma, asegurando que pueda desplegarse en diferentes entornos (Windows, Linux, macOS) sin generar problemas.
 |===
 
 === Decisiones de organización relevantes
