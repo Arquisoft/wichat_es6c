@@ -182,28 +182,28 @@ Leave out normal, simple, boring or standardized parts of your system
 ****
 endif::arc42help[]
 
-==== White Box _<building block 1>_
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-...describes the internal structure of _building block 1_.
-****
-endif::arc42help[]
-
-_<white box template>_
-
-==== White Box _<building block 2>_
+==== Wichat _(White box)_
+image:05_2_whitebox2.png["Diagram 5.2: Desglose Wichat"]
 
 
-_<white box template>_
 
-...
+Contained Building Blocks::
+|===
+|Building Blocks |Description
 
-==== White Box _<building block m>_
-
-
-_<white box template>_
+|WICHAT App
+|Parte central del proyecto, encarda de comunicar al usuario con el resto de servicios de la aplicación.
+|Question Generator Service
+|Parte de la aplicación encargada de conectarse a Wikidata y obtener imagenes e información para las preguntas del juego.
+|User Service
+|Parte encargada de tratar la información del usuario: puntuación, historial....
+Se conecta al base de datos para almacenar esta información.
+|Authentication Service
+|Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
+|LLM Service
+|Parte encargada de la comunicación con el modelo de lenguaje. Envia la información necesaria para obtener las pistas del jugador y devolverlas.
+|===
 
 
 
