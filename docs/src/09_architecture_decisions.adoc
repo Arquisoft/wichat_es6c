@@ -1,7 +1,7 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-design-decisions]]
-== Architecture Decisions
+== Decisiones arquitectónicas
 
 
 ifdef::arc42help[]
@@ -35,3 +35,12 @@ There you will find links and examples about ADR.
 
 ****
 endif::arc42help[]
+
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-01-%E2%80%90-Trunk-Based-Development[ADR 01] - Uso de Trunk Based Development
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-02-%E2%80%90-JavaScript[ADR 02] - Uso de JavaScript
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-03--%E2%80%90-Node.js[ADR 03] - Uso de Node.js
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-04--%E2%80%90-React[ADR 04] - Uso de React
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-05--%E2%80%90-Empathy[ADR 05] - Uso de Empathy
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-06--%E2%80%90-MongoDB[ADR 06] - Uso de MongoDB
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-07--%E2%80%90-Docker[ADR 07] - Uso de Docker
+
