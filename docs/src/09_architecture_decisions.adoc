@@ -36,6 +36,10 @@ There you will find links and examples about ADR.
 ****
 endif::arc42help[]
 
+Para documentar las decisiones arquitectónicas se han usado las páginas de la wiki de GitHub. 
+A continuación se muestra una lista con las decisiones tomadas y un enlace a su documentación.
+
+=== Decisiones
 - https://github.com/Arquisoft/wichat_es6c/wiki/ADR-01-%E2%80%90-Trunk-Based-Development[ADR 01] - Uso de Trunk Based Development
 - https://github.com/Arquisoft/wichat_es6c/wiki/ADR-02-%E2%80%90-JavaScript[ADR 02] - Uso de JavaScript
 - https://github.com/Arquisoft/wichat_es6c/wiki/ADR-03--%E2%80%90-Node.js[ADR 03] - Uso de Node.js
