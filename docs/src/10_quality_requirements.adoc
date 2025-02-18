@@ -54,6 +54,26 @@ image:10_qualityTree.png["Diagrama 10.1: Árbol de calidad"]
 
 === Escenarios de calidad
 
+
+Escenarios de uso:
+
+[options="header",cols="1,2,3"]
+|===
+|Objetivo de calidad | Escenario | Sistema
+| Usabilidad | Un usuario inicia la aplicación por primera vez | La interfaz guía al usuario con 
+un diseño intuitivo y sencillo, permitiéndole registrarse facilmente y comenzar a utilizar la aplicación sin dificultades. 
+|  Seguridad | Un usuario introduce sus credenciales e inicia sesión en la aplicación | Valida las credenciales y si son correctas, 
+ genera un token de autenticación seguro, permitiendole el acceso a la aplicación
+ | Fiabilidad | Un usuario completa el formulario de registro | Si algún campo está incompleto o incorrecto
+  muestra un mensaje claro indicando el error y no permite proceder hasta que el usuario corrija el error.
+| Rendimiento | Varios usuarios juegan simultaneamente en la aplicación | Mantiene los tiempos de respuesta rápidos sin que los usuarios sufran 
+interrupciones o esperas
+| Manteniabilidad | Un miembro del equipo realiza cambios en el codigo para agregar una nueva funcionalidad | El código está estructurado por módulos de tal forma que pemite
+agregar nuevas funcionalidades facilmente sin afectar en otras áreas de la aplicación
+| Portabilidad | Varios usuarios inician la aplicación en un sistema opertaivo diferentes | La aplicación se ejecuta correctamente en el dispositivo
+| Eficiencia | 
+|===
+
 ifdef::arc42help[]
 [role="arc42help"]
 ****
