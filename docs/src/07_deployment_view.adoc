@@ -72,11 +72,11 @@ Características de Calidad y/o Rendimiento::
 
 
 Asignación de Bloques de Construcción a la Infraestructura::  
-* Frontend: Desplegado en un servidor web (Apache) o en un servicio de hosting estático ().
+* Frontend: Desplegado en un servidor web (Apache) al que puedan acceder los usuarios.
 
-* Backend: Los microservicios (AuthService, UserService, LLM) se ejecutarán en contenedores Docker gestionados por Kubernetes.
+* Backend: Los microservicios (AuthService, UserService, LLM) se ejecutarán en contenedores Docker.
 
-* Base de Datos: Se utilizará una base de datos mongoDB.
+* Base de Datos: Se utilizará una base de datos mongoDB para toda la gestión de los datos de la aplicación.
 
 * API Gateway: actúa como punto de entrada único para todas las solicitudes del usuario. Está desplegado en Azure utilizando el servicio Azure API Management, que permite gestionar, monitorizar y proteger las APIs del sistema.
 
@@ -91,7 +91,18 @@ Copia la estructura del nivel 1 para cada elemento seleccionado.
 ****
 endif::arc42help[]
 
-==== _<Elemento de Infraestructura 1>_  
+==== _<Docker (Contenedores)>_  
+image:DiagramaDocker.png["Diagram 7.2: Docker"]
+
+Explicación:
+
+Docker es la tecnología utilizada para empaquetar los microservicios en contenedores. Cada contenedor incluye:
+
+* Imágenes Docker: Contienen el código, las dependencias y la configuración necesaria para ejecutar cada microservicio.
+
+* Volúmenes: Para persistir datos (por ejemplo, logs o archivos temporales).
+
+* Redes Docker: Para facilitar la comunicación entre contenedores.
 
 _<diagrama + explicación>_  
 
