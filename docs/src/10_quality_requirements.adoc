@@ -70,8 +70,8 @@ un diseño intuitivo y sencillo, permitiéndole registrarse facilmente y comenza
 interrupciones o esperas
 | Manteniabilidad | Un miembro del equipo realiza cambios en el codigo para agregar una nueva funcionalidad | El código está estructurado por módulos de tal forma que pemite
 agregar nuevas funcionalidades facilmente sin afectar en otras áreas de la aplicación
-| Portabilidad | Varios usuarios inician la aplicación en un sistema opertaivo diferentes | La aplicación se ejecuta correctamente en el dispositivo
-| Eficiencia | 
+| Portabilidad | Un usuario inicia la aplicación en un dispositivo móvil | La aplicación se ejecuta correctamente en el dispositivo
+| Eficiencia | Un usuario carga una página con múltiple contenido multimedia como imágenes | La página se carga rápidamente sin comprometer la experencia del usuario
 |===
 
 ifdef::arc42help[]
