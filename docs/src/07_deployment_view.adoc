@@ -92,7 +92,7 @@ Copia la estructura del nivel 1 para cada elemento seleccionado.
 endif::arc42help[]
 
 ==== _<Docker (Contenedores)>_  
-image:DiagramaDocker.png["Diagram 7.2: Docker"]
+image:DiagramaDocker_g.webp["Diagram 7.2: Docker"]
 
 Explicación:
 
