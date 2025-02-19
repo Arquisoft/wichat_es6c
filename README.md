@@ -1,8 +1,17 @@
-# wichat_0
+# wichat_es6c
 
-[![Actions Status](https://github.com/arquisoft/wichat_0/workflows/CI%20for%20wichat_0/badge.svg)](https://github.com/arquisoft/wichat_0/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_0&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_0)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_0&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_0)
+[![Actions Status](https://github.com/arquisoft/wichat_es6c/workflows/CI%20for%20wichat_es6c/badge.svg)](https://github.com/arquisoft/wichat_es6c/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_es6c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_es6c)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_es6c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_es6c)
+
+## Contributors:
+
+| Contributor | Profile |
+| ------------- | ------------- |
+| Rodríguez Fuertes, Claudia  | <a href="https://github.com/claudiaRFS"><img src="https://img.shields.io/badge/uo288406-Claudia Rodríguez-red"></a>  |
+| Puente García, Jorge  | <a href="https://github.com/JorgeePG"><img src="https://img.shields.io/badge/uo294228-Jorge Puente-blue"></a>  |
+| García García, Iván  | <a href="https://github.com/Ivigaga"><img src="https://img.shields.io/badge/uo293577-Iván García-green"></a>  |
+| García de la Llana, Germán  | <a href="https://github.com/germandelallana"><img src="https://img.shields.io/badge/uo283016-Germán García-purple"></a>  |
 
 <p float="left">
 <img src="https://blog.wildix.com/wp-content/uploads/2020/06/react-logo.jpg" height="100">
@@ -23,7 +32,7 @@ Both the user and auth service share a Mongo database that is accessed with mong
 
 First, clone the project:
 
-```git clone git@github.com:arquisoft/wichat_0.git```
+```git clone git@github.com:arquisoft/wichat_es6c.git```
 
 ### LLM API key configuration
 
@@ -106,7 +115,7 @@ deploy:
         user: ${{ secrets.DEPLOY_USER }}
         key: ${{ secrets.DEPLOY_KEY }}
         command: |
-          wget https://raw.githubusercontent.com/arquisoft/wichat_0/master/docker-compose.yml -O docker-compose.yml
+          wget https://raw.githubusercontent.com/arquisoft/wichat_es6c/master/docker-compose.yml -O docker-compose.yml
           docker compose --profile prod down
           docker compose --profile prod up -d --pull always
 ```
