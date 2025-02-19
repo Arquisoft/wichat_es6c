@@ -30,9 +30,9 @@ endif::arc42help[]
 [options="header",cols="1,3"]
 |===
 |Riesgo|Descripcion
-| Bajo conocimiento de algunas herramientas y lenguajes| Algunos miebros del grupo nunca han trabajado o no tienen mucha experiencia con algunas de las herramientas o lenguajes utilizados para el desarrollo de la aplicación. Esto puede llevar a errores o retrasos debido a su falta de conocimiento.
+| Bajo conocimiento de algunas herramientas y lenguajes| Algunos miembros del grupo nunca han trabajado o no tienen mucha experiencia con algunas de las herramientas o lenguajes utilizados para el desarrollo de la aplicación. Esto puede llevar a errores o retrasos debido a su falta de conocimiento.
 | Nunca se ha trabajado con un LLM | Esta es la primera vez que el equipo trabaja con un modelo de lenguaje o con ese en particular. Esto puede llevar a un retraso debido a la necesidad de obtener información sobre el funcioanmiento de este.
-| Tiempos de respuesta de Wikidata y el LLM | AL ser parte integral de la aplicación la conexión con Wikidata y el modelo de lenguaje si hay algún problema en la conexión que haga que sus tiempos de respuesta sean demasiado largos esto puede reèrcutir en nuestra aplicación. 
+| Tiempos de respuesta de Wikidata y el LLM | Al ser parte integral de la aplicación la conexión con Wikidata y el modelo de lenguaje si hay algún problema en la conexión que haga que sus tiempos de respuesta sean demasiado largos esto puede reèrcutir en nuestra aplicación. 
 |===
 
 === Deuda Técnica
