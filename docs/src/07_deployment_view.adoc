@@ -14,7 +14,7 @@ La vista de despliegue describe:
 
 2. La asignación de los bloques de construcción (software) a esos elementos de infraestructura.
 
-A menudo, los sistemas se ejecutan en diferentes entornos, por ejemplo, entorno de desarrollo, entorno de pruebas y entorno de producción. En estos casos, debes documentar todos los entornos relevantes.
+A menudo, los sistemas se ejecutan en diferentes entornos, por ejemplo, entorno de desarrollo, entorno de pruebas y entorno de producción. En estos casos, se debe documentar todos los entornos relevantes.
 
 Especialmente, documenta una vista de despliegue si tu software se ejecuta como un sistema distribuido con más de una computadora, procesador, servidor o contenedor, o cuando diseñas y construyes tus propios procesadores y chips de hardware.
 
@@ -66,7 +66,7 @@ Características de Calidad y/o Rendimiento::
 
 * Escalabilidad: La infraestructura está diseñada para escalar horizontalmente, lo que permite añadir más recursos o contenedores según la demanda.
 
-* Alta Disponibilidad: Se utilizarán un sistema de virtualización en la nuve para favorecer la disponivilidad.
+* Alta Disponibilidad: Se utilizará un sistema de virtualización en la nube para favorecer la disponibilidad.
 
 * Portabilidad: La infraestructura se basa en contenedores Docker, lo que permite que los componentes del sistema se ejecuten en cualquier entorno.
 
@@ -104,6 +104,9 @@ Docker es la tecnología utilizada para empaquetar los microservicios en contene
 
 * Redes Docker: Para facilitar la comunicación entre contenedores.
 
+ifdef::arc42help[]
+[role="arc42help"]
+****
 _<diagrama + explicación>_  
 
 ==== _<Elemento de Infraestructura 2>_  
@@ -115,3 +118,6 @@ _<diagrama + explicación>_
 ==== _<Elemento de Infraestructura n>_  
 
 _<diagrama + explicación>_  
+
+****
+endif::arc42help[]
