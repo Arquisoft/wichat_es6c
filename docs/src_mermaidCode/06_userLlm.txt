@@ -1,0 +1,17 @@
+---
+config:
+  theme: forest
+---
+sequenceDiagram
+  participant Usuario 
+  participant WebApp 
+  participant LLM 
+  participant MongoDB
+
+  Note over Usuario, WebApp: El usuario debe estar jugando
+
+  Usuario ->> WebApp: Solicita pista
+  WebApp ->> LLM: Pide pista
+  LLM ->> MongoDB: Pide información
+  MongoDB -->> LLM: Devuelve la información
+  LLM ->> WebApp: Proporciona la pista

@@ -1,0 +1,22 @@
+---
+config:
+  theme: forest
+---
+
+sequenceDiagram
+    participant  Usuario
+    participant  WebApp 
+    participant API Gateway
+    participant Authentication Service
+    participant MongoDB
+
+    Usuario->>WebApp: Ingresa credenciales (username, password)
+    WebApp->>API Gateway: POST /login (username,password)
+    API Gateway->>Authentication Service: POST /login (username, password)
+    Authentication Service->>Authentication Service: Valida credenciales
+    Authentication Service ->> MongoDB: Find One
+    Authentication Service ->> Authentication Service: Genera JWT token
+    MongoDB -->> Authentication Service: Respuesta JSON
+    Authentication Service-->>API Gateway: Respuesta JSON
+    API Gateway-->>WebApp: Respuesta JSON
+    WebApp->>Usuario: Muestra resultado 
