@@ -25,10 +25,42 @@ function validateRequiredFields(req, requiredFields) {
     }
 }
 
-app.post('/adduser', async (req, res) => {
+app.post('/', async (req, res) => {
     try {
-        // Check if required fields are present in the request body
-        validateRequiredFields(req, ['username', 'password']);
+
+        const { username, password, name, surname } = req.body;
+
+        const user = await User.findOne({ username });
+
+        if (user != null) {
+          throw new Error('Invalid username');
+        }
+
+        // Name validation
+        if (username.trim().length < 4) {
+            throw new Error('The username must be at least 4 characters long');
+        }
+
+        // Password validation
+        if (password.trim().length < 8) {
+            throw new Error('The password must be at least 8 characters long');
+        }
+        if (!/\d/.test(password)) {
+            throw new Error('The password must contain at least one numeric character');
+        }
+        if (!/[A-Z]/.test(password)) {
+            throw new Error('The password must contain at least one uppercase letter');
+        }
+
+        // Name validation
+        if (!name.trim()) {
+          throw new Error('The name cannot be empty or contain only spaces');
+        }
+      
+        // Surname validation
+        if (!surname.trim()) {
+            throw new Error('The surname cannot be empty or contain only spaces');
+        }
 
         // Encrypt the password before saving it
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -36,13 +68,15 @@ app.post('/adduser', async (req, res) => {
         const newUser = new User({
             username: req.body.username,
             password: hashedPassword,
+            name: req.body.name,
+            surname: req.body.surname,
         });
 
         await newUser.save();
         res.json(newUser);
     } catch (error) {
         res.status(400).json({ error: error.message }); 
-    }});
+}});
 
 const server = app.listen(port, () => {
   console.log(`User Service listening at http://localhost:${port}`);
