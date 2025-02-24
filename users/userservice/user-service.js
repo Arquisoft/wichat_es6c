@@ -25,7 +25,7 @@ function validateRequiredFields(req, requiredFields) {
     }
 }
 
-app.post('/', async (req, res) => {
+app.post('/user', async (req, res) => {
     try {
 
         const { username, password, name, surname } = req.body;

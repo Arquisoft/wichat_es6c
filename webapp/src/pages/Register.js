@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button, Snackbar } from '@mui/material';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
@@ -15,8 +15,8 @@ const AddUser = () => {
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  //const {createSession} = useContext(SessionContext);
 
+  const navigate = useNavigate();
   const addUser = async () => {
     try {
       await axios.post(`${apiEndpoint}/user`, {
@@ -26,10 +26,9 @@ const AddUser = () => {
         surname
       });
 
-      let response = await axios.post(`${apiEndpoint}/login`, { username, password });
+      await axios.post(`${apiEndpoint}/login`, { username, password });
       setOpenSnackbar(true);
-      //createSession(username);
-      //navigate('/homepage');
+      navigate('/userhome');
     } catch (error) {
       setError(error.response.data.error);
     }
