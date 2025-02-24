@@ -2,11 +2,23 @@ import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Divider, Box } from "@mui/material";
 import { MoreVert, History, Person, Settings, Logout } from "@mui/icons-material";
 import logo from "../logo.svg";
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 const NavMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+  const navigate = useNavigate();   
+
+  const logout = async () => {
+
+    
+      Cookies.remove('cookie');
+      navigate('/');
+   
+  };
+
 
   return (
     <AppBar position="static">
@@ -35,7 +47,7 @@ const NavMenu = () => {
               <History sx={{ mr: 1 }} /> Ver Histórico
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleMenuClose}>
+            <MenuItem onClick={logout}>
               <Logout sx={{ mr: 1 }} /> Cerrar Sesión
             </MenuItem>
           </Menu>
