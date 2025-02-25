@@ -1,9 +1,8 @@
-// src/components/AddUser.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { Link } from 'react-router-dom'; 
-
+import { SessionContext } from '../SessionContext';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -15,7 +14,7 @@ const AddUser = () => {
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  //const {createSession} = useContext(SessionContext);
+  const {createSession} = useContext(SessionContext);
 
   const addUser = async () => {
     try {
@@ -28,7 +27,7 @@ const AddUser = () => {
 
       let response = await axios.post(`${apiEndpoint}/login`, { username, password });
       setOpenSnackbar(true);
-      //createSession(username);
+      createSession(username);
       //navigate('/homepage');
     } catch (error) {
       setError(error.response.data.error);
