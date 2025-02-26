@@ -18,6 +18,17 @@ const Login = () => {
 
   const loginUser = async () => {
     try {
+
+    // Validación manual (opcional)
+    if (!username) {
+      setError({ field: 'username', message: 'Username is required' });
+      return;
+    }
+    if (!password) {
+      setError({ field: 'password', message: 'Password is required' });
+      return;
+    } 
+
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
 
       const question = "Please, generate a greeting message for a student called " + username + " that is a student of the Software Architecture course in the University of Oviedo. Be nice and polite. Two to three sentences max.";
@@ -38,7 +49,7 @@ const Login = () => {
 
       setOpenSnackbar(true);
     } catch (error) {
-      setError(error.response.data.error);
+      setError({ field: 'username', message: 'Invalid credentials' });
     }
   };
 
@@ -62,31 +73,56 @@ const Login = () => {
         </div>
       ) : (
         <div>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: 2, fontWeight: 'bold' }}>
             Login
           </Typography>
           <TextField
+            name="username"
             margin="normal"
             fullWidth
             label="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            sx={{ marginBottom: 2 }}
           />
+           {error && error.field === 'username' && (
+          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+            {error.message}
+          </Typography>
+            )}
+
           <TextField
+            name="password"
             margin="normal"
             fullWidth
             label="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            sx={{ marginBottom: 2 }}
           />
-          <Button variant="contained" color="primary" onClick={loginUser}>
+          {error && error.field === 'password' && (
+          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+            {error.message}
+          </Typography>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={loginUser}
+            sx={{
+              marginTop: 2,
+              padding: '12px',
+              fontWeight: 'bold',
+              borderRadius: '8px',
+              backgroundColor: '#1976d2',
+              '&:hover': { backgroundColor: '#1565c0' },
+            }}
+          >
             Login
           </Button>
-          <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="Login successful" />
-          {error && (
-            <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />
-          )}
+        
         </div>
       )}
     </Container>
