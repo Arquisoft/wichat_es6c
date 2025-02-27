@@ -1,9 +1,8 @@
-// src/components/AddUser.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom'; 
-
+import { SessionContext } from '../SessionContext';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -15,6 +14,7 @@ const AddUser = () => {
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  const {createSession} = useContext(SessionContext);
 
   const navigate = useNavigate();
   const addUser = async () => {
@@ -42,7 +42,7 @@ const AddUser = () => {
     <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 4 }}>
       <Box sx={{ padding: '2rem', borderRadius: '8px', boxShadow: 3, backgroundColor: '#fff', width: '100%' }}>
         <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: 2, fontWeight: 'bold' }}>
-          Create Your Account
+          Registro
         </Typography>
 
         {/* Form Fields */}
@@ -50,7 +50,7 @@ const AddUser = () => {
           name="username"
           margin="normal"
           fullWidth
-          label="Username"
+          label="Usuario"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           sx={{ marginBottom: 2 }}
@@ -59,7 +59,7 @@ const AddUser = () => {
           name="password"
           margin="normal"
           fullWidth
-          label="Password"
+          label="Contraseña"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -69,7 +69,7 @@ const AddUser = () => {
           name="name"
           margin="normal"
           fullWidth
-          label="First Name"
+          label="Nombre"
           value={name}
           onChange={(e) => setName(e.target.value)}
           sx={{ marginBottom: 2 }}
@@ -78,7 +78,7 @@ const AddUser = () => {
           name="surname"
           margin="normal"
           fullWidth
-          label="Last Name"
+          label="Primer apellido"
           value={surname}
           onChange={(e) => setSurname(e.target.value)}
           sx={{ marginBottom: 2 }}
@@ -99,7 +99,7 @@ const AddUser = () => {
             '&:hover': { backgroundColor: '#1565c0' },
           }}
         >
-          Register
+          Registrarse
         </Button>
 
         {/* Snackbar Messages */}
@@ -112,9 +112,9 @@ const AddUser = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 3 }}>
           <Divider sx={{ width: '100%', marginBottom: 1 }} />
           <Typography variant="body2">
-            Already have an account?{' '}
+            ¿Ya tienes una cuenta?{' '}
             <Link href="/login" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
-              Login here
+              Login aquí
             </Link>
           </Typography>
         </Box>
