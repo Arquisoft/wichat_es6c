@@ -18,7 +18,7 @@ function GameMode() {
     >
       {/* Título encima de los botones */}
       <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Elige el modo de Juego
+        Elige el modo de juego
       </Typography>
 
       {/* Stack para los botones en fila */}
