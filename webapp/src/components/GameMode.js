@@ -3,7 +3,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function GameMode() {
-  // Lista de tuplas (texto del botón, ruta)
+  // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
     { text: 'País', path: '/', mode: 'country' },
     { text: 'Monumento', path: '/', mode: 'monuments' }
@@ -11,24 +11,24 @@ function GameMode() {
 
   return (
     <Stack
-      direction="column" // Dirección de la pila para todo (título arriba, botones abajo)
-      alignItems="center" // Centra los elementos horizontalmente
-      spacing={3} // Espacio entre el título y los botones
+      direction="column" 
+      alignItems="center" 
+      spacing={3} 
       sx={{ width: "100%", justifyContent: "center", height: "100vh" }}
     >
-      {/* Título encima de los botones */}
+     
       <Typography variant="h4" sx={{ marginBottom: '20px' }}>
         Elige el modo de juego
       </Typography>
 
-      {/* Stack para los botones en fila */}
+      {/* Stack for adding the buttons */}
       <Stack
-        direction="row" // Los botones estarán en una fila
-        spacing={2} // Espaciado entre botones
-        alignItems="center" // Alineación vertical de los botones
-        sx={{ width: "100%", justifyContent: "center" }} // Asegura que los botones estén centrados
+        direction="row" 
+        spacing={2} 
+        alignItems="center" 
+        sx={{ width: "100%", justifyContent: "center" }} 
       >
-        {/* Iterar sobre la lista y crear un botón por cada elemento */}
+        {/* Creates a new button for each element in buttonList*/}
         {buttonList.map((item, index) => (
           <Button
             key={index}
@@ -36,19 +36,19 @@ function GameMode() {
             component={Link}
             to={{
               pathname: item.path,
-              state: { mode: item.mode }  // Pasamos la variable 'mode' como parte del state
+              state: { mode: item.mode }  // Gives the varible mode to the game component
             }}
             sx={{
-              width: "10vw", // Mantén el ancho que ya tenías antes
-              height: "30vh", // Mantén la altura que ya tenías antes
-              fontSize: '150%', // Tamaño de la fuente ajustado para mayor visibilidad
+              width: "10vw", 
+              height: "30vh", 
+              fontSize: '150%', 
               textAlign: "center",
-              textTransform: 'none', // Evita que el texto se transforme a mayúsculas
-              padding: '20px', // Ajusta el padding para que no quede demasiado pequeño el texto
-              whiteSpace: 'normal', // Permite que el texto se ajuste
+              textTransform: 'none', 
+              padding: '20px', 
+              whiteSpace: 'normal', 
             }}
           >
-            {item.text}  {/* Texto del botón */}
+            {item.text}  {/* Sows the text of the button */}
           </Button>
         ))}
       </Stack>
