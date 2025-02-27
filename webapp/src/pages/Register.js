@@ -17,6 +17,7 @@ const AddUser = () => {
   const {createSession} = useContext(SessionContext);
 
   const navigate = useNavigate();
+
   const addUser = async () => {
     try {
       await axios.post(`${apiEndpoint}/user`, {
@@ -28,7 +29,8 @@ const AddUser = () => {
 
       await axios.post(`${apiEndpoint}/login`, { username, password });
       setOpenSnackbar(true);
-      navigate('/userhome');
+      createSession(username);
+      navigate('/homepage');
     } catch (error) {
       setError(error.response.data.error);
     }
@@ -113,7 +115,7 @@ const AddUser = () => {
           <Divider sx={{ width: '100%', marginBottom: 1 }} />
           <Typography variant="body2">
             ¿Ya tienes una cuenta?{' '}
-            <Link href="/login" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
+            <Link to="/login" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }} >
               Login aquí
             </Link>
           </Typography>

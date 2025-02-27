@@ -1,11 +1,10 @@
 // src/components/Login.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { Typewriter } from "react-simple-typewriter";
-import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-
+import { SessionContext } from '../SessionContext';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +17,7 @@ const Login = () => {
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
   const navigate = useNavigate();
-  
+  const { createSession } = useContext(SessionContext);
   const loginUser = async () => {
     try {
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
@@ -27,15 +26,10 @@ const Login = () => {
       setLoginSuccess(true);
 
       setOpenSnackbar(true);
-      
-      Cookies.set('cookie' , JSON.stringify({
-        token: response.data.token,
-        username: response.data.username
-      }), {expires: 1/24 });  
-
-      navigate('/userhome');  
+  
+      createSession(username);
+      navigate('/homepage');  
     } catch (error) {
-      Cookies.remove('cookie');
       setError(error.response.data.error);
     }
   };

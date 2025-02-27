@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Divider, Box } from "@mui/material";
+import React, { useState, useContext } from "react";
+import { AppBar,Snackbar, Toolbar, Typography, IconButton, Menu, MenuItem, Divider, Box } from "@mui/material";
 import { MoreVert, History, Person, Settings, Logout } from "@mui/icons-material";
 import logo from "../logo.svg";
-import Cookies from 'js-cookie';
+import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 const NavMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -10,17 +10,23 @@ const NavMenu = () => {
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
   const navigate = useNavigate();   
+  const {destroySession} = useContext(SessionContext);
+
 
   const logout = async () => {
 
     
-      Cookies.remove('cookie');
-      navigate('/');
-   
+      destroySession();
+      setAnchorEl(null);
+      navigate('/', {state: {message: "Se ha cerrado sesión con éxito"}});
+     
+
   };
 
+  
 
   return (
+  
     <AppBar position="static">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         
@@ -54,6 +60,10 @@ const NavMenu = () => {
         </Box>
       </Toolbar>
     </AppBar>
+
+
+  
+    
   );
 };
 
