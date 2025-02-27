@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 //import Footer from './components/Footer'; 
 import Login from './pages/Login'; 
 import Register from './pages/Register'; 
+import GameMode from './pages/GameMode';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/game-mode" element={<GameMode />} />
         </Routes>
       {/* <Footer /> */}
     </Box>
