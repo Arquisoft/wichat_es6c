@@ -12,7 +12,7 @@ import Home from './pages/Home';
 function App() {
 
   return (
-    <Router>
+    
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
            {/* <NavBar /> */}
           <Routes>
@@ -23,7 +23,7 @@ function App() {
           </Routes>
           {/* <Footer /> */}
       </Box>
-    </Router>
+    
   );
 }
 
