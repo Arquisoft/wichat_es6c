@@ -17,6 +17,14 @@ const Login = () => {
 
   const loginUser = async () => {
     try {
+      if (!username) {
+        setError({ field: 'username', message: 'Username is required' });
+        return;
+      }
+      if (!password) {
+        setError({ field: 'password', message: 'Password is required' });
+        return;
+      } 
 
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
 
@@ -38,13 +46,14 @@ const Login = () => {
 
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        console.log(error.response.data.error[1].toString());
-        setError({ field: 'general', message: "Invalid format username or password" });
-      } else if (error.response && error.response.status === 401) {
-        setError({ field: 'general', message: 'Invalid credentials' });
-      } else {
-        setError({ field: 'general', message: 'An unexpected error occurred' });
+        setError({ field: 'general', message: error.response.data.error });
+      }else if(error.response && error.response.status === 401){
+        setError({ field: 'general', message: 'Usuario o contraseña incorrectos' });
       }
+      else{
+        setError(error.response.data.error);
+      }
+      
     }
   };
 
@@ -83,6 +92,11 @@ const Login = () => {
             onChange={(e) => setUsername(e.target.value)}
             sx={{ marginBottom: '0.5rem' }}
           />
+           {error && error.field === 'username' && (
+          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+            {error.message}
+          </Typography>
+          )}
 
           <TextField
             name="password"
@@ -94,6 +108,11 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             sx={{ marginBottom: '0.5rem' }}
           />
+           {error && error.field === 'password' && (
+          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+            {error.message}
+          </Typography>
+          )}
           
           <Button
             variant="contained"
