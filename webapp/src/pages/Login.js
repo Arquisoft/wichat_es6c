@@ -1,8 +1,10 @@
 // src/components/Login.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button } from '@mui/material';
+import {  Box, Divider,Container, Typography, TextField, Button } from '@mui/material';
+import { Link } from 'react-router-dom'; 
 import { Typewriter } from "react-simple-typewriter";
+import { SessionContext } from '../SessionContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,6 +13,8 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [createdAt, setCreatedAt] = useState('');
+  const {createSession} = useContext(SessionContext);
+
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const apiKey = process.env.REACT_APP_LLM_API_KEY || 'None';
@@ -27,7 +31,7 @@ const Login = () => {
       } 
 
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
-
+      
       const question = "Please, generate a greeting message for a student called " + username + " that is a student of the Software Architecture course in the University of Oviedo. Be nice and polite. Two to three sentences max.";
       const model = "empathy"
 
@@ -43,7 +47,7 @@ const Login = () => {
 
       setCreatedAt(userCreatedAt);
       setLoginSuccess(true);
-
+      createSession(username);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setError({ field: 'general', message: error.response.data.error });
@@ -72,7 +76,7 @@ const Login = () => {
           </Typography>
         </div>
       ) : (
-        <div>
+        <Box sx={{ padding: '2rem', borderRadius: '8px', boxShadow: 3, backgroundColor: '#fff', width: '100%' }}>
           <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
             Login
           </Typography>
@@ -130,8 +134,18 @@ const Login = () => {
           >
             Login
           </Button>
-        
-        </div>
+            {/* Divider and Login Link */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 3 }}>
+          <Divider sx={{ width: '100%', marginBottom: 1 }} />
+          <Typography variant="body2">
+            ¿Aún no te has registrado?{' '}
+            <Link to="/register" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
+              Registro aquí
+            </Link>
+          </Typography>
+        </Box>
+          
+        </Box>
       )}
     </Container>
   );
