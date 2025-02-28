@@ -18,7 +18,7 @@ const Login = () => {
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-
+  const apiKey = process.env.REACT_APP_LLM_API_KEY || 'None';
   const navigate = useNavigate();
 
   const loginUser = async () => {
