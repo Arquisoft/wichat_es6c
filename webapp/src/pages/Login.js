@@ -4,6 +4,7 @@ import axios from 'axios';
 import {  Box, Divider,Container, Typography, TextField, Button } from '@mui/material';
 import { Link } from 'react-router-dom'; 
 import { Typewriter } from "react-simple-typewriter";
+import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 
 const Login = () => {
@@ -17,7 +18,8 @@ const Login = () => {
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-  const apiKey = process.env.REACT_APP_LLM_API_KEY || 'None';
+
+  const navigate = useNavigate();
 
   const loginUser = async () => {
     try {
@@ -48,6 +50,7 @@ const Login = () => {
       setCreatedAt(userCreatedAt);
       setLoginSuccess(true);
       createSession(username);
+      navigate('/homepage'); 
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setError({ field: 'general', message: error.response.data.error });
