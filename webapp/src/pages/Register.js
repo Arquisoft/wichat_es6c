@@ -115,8 +115,8 @@ const AddUser = () => {
           <Divider sx={{ width: '100%', marginBottom: 1 }} />
           <Typography variant="body2">
             ¿Ya tienes una cuenta?{' '}
-            <Link to="/login" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }} >
-              Login aquí
+            <Link to="/login" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
+              Inicia sesión aquí
             </Link>
           </Typography>
         </Box>
@@ -126,3 +126,4 @@ const AddUser = () => {
 };
 
 export default AddUser;
+
