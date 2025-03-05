@@ -7,15 +7,11 @@ const port = 8003;
 // Middleware to parse JSON in request body
 app.use(express.json());
 
+const cors = require('cors');
+app.use(cors());
+
 // Define configurations for different LLM APIs
 const llmConfigs = {
-  gemini: {
-    url: (apiKey) => `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-    transformRequest: (question) => ({
-      contents: [{ parts: [{ text: question }] }]
-    }),
-    transformResponse: (response) => response.data.candidates[0]?.content?.parts[0]?.text
-  },
   empathy: {
     url: () => 'https://empathyai.prod.empathy.co/v1/chat/completions',
     transformRequest: (question) => ({
@@ -43,7 +39,7 @@ function validateRequiredFields(req, requiredFields) {
 }
 
 // Generic function to send questions to LLM
-async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
+async function sendQuestionToLLM(question, apiKey, model = 'empathy') {
   try {
     const config = llmConfigs[model];
     if (!config) {
@@ -87,5 +83,3 @@ const server = app.listen(port, () => {
 });
 
 module.exports = server
-
-

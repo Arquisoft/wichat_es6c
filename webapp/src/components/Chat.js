@@ -54,7 +54,7 @@ function Chat() {
   }, [messages]);
 
   return (
-    <Container maxWidth="md" sx={{ height: "100vh", display: "flex", flexDirection: "column", bgcolor: "#f0f2f5" }}>
+    <Container maxWidth="md" sx={{ height: "90vh", display: "flex", flexDirection: "column", bgcolor: "#f0f2f5" }}>
       <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#0078ff", color: "white", borderRadius: 2 }}>
         Chat con IA
       </Typography>
