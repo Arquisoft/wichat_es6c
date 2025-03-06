@@ -13,6 +13,7 @@ const port = 8000;
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
 
 app.use(cors());
 app.use(express.json());
@@ -36,6 +37,23 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
+
+//-----API WIKIDATA endpoint----
+
+app.get('/questions:category', async (req, res) => {
+
+
+  try{
+      const category = req.params.category;
+      const questionResponse = await axios.get(questionServiceUrl+`/getQuestionsDb/${category}`);
+      res.json(questionResponse.data);
+  }catch (error) {
+    handleErrors(res, error);
+  }
+});
+
+//-----------------------------
+
 app.post('/login', async (req, res) => {
   try {
     // Forward the login request to the authentication service
@@ -55,6 +73,7 @@ app.post('/user', async (req, res) => {
     handleErrors(res, error);
   }
 });
+
 
 app.post('/askllm', async (req, res) => {
   try {

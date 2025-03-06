@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 function GameMode() {
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
-    { text: 'País', path: '/', mode: 'country' },
-    { text: 'Monumento', path: '/', mode: 'monuments' }
+    { text: 'País', path: '/game', mode: 'Country' },
+    { text: 'Monumento', path: '/game', mode: 'Monuments' }
   ];
 
   return (
