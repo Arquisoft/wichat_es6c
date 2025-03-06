@@ -54,7 +54,7 @@ function Chat() {
   }, [messages]);
 
   return (
-    <Container maxWidth="md" sx={{ height: "90vh", display: "flex", flexDirection: "column", bgcolor: "#f0f2f5" }}>
+    <Container maxWidth="md" sx={{ height: "90vh", display: "flex", flexDirection: "column" }}>
       <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#0078ff", color: "white", borderRadius: 2 }}>
         Chat con IA
       </Typography>
@@ -100,7 +100,7 @@ function Chat() {
         ))}
 
         {isTyping && (
-          <Box sx={{ alignSelf: "flex-start", bgcolor: "#e1e1e1", padding: 1.5, borderRadius: 2, maxWidth: "40%" }}>
+          <Box sx={{ alignSelf: "flex-start",  padding: 1.5, borderRadius: 2, maxWidth: "40%" }}>
             <Typography variant="body1">
               <CircularProgress size={14} sx={{ mr: 1 }} /> Escribiendo...
             </Typography>
@@ -114,9 +114,9 @@ function Chat() {
       {/* Entrada de texto */}
       <Box
         sx={{
-          bgcolor: "white",
+          //bgcolor: "white",
           padding: 2,
-          borderTop: "1px solid gray",
+          //borderTop: "1px solid gray",
           display: "flex",
           gap: 1,
         }}
