@@ -1,15 +1,12 @@
 const axios = require('axios');
 const express = require('express');
-
+const cors = require('cors');
 const app = express();
 const port = 8003;
 
 // Middleware to parse JSON in request body
 app.use(express.json());
-
-const cors = require('cors');
 app.use(cors());
-
 // Define configurations for different LLM APIs
 const llmConfigs = {
   empathy: {

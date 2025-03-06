@@ -11,7 +11,7 @@ function Game() {
         alignItems="flex-start"
         mt={5}
       >
-        {/* Contenido principal /}
+        {/* Contenido principal */}
         <Box flex={1} maxWidth="500px" textAlign="center">
           <Typography variant="h3" gutterBottom>
             Chat con IA
@@ -21,7 +21,7 @@ function Game() {
           </Typography>
         </Box>
 
-        {/ Chat alineado a la derecha */}
+        {/* Chat alineado a la derecha */}
         <Box width="400px">
           <Chat />
         </Box>
