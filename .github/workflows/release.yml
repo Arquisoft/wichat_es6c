@@ -118,6 +118,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
         workdir: llmservice
+    
 
   docker-push-gatewayservice:
     name: Push gateway service Docker Image to GitHub Packages
