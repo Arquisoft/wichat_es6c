@@ -2,9 +2,9 @@
     "name": "questionservice",
     "version": "1.0.0",
     "description": "Question service, generation and management of questions in the application",
-    "main": "question-service.js",
+    "main": "./services/question-service.js",
     "scripts": {
-        "start": "nodemon app.js",
+        "start": "nodemon ./services/question-service.js",
         "test": "jest"
     },
     "repository": {

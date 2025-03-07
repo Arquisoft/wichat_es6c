@@ -1,8 +1,8 @@
 const express = require('express');
 
 
-const dataService = require('./dataservice/question-data-service');
-const generateService = require('./generateservice/question-generate-service');
+const dataService = require('./question-data-service');
+const generateService = require('./question-generate-service');
 const app = express();
 const port = 8004;
 
@@ -10,13 +10,10 @@ const port = 8004;
 app.use(express.json());
 
 
-
 app.get('/getQuestionsDb/:category', async (req, res) => {
-
-
   try{
 
-    const questionsToGenerate =10;
+    const questionsToGenerate = 10;
 
     const category = req.params.category;
     const numberQuestions = await dataService.getNumberQuestionsByCategory(category);
@@ -34,7 +31,7 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
 
 
 const server = app.listen(port, () => {
-  console.log(`User Service listening at http://localhost:${port}`);
+  console.log(`Question Service listening at http://localhost:${port}`);
 });
 
 

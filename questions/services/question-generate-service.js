@@ -1,5 +1,5 @@
 const axios = require('axios');
-const dataService = require('../dataservice/question-data-service');
+const dataService = require('./question-data-service');
 
 const wikidataCategoriesQueries = {   
     "country": {  // Eliminar el punto al final del nombre de la categoría
@@ -16,7 +16,7 @@ const wikidataCategoriesQueries = {
         ORDER BY RAND()
         LIMIT ?limit
         `,
-    }
+    }   
 };
 
 const titlesQuestionsCategories = {
@@ -31,7 +31,6 @@ async function getImagesFromWikidata(category, numImages) {
     const categoryQueries = wikidataCategoriesQueries[category];
 
     
-
     // Obtención de la consulta directamente de la categoría dada
     const sparqlQuery = categoryQueries.query.replace('?limit', numImages);
 
@@ -126,11 +125,10 @@ async function processQuestionsCountry(images,category) {
     }
 
 }
-// Generar preguntas con opciones
+// Generate questions
 async function generateQuestionsByCategory(category, numImages) {
     const images = await getImagesFromWikidata(category, numImages);
  
-
     if(category === 'country'){
         processQuestionsCountry(images, category);
     }

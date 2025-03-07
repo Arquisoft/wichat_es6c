@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose');
-const Question = require('../question-model')
+const Question = require('../models/question-model')
 
 
 // Connect to MongoDB
@@ -38,7 +38,7 @@ module.exports = {
         try {
             const question = await Question.aggregate([
                 { $match: { category: categoryParam } },
-                { $sample: { size: 1 } } // Seleccionar un documento aleatorio
+                { $sample: { size: 1 } } // Select a random document
             ]);
     
             return question.length > 0 ? question[0] : null; 
