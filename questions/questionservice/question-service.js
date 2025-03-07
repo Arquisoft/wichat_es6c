@@ -1,9 +1,8 @@
 const express = require('express');
 
-const Question = require('../dataservice/question-model')
 
-const dataService = require('./question-data-service');
-const generateService = require('./question-generate-service');
+const dataService = require('./dataservice/question-data-service');
+const generateService = require('./generateservice/question-generate-service');
 const app = express();
 const port = 8004;
 
@@ -17,14 +16,15 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
 
   try{
 
-    const category = req.params.category;
+    const questionsToGenerate =10;
 
-    const numberQuestions = dataService.getNumberQuestionsByCategory(category);
-    
+    const category = req.params.category;
+    const numberQuestions = await dataService.getNumberQuestionsByCategory(category);
+    console.log("Numero de cuestiones " + numberQuestions);
     if(numberQuestions == 0){
-        await generateService.generateQuestionsByCategory(category,10);
+        await generateService.generateQuestionsByCategory(category,questionsToGenerate);
     }
-    const  question = await dataService.getQuestionsByCategory(category);
+    const  question = await dataService.getRandomQuestionByCategory(category);
     res.json(question);
 
   }catch (error) {

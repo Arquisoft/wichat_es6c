@@ -30,25 +30,27 @@ function Game() {
 
 
   useEffect(() => {
-    if (location.state && location.state.message) {
+    if (location.state && location.state.mode) {
       setGameMode(location.state.mode);
+     
     }
   },[]);
 
-  // Llamada al backend para obtener la pregunta y la imagen
   const fetchQuestion = async () => {
     try {
+      if(!gameMode) return;
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
-      setQuestionData(response.data); // Guardamos la pregunta en el estado
+      setQuestionData(response.data); 
     } catch (error) {
       console.error("Error fetching question:", error);
     }
   };
 
-  // Llamamos a la API al principio para cargar la primera pregunta
   useEffect(() => {
-    fetchQuestion(); // Llamada inicial al backend
-  }, []); // Solo se ejecuta al cargar el componente
+    if (gameMode) {
+      fetchQuestion(); // Llama a la función para obtener la pregunta solo si gameMode está definido
+    }
+  }, [gameMode]); // Dependencia de gameMode
 
   // Función para manejar las respuestas
   const handleAnswer = (isCorrect) => {
@@ -58,9 +60,9 @@ function Game() {
     } else {
       setWrongAnswers(wrongAnswers + 1);
     }
-    // Después de cada respuesta, cargamos una nueva pregunta
+   
     fetchQuestion();
-    setTimeLeft(QUESTION_TIME); // Reiniciamos el temporizador
+    setTimeLeft(QUESTION_TIME);
   };
 
   // Si no tenemos datos de la pregunta aún, mostramos "Cargando..."
@@ -101,7 +103,7 @@ function Game() {
       </Box>
 
       {/* Pregunta */}
-      <Typography variant="h5">{questionData.questionText}</Typography>
+      <Typography variant="h5">{questionData.question}</Typography>
 
       {/* Imagen (se llena desde el backend) */}
       <Box
@@ -130,7 +132,7 @@ function Game() {
             key={index}
             variant="contained"
             sx={{ minWidth: "120px", padding: "10px" }}
-            onClick={() => handleAnswer(option.id === questionData.correctAnswer)} // Comprobamos si la opción es correcta
+            onClick={() => handleAnswer(option.text === questionData.correctAnswer)} // Comprobamos si la opción es correcta
           >
             {option.text}
           </Button>

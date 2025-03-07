@@ -1,13 +1,21 @@
 import React from 'react';
 import { Button, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function GameMode() {
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
-    { text: 'País', path: '/game', mode: 'Country' },
-    { text: 'Monumento', path: '/game', mode: 'Monuments' }
+    { text: 'País', path: '/game', mode: 'country' },
+    { text: 'Monumento', path: '/game', mode: 'monument' }
   ];
+
+
+  const navigate = useNavigate();
+  
+  const handleGameMode = (item) => {
+    
+    navigate(item.path, { state: { mode: item.mode } });
+  };
 
   return (
     <Stack
@@ -33,11 +41,7 @@ function GameMode() {
           <Button
             key={index}
             variant="contained"
-            component={Link}
-            to={{
-              pathname: item.path,
-              state: { mode: item.mode }  // Gives the varible mode to the game component
-            }}
+            onClick={() => handleGameMode(item)}
             sx={{
               width: "10vw", 
               height: "30vh", 

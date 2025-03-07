@@ -38,9 +38,9 @@ app.get('/health', (req, res) => {
 });
 
 
-//-----API WIKIDATA endpoint----
+//-----Questions WIKIDATA endpoint----
 
-app.get('/questions:category', async (req, res) => {
+app.get('/questions/:category', async (req, res) => {
 
 
   try{

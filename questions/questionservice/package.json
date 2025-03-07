@@ -1,0 +1,43 @@
+{
+    "name": "questionservice",
+    "version": "1.0.0",
+    "description": "Question service, generation and management of questions in the application",
+    "main": "question-service.js",
+    "scripts": {
+        "start": "nodemon app.js",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arquisoft/wichat_es6c.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/arquisoft/wichat_es6c/issues"
+    },
+    "homepage": "https://github.com/arquisoft/wichat_es6c#readme",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "express": "^4.21.2",
+        "mongoose": "^8.12.1",
+        "axios": "^1.6.8"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "mongodb-memory-server": "^10.1.3",
+        "supertest": "^7.0.0",
+        "nodemon": "^3.1.0"
+
+    },
+    "nodemonConfig": {
+        "watch": [
+            "./question-service.js", 
+            "./dataservice/question-data-service.js", 
+            "./generateservice/question-generate-service.js"
+        ],
+        "ext": "js,json",
+        "ignore": ["node_modules"]
+    }
+
+}
