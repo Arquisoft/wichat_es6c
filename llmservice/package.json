@@ -10,6 +10,7 @@
   "description": "",
   "homepage": "https://github.com/arquisoft/wichat_es6c#readme",
     "dependencies": {
+      "cors": "^2.8.5",
         "axios": "^1.7.9",
         "express": "^4.21.2"
     },

@@ -9,6 +9,7 @@ import UserHome from './pages/UserHome';
 import PrivateRoute from './pages/PrivateRoute';
 import Home from './pages/Home';
 import GameMode from './pages/GameMode';
+import Game from './pages/Game';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/homepage" element={<PrivateRoute element={UserHome} />} />
             <Route path="/game-mode" element={<PrivateRoute element={GameMode}/>} />
+            <Route path="/game" element={<Game/>} />
           </Routes>
           {/* <Footer /> */}
       </Box>
