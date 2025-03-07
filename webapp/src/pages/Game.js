@@ -13,6 +13,7 @@ function Game() {
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
   const [round, setRound] = useState(1);
+  const [totalTime, setTotalTime] = useState(0);
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -25,6 +26,14 @@ function Game() {
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft]);
+
+  // Total timer
+  useEffect(() => {
+    const totalTimer = setInterval(() => {
+      setTotalTime((t) => t + 1);
+    }, 1000);
+    return () => clearInterval(totalTimer);
+  }, []);
 
   useEffect(() => {
     if (location.state && location.state.mode) {
@@ -53,9 +62,11 @@ function Game() {
     if (isCorrect) {
       setScore(score + 1);
     }
+
     setRound(prevRound => prevRound + 1);
     fetchQuestion();
     setTimeLeft(QUESTION_TIME);
+
   };
 
   // Si no tenemos datos de la pregunta aún, mostramos "Cargando..."
@@ -108,6 +119,25 @@ function Game() {
       <Typography variant="h6">Ronda {round} de {TOTAL_ROUNDS}</Typography>
       </Box>
 
+       {/* Total round counter */}
+       <Box
+        sx={{
+          position: "absolute",
+          top: "5vh", 
+          left: "70%", 
+          transform: "translateX(-50%)", // Centra el contador de rondas
+          padding: "0.5vw",
+          border: "1px solid blue",
+          borderRadius: "0.3vw",
+          minWidth: "10vw",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h6" sx={{ fontSize: "0.8rem" }}>
+          Tiempo Total: {totalTime}s
+        </Typography>
+      </Box>
+
       {/* Pregunta sobre la imagen */}
       <Typography variant="h5" sx={{ marginTop: "10vh", zIndex: 10, position: "absolute", top: "12vh" }}>
         {questionData.question}
@@ -134,7 +164,7 @@ function Game() {
         )}
       </Box>
 
-      {/* Opciones de respuesta, más arriba */}
+      {/* Response options */}
       <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center" sx={{ marginTop: "2vh" }}>
         {questionData.options && questionData.options.length > 0 && questionData.options.map((option, index) => (
           <Button
@@ -147,7 +177,7 @@ function Game() {
           </Button>
         ))}
       </Stack>
-    </Stack>
+    </Stack> 
   );
 }
 
