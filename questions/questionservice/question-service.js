@@ -20,7 +20,7 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
 
     const category = req.params.category;
     const numberQuestions = await dataService.getNumberQuestionsByCategory(category);
-    console.log("Numero de cuestiones " + numberQuestions);
+    console.log("Numero de questions " + numberQuestions + " category " + category);
     if(numberQuestions == 0){
         await generateService.generateQuestionsByCategory(category,questionsToGenerate);
     }
