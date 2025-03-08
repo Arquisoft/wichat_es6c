@@ -34,6 +34,21 @@ module.exports = {
         }
     },
 
+    /**
+     * Deletes a question from the database.
+     * @param {id} str - The id of the document to be removed
+     */
+    deleteQuestionById : async function(id) {
+        try {
+        await Question.findByIdAndDelete(id);
+        console.log(`Question ${id} deleted successfully`);
+
+        } catch (error) {
+            console.error('Error deleting question:', error.message);
+            return error.message;
+        }
+    },
+
     getRandomQuestionByCategory: async function(categoryParam) {
         try {
             const question = await Question.aggregate([

@@ -12,16 +12,23 @@ app.use(express.json());
 
 app.get('/getQuestionsDb/:category', async (req, res) => {
   try{
-
-    const questionsToGenerate = 10;
+    const questionsToGenerate = 50;
 
     const category = req.params.category;
     const numberQuestions = await dataService.getNumberQuestionsByCategory(category);
-    console.log("Numero de questions " + numberQuestions + " category " + category);
-    if(numberQuestions == 0){
+    console.log("Numero de preguntas " + numberQuestions + " category " + category);
+    if(numberQuestions < 10){
         await generateService.generateQuestionsByCategory(category,questionsToGenerate);
     }
-    const  question = await dataService.getRandomQuestionByCategory(category);
+
+    const question = await dataService.getRandomQuestionByCategory(category);
+
+    if (!question) {
+      return res.status(404).json({ message: "There are no more questions available." });
+    }
+
+    await dataService.deleteQuestionById(question._id);
+
     res.json(question);
 
   }catch (error) {
