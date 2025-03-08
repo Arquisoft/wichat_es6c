@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button, Stack, Typography, Box } from "@mui/material";
 import axios from "axios"; 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Game() {
   const QUESTION_TIME = 10;
   const TOTAL_ROUNDS = 10;
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
@@ -22,7 +23,10 @@ function Game() {
 
   // Temporizador
   useEffect(() => {
-    if (timeLeft === 0) return;
+    if (timeLeft === 0) {
+      handleAnswer(false);
+      return;
+    }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft]);
@@ -63,10 +67,13 @@ function Game() {
       setScore(score + 1);
     }
 
-    setRound(prevRound => prevRound + 1);
-    fetchQuestion();
-    setTimeLeft(QUESTION_TIME);
-
+    if (round < TOTAL_ROUNDS) {
+      setRound(prevRound => prevRound + 1);
+      fetchQuestion();
+      setTimeLeft(QUESTION_TIME);
+    } else {
+      navigate('/gameFinished');
+    }
   };
 
   // Si no tenemos datos de la pregunta aún, mostramos "Cargando..."

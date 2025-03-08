@@ -10,6 +10,7 @@ import PrivateRoute from './pages/PrivateRoute';
 import Home from './pages/Home';
 import GameMode from './pages/GameMode';
 import Game from './pages/Game';
+import GameFinished from './pages/GameFinished';
 function App() {
 
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/homepage" element={<PrivateRoute element={UserHome} />} />
             <Route path="/game-mode" element={<PrivateRoute element={GameMode}/>} />
             <Route path="/game" element={<PrivateRoute element={Game}/>} />
+            <Route path="/gameFinished" element={<PrivateRoute element={GameFinished}/>} />
           </Routes>
           {/* <Footer /> */}
       </Box>
