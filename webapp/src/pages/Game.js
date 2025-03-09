@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Stack, Typography, Box } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
-
-import React from "react";
-import { Container, Box, Typography } from "@mui/material";
 import Chat from "../components/Chat";
 
 function Game() {
@@ -188,23 +185,8 @@ function Game() {
           </Button>
         ))}
       </Stack>
-    </Stack> 
 
-
-function Game() {
-  return (
-    <Box display="flex" height="100vh" >
-      {/* Contenido principal */}
-      <Box flex={1} maxWidth="66%" textAlign="center" p="5%" >
-        <Typography variant="h3" gutterBottom fontSize="3.2vw">
-          Chat con IA
-        </Typography>
-        <Typography variant="body1" fontSize="1.25vw">
-          Bienvenido a la interacción con el modelo de IA. Escribe tus preguntas en el chat.
-        </Typography>
-      </Box>
-
-      {/* Chat fijado al borde derecho con bordes redondeados y sombra en la parte superior e inferior */}
+      {/* Chat  */}
       <Box 
         width="25vw" 
         height="88vh" 
@@ -216,10 +198,11 @@ function Game() {
         p="2%"
         borderRadius="4%"
       >
-        <Chat />
+      <Chat />
       </Box>
-    </Box>
-  );
+
+    </Stack> 
+  )
 }
 
 export default Game;
