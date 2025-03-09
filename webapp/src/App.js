@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import GameMode from './pages/GameMode';
 import Game from './pages/Game';
 import GameFinished from './pages/GameFinished';
+
 function App() {
 
   return (
