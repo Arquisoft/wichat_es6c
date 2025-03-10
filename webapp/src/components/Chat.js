@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
-
+import axios from "axios";
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -18,14 +18,25 @@ function Chat() {
     setInput("");
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
-    try {
-      const response = await fetch("http://localhost:8003/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: input, apiKey: API_KEY, model }),
-      });
+    const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-      const data = await response.json();
+    try {
+     
+      const response = await axios.post(
+        `${apiEndpoint}/askllm`,
+        {
+          question: input,
+          apiKey: API_KEY,
+          model: model
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const data = response.data;
       const botMessage = { role: "assistant", content: "" };
 
       setMessages((prev) => [...prev, botMessage]);
