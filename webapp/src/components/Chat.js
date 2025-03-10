@@ -7,7 +7,7 @@ function Chat() {
   const [input, setInput] = useState("");
   const [model, setModel] = useState("empathy");
   const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
-  const API_KEY = ""; // Usa .env en producción
+  const API_KEY = process.env.REACT_APP_LLM_API_KEY; // Usa .env en producción
   const messagesEndRef = useRef(null); // Ref para hacer scroll al final
 
   const sendMessage = async () => {
