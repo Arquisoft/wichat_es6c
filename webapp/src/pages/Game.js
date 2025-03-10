@@ -6,6 +6,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Chat from "../components/Chat";
+import AnswerPopup from "../components/AnswerPopup";
 
 
 function Game() {
@@ -23,6 +24,8 @@ function Game() {
   const [chatOpen, setChatOpen] = useState(false);
   const [questionData, setQuestionData] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false); //AVISO
+  const [popupVisible, setPopupVisible] = useState(false); //AVISO
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -73,6 +76,10 @@ function Game() {
       setScore(score + 1);
     }
 
+    setIsCorrectAnswer(isCorrect);
+    setPopupVisible(true); // Show pop-up AVISO
+    setTimeout(() => setPopupVisible(false), 1000); // Hide the pop-up after 2 seg AVISO
+
     if (round < TOTAL_ROUNDS) {
       setRound(prevRound => prevRound + 1);
       fetchQuestion();
@@ -94,6 +101,10 @@ function Game() {
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={4} sx={{ height: "100vh", textAlign: "center" }}>
+      
+      {/* Pop-up  AVISO */}
+      {popupVisible && <AnswerPopup isCorrect={isCorrectAnswer} visible={popupVisible} />} 
+
       {/* Tiempo en la parte izquierda de la imagen */}
       <Box
         sx={{
