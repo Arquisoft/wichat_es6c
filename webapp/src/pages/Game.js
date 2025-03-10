@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
+import ChatIcon from "@mui/icons-material/Chat"; 
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import Chat from "../components/Chat";
+
 
 function Game() {
   const QUESTION_TIME = 15;
@@ -15,6 +20,7 @@ function Game() {
   const [gameMode, setGameMode] = useState('');
   const [round, setRound] = useState(1);
   const [totalTime, setTotalTime] = useState(0);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -256,10 +262,48 @@ function Game() {
           </Button>
         ))}
       </Stack>
-    </Stack>
+
+      {/* Botón flotante para abrir/cerrar el chat */}
+      <IconButton 
+        onClick={() => setChatOpen(!chatOpen)} 
+        sx={{
+          position: "fixed",
+          bottom: "5vh",
+          right: "5vw",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          boxShadow: 3,
+          width: "60px",
+          height: "60px",
+          zIndex: 1000,
+        }}
+      >
+        {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
+      </IconButton>
+
+      {/* Contenedor del chat (desplegable) */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: "12vh",
+          right: chatOpen ? "5vw" : "-30vw", // Se oculta cuando está cerrado
+          width: "25vw",
+          height: "70vh",
+          backgroundColor: "white",
+          borderRadius: "1vw",
+          boxShadow: 3,
+          transition: "right 0.3s ease-in-out",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 999,
+        }}
+      >
+        {chatOpen && <Chat />}
+      </Box>
 
     </Stack> 
-  );
+  )
 }
 
 export default Game;
