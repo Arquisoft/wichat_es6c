@@ -4,11 +4,14 @@ import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat"; 
 import CloseIcon from "@mui/icons-material/Close";
+import StarIcon from "@mui/icons-material/Star"; 
 import Chat from "../components/Chat";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Game() {
   const QUESTION_TIME = 15;
   const TOTAL_ROUNDS = 10;
+  const BASE_SCORE = 10;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,9 +30,21 @@ function Game() {
 
   const [chatOpen, setChatOpen] = useState(false);
 
+  const [showTransition, setShowTransition] = useState(false); 
+  const [tempScore, setTempScore] = useState(0); 
+  const [starAnimation, setStarAnimation] = useState(false);
+  
+
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showFeedback, setShowFeedback] = useState(false); 
+
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-
+  const getTimeMultiplierScore = (timeLeft) => {
+    if (timeLeft >= 10) return 2.0; 
+    if (timeLeft >= 5) return 1.5;  
+    return 1.0; 
+  }
 
   const handleImageLoad = () => {
     let opacity = 0;
@@ -55,32 +70,43 @@ function Game() {
     }
   }, [gameMode]);
 
+  
+
   useEffect(() => {
-    if (!questionData || !imageLoaded) return;
+    if (!questionData || !imageLoaded || showFeedback) return;
   
     if (timeLeft === 0) {
-      handleAnswer(false);
-      return;
+      setShowFeedback(true); 
+      setSelectedAnswer(null); 
+  
+      setTimeout(() => {
+        setShowFeedback(false); 
+        setShowTransition(true); 
+        setStarAnimation(true); 
+  
+        setTimeout(() => {
+          setShowTransition(false); 
+          setStarAnimation(false); 
+  
+          if (round < TOTAL_ROUNDS) {
+            setRound((prevRound) => prevRound + 1);
+            fetchQuestion();
+            setTimeLeft(QUESTION_TIME);
+          } else {
+            navigate('/game-finished');
+          }
+        }, 7000); 
+      }, 2000); 
     }
   
     const timer = setInterval(() => {
       setTimeLeft((t) => t - 1); 
-      setProgress(timeLeft / QUESTION_TIME * 100);
-      }, 1000);
-  
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded]);
-  
-
-  useEffect(() => {
-    if (!questionData || !imageLoaded) return;
-  
-    const totalTimer = setInterval(() => {
-      setTotalTime((t) => t + 1); 
+      setTotalTime((t) => t + 1);
+      setProgress((timeLeft) / QUESTION_TIME * 100);
     }, 1000);
   
-    return () => clearInterval(totalTimer); 
-  }, [questionData, imageLoaded]);
+    return () => clearInterval(timer); 
+  }, [timeLeft, questionData, imageLoaded, showFeedback]);
   
 
   const fetchQuestion = async () => {
@@ -94,17 +120,43 @@ function Game() {
     }
   };
 
-  const handleAnswer = (isCorrect) => {
-    if (isCorrect) setScore(score + 1);
-
-    if (round < TOTAL_ROUNDS) {
-      setRound(round + 1);
-      fetchQuestion();
-      setTimeLeft(QUESTION_TIME);
+  const handleAnswer = (isCorrect, selectedOption) => {
+    setSelectedAnswer(selectedOption);
+    setShowFeedback(true);
+  
+    if (isCorrect) {
+      const multiplier = getTimeMultiplierScore(timeLeft);
+      const pointsEarned = BASE_SCORE * multiplier;
+      setTempScore(pointsEarned);
+      setScore((prevScore) => prevScore + pointsEarned);
     } else {
-      navigate('/game-finished');
+      setTempScore(0);
     }
+  
+    setTimeout(() => {
+      setShowFeedback(false); 
+      setShowTransition(true);
+      setStarAnimation(true); 
+  
+      setTimeout(() => {
+        setShowTransition(false); 
+        setStarAnimation(false); 
+  
+        if (round < TOTAL_ROUNDS) {
+          setRound((prevRound) => prevRound + 1);
+          fetchQuestion();
+          setTimeLeft(QUESTION_TIME);
+          setSelectedAnswer(null);
+        } else {
+          navigate('/game-finished');
+        }
+      }, 7000); 
+    }, 2000); 
   };
+
+
+
+
 
   if (!questionData) {
     return (
@@ -116,13 +168,91 @@ function Game() {
     );
   }
 
+  // Pantalla de transición
+  const TransitionScreen = ({ score, tempScore, starAnimation }) => {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          zIndex: 1000,
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "10rem", 
+            height: "10rem", 
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute", 
+              animation: starAnimation ? "pulse 1s" : "none", 
+              "@keyframes pulse": {
+                "0%": { transform: "scale(1)" },
+                "50%": { transform: "scale(1.5)" },
+                "100%": { transform: "scale(1)" },
+              },
+            }}
+          >
+            <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} /> 
+          </Box>
+  
+          <AnimatePresence>
+            {starAnimation && (
+              <motion.div
+                
+                style={{
+                  position: "absolute",
+                  top: "35%",
+                  left: "33%",
+                  fontSize: "2.5rem", 
+                  fontWeight: "bold",
+                  color: "#333",
+                }}
+              >
+                +{tempScore}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </Box>
+  
+        {/* Puntuación total */}
+        <Typography variant="h5" sx={{ mt: 5, color: "#666" }}>
+          Puntuación total: {score}
+        </Typography>
+      </Box>
+    );
+  };
+
+  
   return (
     <Stack alignItems="center" justifyContent="center" 
           sx={{ height: "93.5vh",
             backgroundImage: "url('/background-quiz.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center"
-           }}>
+         }}>
+
+
+
+    {/* Pantalla de transición */}
+    {showTransition && (
+      <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
+    )}
+
       {/* Contenedor principal con transparencia */}
       <Box
         sx={{
@@ -149,10 +279,10 @@ function Game() {
         <Box 
           sx={{ 
             width: "80%", 
-            height: "40vh", 
+            height: "32vh", 
             overflow: "hidden", 
             borderRadius: "10px", 
-            position: "relative", // Necesario para centrar el mensaje de carga
+            position: "relative", 
             backgroundColor: "#eee",
             display: "flex",
             alignItems: "center",
@@ -206,17 +336,87 @@ function Game() {
 
         {/* Opciones de respuesta */}
         <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden"}}>
-          {questionData.options?.map((option, index) => (
-            <Button 
-              key={index} 
-              variant="contained" 
-              sx={{ width: "100%" }} 
-              onClick={() => handleAnswer(option === questionData.correctAnswer)}
-            >
-              {option}
-            </Button>
-          ))}
+          {questionData.options?.map((option, index) => {
+            const isSelected = selectedAnswer === option; 
+            const isCorrect = option === questionData.correctAnswer;
+
+            return (
+              <Button
+                key={index}
+                variant="contained"
+                sx={{
+                  width: "100%",
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "center", 
+                  backgroundColor:
+                    showFeedback && isSelected
+                      ? isCorrect
+                        ? "green" 
+                        : "red" 
+                      : showFeedback && isCorrect
+                      ? "green"
+                      : "primary", 
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor:
+                      showFeedback && isSelected
+                        ? isCorrect
+                          ? "green"
+                          : "red"
+                        : showFeedback && isCorrect
+                        ? "green"
+                        : "primary",
+                  },
+                  "&.Mui-disabled": { 
+                    backgroundColor:
+                      showFeedback && isSelected
+                        ? isCorrect
+                          ? "green"
+                          : "red"
+                        : showFeedback && isCorrect
+                        ? "green"
+                        : "primary",
+                    color: "white",
+                    opacity: 1, 
+                  },
+                  position: "relative",
+                }}
+                onClick={() => handleAnswer(isCorrect, option)}
+                disabled={showFeedback} 
+              >
+                {showFeedback && isSelected && (
+                  <Box
+                    sx={{
+                      position: "absolute", 
+                      left: "1rem", 
+                    }}
+                  >
+                    {isCorrect ? "\u2714" : "\u274C"} 
+                  </Box>
+                )}
+                {showFeedback && isCorrect && !isSelected && (
+                  <Box
+                    sx={{
+                      position: "absolute", 
+                      left: "1rem", 
+                    }}
+                  >
+                    {"\u2714"} 
+                  </Box>
+                )}
+
+                {option}
+              </Button>
+            );
+          })}
         </Stack>
+
+
+        <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
+        {round} de {TOTAL_ROUNDS} rondas
+      </Typography>
+
       </Box>
 
 
@@ -244,8 +444,6 @@ function Game() {
         }}
       >
         {/*<Typography variant="h6">Tiempo: {timeLeft}s</Typography> */}
-        <Typography variant="h6">Puntuación: {score}</Typography>
-        <Typography variant="h6">Ronda {round}/{TOTAL_ROUNDS}</Typography>
       </Box>
     </Stack>
   );
