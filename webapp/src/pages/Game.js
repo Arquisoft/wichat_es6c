@@ -7,7 +7,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Chat from "../components/Chat";
 
-
 function Game() {
   const QUESTION_TIME = 15;
   const TOTAL_ROUNDS = 10;
@@ -24,10 +23,7 @@ function Game() {
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-
   const [questionData, setQuestionData] = useState(null);
-
-
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageOpacity, setImageOpacity] = useState(0);
 
@@ -38,26 +34,23 @@ function Game() {
       setImageOpacity(opacity);
       if (opacity >= 1) {
         clearInterval(fadeIn);
-        setImageLoaded(true); // Una vez que llega a 1, marcamos la imagen como completamente cargada
+        setImageLoaded(true);
       }
     }, 100); 
   };
 
-
-  // Temporizador
   useEffect(() => {
-    if(!questionData || !imageLoaded) return;
+    if (!questionData || !imageLoaded) return;
     if (timeLeft === 0) {
       handleAnswer(false);
       return;
     }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft,questionData,imageLoaded]);
+  }, [timeLeft, questionData, imageLoaded]);
 
-  // Total timer
   useEffect(() => {
-    if(!questionData || !imageLoaded) return;
+    if (!questionData || !imageLoaded) return;
     const totalTimer = setInterval(() => {
       setTotalTime((t) => t + 1);
     }, 1000);
@@ -70,15 +63,11 @@ function Game() {
     }
   }, []);
 
-
-  
   useEffect(() => {
     if (gameMode) {
       fetchQuestion(); 
     }
   }, [gameMode]); 
-
-
 
   const fetchQuestion = async () => {
     try {
@@ -86,13 +75,11 @@ function Game() {
       setImageLoaded(false);
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setQuestionData(response.data); 
-
     } catch (error) {
       console.error("Error fetching question:", error);
     }
   };
 
-  // Función para manejar las respuestas
   const handleAnswer = (isCorrect) => {
     if (isCorrect) {
       setScore(score + 1);
@@ -107,203 +94,86 @@ function Game() {
     }
   };
 
-
-  if ( !questionData) {
+  if (!questionData) {
     return (
       <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
         <Typography variant="h4" sx={{ marginTop: 2 }}>Cargando ronda...</Typography>
         <CircularProgress />
-
       </Stack>
-    );}
-  
+    );
+  }
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={4} sx={{ height: "100vh", textAlign: "center" }}>
-      {/* Tiempo en la parte izquierda de la imagen */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "12vh",  // 5% de la altura de la ventana
-          left: "5vw", // 5% del ancho de la ventana
-          padding: "1vw",
-          border: "2px solid red",
-          borderRadius: "0.5vw",
-        }}
-      >
+      <Box sx={{ position: "absolute", top: "12vh", left: "5vw", padding: "1vw", border: "2px solid red", borderRadius: "0.5vw" }}>
         <Typography variant="h6">Tiempo: {timeLeft}s</Typography>
       </Box>
 
-      {/* Puntuación en la parte derecha de la imagen */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "7.5vh",  // 5% de la altura de la ventana
-          right: "5vw", // 5% del ancho de la ventana
-          padding: "1vw",
-          border: "2px solid black",
-          borderRadius: "0.5vw",
-        }}
-      >
+      <Box sx={{ position: "absolute", top: "7.5vh", right: "5vw", padding: "1vw", border: "2px solid black", borderRadius: "0.5vw" }}>
         <Typography variant="h6">Puntuación: {score}</Typography>
       </Box>
 
-      {/* Round counter */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "5vh", 
-          left: "50%", 
-          transform: "translateX(-50%)", // Centra el contador de rondas
-          padding: "0.5vw",
-          border: "2px solid green",
-          borderRadius: "0.5vw",
-        }}
-      >
-      <Typography variant="h6">Ronda {round} de {TOTAL_ROUNDS}</Typography>
+      <Box sx={{ position: "absolute", top: "5vh", left: "50%", transform: "translateX(-50%)", padding: "0.5vw", border: "2px solid green", borderRadius: "0.5vw" }}>
+        <Typography variant="h6">Ronda {round} de {TOTAL_ROUNDS}</Typography>
       </Box>
 
-       {/* Total round counter */}
-       <Box
-        sx={{
-          position: "absolute",
-          top: "5vh", 
-          left: "70%", 
-          transform: "translateX(-50%)", // Centra el contador de rondas
-          padding: "0.5vw",
-          border: "1px solid blue",
-          borderRadius: "0.3vw",
-          minWidth: "10vw",
-          textAlign: "center",
-        }}
-      >
+      <Box sx={{ position: "absolute", top: "5vh", left: "70%", transform: "translateX(-50%)", padding: "0.5vw", border: "1px solid blue", borderRadius: "0.3vw", minWidth: "10vw", textAlign: "center" }}>
         <Typography variant="h6" sx={{ fontSize: "0.8rem" }}>
           Tiempo Total: {totalTime}s
         </Typography>
       </Box>
 
-      {/* Pregunta sobre la imagen */}
       <Typography variant="h5" sx={{ marginTop: "10vh", zIndex: 10, position: "absolute", top: "12vh" }}>
         {questionData.question}
       </Typography>
 
-      {/* Imagen más grande, sin ocupar toda la pantalla */}
-      <Box 
-        sx={{ 
-          width: "80vw", 
-          height: "60vh", 
-          backgroundColor: "#ccc", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}
->
-  {/* Imagen con opacidad progresiva */}
-  {questionData.imageUrl && (
-    <img 
-      src={questionData.imageUrl} 
-      alt="Imagen del país" 
-      style={{ 
-        width: "100%", 
-        height: "100%", 
-        objectFit: "cover", 
-        position: "absolute", 
-        top: 0, 
-        left: 0, 
-        opacity: imageOpacity, // Aplicamos la opacidad progresiva
-        transition: "opacity 0.5s ease-in-out"
-      }} 
-      onLoad={handleImageLoad} 
-    />
-  )}
-
-    {/* Mensaje y Spinner mientras la imagen se carga */}
-    {!imageLoaded && (
-      <Stack 
-        alignItems="center" 
-        justifyContent="center"
-        sx={{ 
-          position: "absolute", 
-          width: "100%", 
-          height: "100%", 
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // Fondo semitransparente
-          color: "#fff", 
-          zIndex: 2,
-        }}
-      >
-        <CircularProgress color="inherit" />
-        <Typography variant="h6" sx={{ marginTop: 2 }}>
-          {round > 1 ? "Cargando siguiente imagen..." : "Cargando imagen..."}
-        </Typography>
-      </Stack>
-    )}
-  </Box>
-
-
-      <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center" sx={{ marginTop: "2vh" }}>
-      {/* Los botones estarán presentes, pero invisibles hasta que la imagen esté cargada */}
-      <Stack 
-        direction="row" 
-        spacing={2} 
-        flexWrap="wrap" 
-        justifyContent="center" 
-        sx={{ marginTop: "2vh", visibility: imageLoaded ? "visible" : "hidden" }} 
-      >
-        {questionData.options && questionData.options.length > 0 && questionData.options.map((option, index) => (
-          <Button
-            key={index}
-            variant="contained"
-            sx={{ minWidth: "20vw", padding: "2vh" }}  
-            onClick={() => handleAnswer(option === questionData.correctAnswer)} 
-          >
-            {option}
-          </Button>
-        ))}
-      </Stack>
-
-      {/* Botón flotante para abrir/cerrar el chat */}
-      <IconButton 
-        onClick={() => setChatOpen(!chatOpen)} 
-        sx={{
-          position: "fixed",
-          bottom: "5vh",
-          right: "5vw",
-          backgroundColor: "white",
-          borderRadius: "50%",
-          boxShadow: 3,
-          width: "60px",
-          height: "60px",
-          zIndex: 1000,
-        }}
-      >
-        {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
-      </IconButton>
-
-      {/* Contenedor del chat (desplegable) */}
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: "12vh",
-          right: chatOpen ? "5vw" : "-30vw", // Se oculta cuando está cerrado
-          width: "25vw",
-          height: "70vh",
-          backgroundColor: "white",
-          borderRadius: "1vw",
-          boxShadow: 3,
-          transition: "right 0.3s ease-in-out",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 999,
-        }}
-      >
-        {chatOpen && <Chat />}
+      <Box sx={{ width: "80vw", height: "60vh", backgroundColor: "#ccc", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+        {questionData.imageUrl && (
+          <img 
+            src={questionData.imageUrl} 
+            alt="Imagen del país" 
+            style={{ 
+              width: "100%", 
+              height: "100%", 
+              objectFit: "cover", 
+              position: "absolute", 
+              top: 0, 
+              left: 0, 
+              opacity: imageOpacity, 
+              transition: "opacity 0.5s ease-in-out"
+            }} 
+            onLoad={handleImageLoad} 
+          />
+        )}
+        {!imageLoaded && (
+          <Stack alignItems="center" justifyContent="center" sx={{ position: "absolute", width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, 0.5)", color: "#fff", zIndex: 2 }}>
+            <CircularProgress color="inherit" />
+            <Typography variant="h6" sx={{ marginTop: 2 }}>
+              {round > 1 ? "Cargando siguiente imagen..." : "Cargando imagen..."}
+            </Typography>
+          </Stack>
+        )}
       </Box>
 
+      <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center" sx={{ marginTop: "2vh" }}>
+        <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center" sx={{ marginTop: "2vh", visibility: imageLoaded ? "visible" : "hidden" }}>
+          {questionData.options && questionData.options.length > 0 && questionData.options.map((option, index) => (
+            <Button key={index} variant="contained" sx={{ minWidth: "20vw", padding: "2vh" }} onClick={() => handleAnswer(option === questionData.correctAnswer)}>
+              {option}
+            </Button>
+          ))}
+        </Stack>
+
+        <IconButton onClick={() => setChatOpen(!chatOpen)} sx={{ position: "fixed", bottom: "5vh", right: "2vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
+          {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
+        </IconButton>
+
+        <Box sx={{ position: "fixed", bottom: "12vh", right: chatOpen ? "5vw" : "-30vw", width: "25vw", height: "70vh", backgroundColor: "white", borderRadius: "1vw", boxShadow: 3, transition: "right 0.3s ease-in-out", overflow: "hidden", display: "flex", flexDirection: "column", zIndex: 999 }}>
+          {chatOpen && <Chat />}
+        </Box>
+      </Stack>
     </Stack> 
-  )
+  );
 }
 
 export default Game;
