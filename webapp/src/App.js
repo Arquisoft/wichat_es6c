@@ -24,7 +24,7 @@ function App() {
             <Route path="/homepage" element={<PrivateRoute element={UserHome} />} />
             <Route path="/game-mode" element={<PrivateRoute element={GameMode}/>} />
             <Route path="/game" element={<PrivateRoute element={Game}/>} />
-            <Route path="/gameFinished" element={<PrivateRoute element={GameFinished}/>} />
+            <Route path="/game-finished" element={<PrivateRoute element={GameFinished}/>} />
           </Routes>
           {/* <Footer /> */}
       </Box>

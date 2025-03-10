@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button, Stack, Typography, Box } from "@mui/material";
+import { Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function Game() {
-  const QUESTION_TIME = 10;
+  const QUESTION_TIME = 15;
   const TOTAL_ROUNDS = 10;
 
   const location = useLocation();
@@ -18,26 +18,45 @@ function Game() {
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  // Datos de la pregunta e imagen
+
   const [questionData, setQuestionData] = useState(null);
+
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageOpacity, setImageOpacity] = useState(0);
+
+  const handleImageLoad = () => {
+    let opacity = 0;
+    const fadeIn = setInterval(() => {
+      opacity += 0.1;
+      setImageOpacity(opacity);
+      if (opacity >= 1) {
+        clearInterval(fadeIn);
+        setImageLoaded(true); // Una vez que llega a 1, marcamos la imagen como completamente cargada
+      }
+    }, 100); 
+  };
+
 
   // Temporizador
   useEffect(() => {
+    if(!questionData || !imageLoaded) return;
     if (timeLeft === 0) {
       handleAnswer(false);
       return;
     }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft,questionData,imageLoaded]);
 
   // Total timer
   useEffect(() => {
+    if(!questionData || !imageLoaded) return;
     const totalTimer = setInterval(() => {
       setTotalTime((t) => t + 1);
     }, 1000);
     return () => clearInterval(totalTimer);
-  }, []);
+  }, [questionData, imageLoaded]);
 
   useEffect(() => {
     if (location.state && location.state.mode) {
@@ -45,21 +64,27 @@ function Game() {
     }
   }, []);
 
+
+  
+  useEffect(() => {
+    if (gameMode) {
+      fetchQuestion(); 
+    }
+  }, [gameMode]); 
+
+
+
   const fetchQuestion = async () => {
     try {
       if (!gameMode || round > TOTAL_ROUNDS) return;
+      setImageLoaded(false);
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setQuestionData(response.data); 
+
     } catch (error) {
       console.error("Error fetching question:", error);
     }
   };
-
-  useEffect(() => {
-    if (gameMode) {
-      fetchQuestion(); // Llama a la función para obtener la pregunta solo si gameMode está definido
-    }
-  }, [gameMode]); 
 
   // Función para manejar las respuestas
   const handleAnswer = (isCorrect) => {
@@ -72,14 +97,20 @@ function Game() {
       fetchQuestion();
       setTimeLeft(QUESTION_TIME);
     } else {
-      navigate('/gameFinished');
+      navigate('/game-finished');
     }
   };
 
-  // Si no tenemos datos de la pregunta aún, mostramos "Cargando..."
-  if (!questionData) {
-    return <Typography variant="h4">Cargando...</Typography>;
-  }
+
+  if ( !questionData) {
+    return (
+      <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>Cargando ronda...</Typography>
+        <CircularProgress />
+
+      </Stack>
+    );}
+  
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={4} sx={{ height: "100vh", textAlign: "center" }}>
@@ -151,28 +182,69 @@ function Game() {
       </Typography>
 
       {/* Imagen más grande, sin ocupar toda la pantalla */}
-      <Box
-        sx={{
-          width: "80vw",   // 80% del ancho de la ventana
-          height: "60vh",   // 40% de la altura de la ventana
-          backgroundColor: "#ccc",
-          display: "flex",
-          alignItems: "center",
+      <Box 
+        sx={{ 
+          width: "80vw", 
+          height: "60vh", 
+          backgroundColor: "#ccc", 
+          display: "flex", 
+          alignItems: "center", 
           justifyContent: "center",
-          borderRadius: "1vw", // Radio de bordes relativo
-          boxShadow: 3,
           position: "relative",
+          overflow: "hidden",
+        }}
+>
+  {/* Imagen con opacidad progresiva */}
+  {questionData.imageUrl && (
+    <img 
+      src={questionData.imageUrl} 
+      alt="Imagen del país" 
+      style={{ 
+        width: "100%", 
+        height: "100%", 
+        objectFit: "cover", 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        opacity: imageOpacity, // Aplicamos la opacidad progresiva
+        transition: "opacity 0.5s ease-in-out"
+      }} 
+      onLoad={handleImageLoad} 
+    />
+  )}
+
+    {/* Mensaje y Spinner mientras la imagen se carga */}
+    {!imageLoaded && (
+      <Stack 
+        alignItems="center" 
+        justifyContent="center"
+        sx={{ 
+          position: "absolute", 
+          width: "100%", 
+          height: "100%", 
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Fondo semitransparente
+          color: "#fff", 
+          zIndex: 2,
         }}
       >
-        {questionData.imageUrl ? (
-          <img src={questionData.imageUrl} alt="Imagen del país" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        ) : (
-          <Typography variant="h6">Imagen no disponible</Typography>
-        )}
-      </Box>
+        <CircularProgress color="inherit" />
+        <Typography variant="h6" sx={{ marginTop: 2 }}>
+          {round > 1 ? "Cargando siguiente imagen..." : "Cargando imagen..."}
+        </Typography>
+      </Stack>
+    )}
+  </Box>
 
-      {/* Response options */}
+
       <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center" sx={{ marginTop: "2vh" }}>
+      {/* Los botones estarán presentes, pero invisibles hasta que la imagen esté cargada */}
+      <Stack 
+        direction="row" 
+        spacing={2} 
+        flexWrap="wrap" 
+        justifyContent="center" 
+        sx={{ marginTop: "2vh", visibility: imageLoaded ? "visible" : "hidden" }} 
+      >
         {questionData.options && questionData.options.length > 0 && questionData.options.map((option, index) => (
           <Button
             key={index}
@@ -184,6 +256,8 @@ function Game() {
           </Button>
         ))}
       </Stack>
+    </Stack>
+
     </Stack> 
   );
 }

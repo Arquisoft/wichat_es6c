@@ -27,15 +27,16 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
       return res.status(404).json({ message: "There are no more questions available." });
     }
 
-    await dataService.deleteQuestionById(question._id);
-
+    
+    dataService.deleteQuestionById(question._id);
+    
     res.json(question);
+
 
   }catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 const server = app.listen(port, () => {
   console.log(`Question Service listening at http://localhost:${port}`);
