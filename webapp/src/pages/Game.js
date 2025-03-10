@@ -21,11 +21,23 @@ function Game() {
   const [round, setRound] = useState(1);
   const [totalTime, setTotalTime] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
+  const [questionData, setQuestionData] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  // Datos de la pregunta e imagen
-  const [questionData, setQuestionData] = useState(null);
+
+  useEffect(() => {
+    if (location.state && location.state.mode) {
+      setGameMode(location.state.mode);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (gameMode) {
+      fetchQuestion(); // Llama a la función para obtener la pregunta solo si gameMode está definido
+    }
+  }, [gameMode]); 
 
   // Temporizador
   useEffect(() => {
@@ -37,7 +49,6 @@ function Game() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  // Total timer
   useEffect(() => {
     const totalTimer = setInterval(() => {
       setTotalTime((t) => t + 1);
@@ -45,27 +56,16 @@ function Game() {
     return () => clearInterval(totalTimer);
   }, []);
 
-  useEffect(() => {
-    if (location.state && location.state.mode) {
-      setGameMode(location.state.mode);
-    }
-  }, []);
-
   const fetchQuestion = async () => {
     try {
       if (!gameMode || round > TOTAL_ROUNDS) return;
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
-      setQuestionData(response.data); 
+      setQuestionData(response.data);
+      setImageLoaded(false);
     } catch (error) {
       console.error("Error fetching question:", error);
     }
   };
-
-  useEffect(() => {
-    if (gameMode) {
-      fetchQuestion(); // Llama a la función para obtener la pregunta solo si gameMode está definido
-    }
-  }, [gameMode]); 
 
   // Función para manejar las respuestas
   const handleAnswer = (isCorrect) => {
@@ -80,6 +80,11 @@ function Game() {
     } else {
       navigate('/gameFinished');
     }
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true); // Marcar como cargada una vez que la imagen se carga
+    setTimeLeft(QUESTION_TIME); // Reiniciar el temporizador solo después de cargar la imagen
   };
 
   // Si no tenemos datos de la pregunta aún, mostramos "Cargando..."
@@ -159,19 +164,23 @@ function Game() {
       {/* Imagen más grande, sin ocupar toda la pantalla */}
       <Box
         sx={{
-          width: "80vw",   // 80% del ancho de la ventana
-          height: "60vh",   // 40% de la altura de la ventana
+          width: "80vw",   
+          height: "60vh",  
           backgroundColor: "#ccc",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: "1vw", // Radio de bordes relativo
+          borderRadius: "1vw", 
           boxShadow: 3,
           position: "relative",
         }}
       >
         {questionData.imageUrl ? (
-          <img src={questionData.imageUrl} alt="Imagen del país" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img  src={questionData.imageUrl} 
+                alt="Imagen del país" 
+                style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                onLoad={handleImageLoad} //call handleImage when the image is ready
+          />
         ) : (
           <Typography variant="h6">Imagen no disponible</Typography>
         )}
@@ -179,7 +188,7 @@ function Game() {
 
       {/* Response options */}
       <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center" sx={{ marginTop: "2vh" }}>
-        {questionData.options && questionData.options.length > 0 && questionData.options.map((option, index) => (
+        {imageLoaded && questionData.options && questionData.options.length > 0 && questionData.options.map((option, index) => (
           <Button
             key={index}
             variant="contained"
