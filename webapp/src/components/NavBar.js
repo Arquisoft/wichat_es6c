@@ -75,13 +75,13 @@ const NavMenu = () => {
                 variant="outlined"
                 onClick={handleLogin}
                 sx={{
-                  borderColor: "white", // Borde blanco para Iniciar Sesión
-                  color: "white", // Texto blanco
+                  borderColor: "white", 
+                  color: "white",
                   padding: "10px 20px",
                   borderRadius: "25px",
                   '&:hover': {
                     borderColor: "white",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Efecto hover
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", 
                   },
                 }}
               >

@@ -21,7 +21,6 @@ function Game() {
   const [gameMode, setGameMode] = useState('');
   const [round, setRound] = useState(1);
   const [totalTime, setTotalTime] = useState(0);
-  const [progress, setProgress] = useState(100);
 
 
   const [questionData, setQuestionData] = useState(null);
@@ -102,13 +101,15 @@ function Game() {
     const timer = setInterval(() => {
       setTimeLeft((t) => t - 1); 
       setTotalTime((t) => t + 1);
-      setProgress((timeLeft) / QUESTION_TIME * 100);
     }, 1000);
   
     return () => clearInterval(timer); 
   }, [timeLeft, questionData, imageLoaded, showFeedback]);
   
 
+  
+
+  
   const fetchQuestion = async () => {
     try {
       if (round > TOTAL_ROUNDS) return;
@@ -253,6 +254,30 @@ function Game() {
       <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
     )}
 
+      {/* Tiempo restante */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "45%",
+          left: "10%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "15vh",
+          height: "15vh",
+          borderRadius: "50%",
+          backgroundColor: "orange",
+          
+          boxShadow: 3,
+          zIndex: 1000,
+        }}
+      >
+        <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
+          {timeLeft}
+        </Typography>
+      </Box>
+
+
       {/* Contenedor principal con transparencia */}
       <Box
         sx={{
@@ -325,14 +350,6 @@ function Game() {
           )}
         </Box>
           
-         {/* Barra de progreso de tiempo */}
-         <Box sx={{ width: "80%", mt: 2,  visibility: imageLoaded ? "visible" : "hidden" }}>
-          <LinearProgress 
-            variant="determinate" 
-            value={progress} 
-            sx={{ height: "10px", borderRadius: "5px" }}
-          />
-        </Box>
 
         {/* Opciones de respuesta */}
         <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden"}}>
@@ -428,23 +445,8 @@ function Game() {
           {chatOpen && <Chat />}
         </Box>
 
-      {/* Indicadores de tiempo y puntuación */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "5%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          justifyContent: "space-around",
-          width: "40vw",
-          color: "white",
-          fontWeight: "bold",
-          textAlign: "center"
-        }}
-      >
+     
         {/*<Typography variant="h6">Tiempo: {timeLeft}s</Typography> */}
-      </Box>
     </Stack>
   );
 }
