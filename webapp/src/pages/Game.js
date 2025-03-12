@@ -12,6 +12,15 @@ function Game() {
   const QUESTION_TIME = 15;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
+  const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
+  const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
+  
+  
+  const MULTIPLIER_HIGH = 2.0;
+  const MULTIPLIER_MEDIUM = 1.5;
+  const MULTIPLIER_LOW = 1.0;
+  const TIME_THRESHOLD_HIGH = 10;
+  const TIME_THRESHOLD_MEDIUM = 5;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,12 +46,14 @@ function Game() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
 
+  
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
+
   const getTimeMultiplierScore = (timeLeft) => {
-    if (timeLeft >= 10) return 2.0; 
-    if (timeLeft >= 5) return 1.5;  
-    return 1.0; 
+    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH; 
+    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;  
+    return MULTIPLIER_LOW; 
   }
 
   const handleImageLoad = () => {
@@ -94,16 +105,19 @@ function Game() {
           } else {
             navigate('/game-finished');
           }
-        }, 7000); 
-      }, 2000); 
+        }, TRANSITION_ROUND_TIME); 
+      }, FEEDBACK_QUESTIONS_TIME); 
     }
   
+    if(!starAnimation){
     const timer = setInterval(() => {
       setTimeLeft((t) => t - 1); 
       setTotalTime((t) => t + 1);
     }, 1000);
   
+  
     return () => clearInterval(timer); 
+  }
   }, [timeLeft, questionData, imageLoaded, showFeedback]);
   
 
@@ -151,8 +165,8 @@ function Game() {
         } else {
           navigate('/game-finished');
         }
-      }, 7000); 
-    }, 2000); 
+      }, TRANSITION_ROUND_TIME); 
+    }, FEEDBACK_QUESTIONS_TIME); 
   };
 
 
@@ -200,7 +214,7 @@ function Game() {
           <Box
             sx={{
               position: "absolute", 
-              animation: starAnimation ? "pulse 1s" : "none", 
+              animation: starAnimation ? "pulse 1s infinite" : "none", 
               "@keyframes pulse": {
                 "0%": { transform: "scale(1)" },
                 "50%": { transform: "scale(1.5)" },
@@ -253,29 +267,6 @@ function Game() {
     {showTransition && (
       <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
     )}
-
-      {/* Tiempo restante */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "45%",
-          left: "10%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "15vh",
-          height: "15vh",
-          borderRadius: "50%",
-          backgroundColor: "orange",
-          
-          boxShadow: 3,
-          zIndex: 1000,
-        }}
-      >
-        <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
-          {timeLeft}
-        </Typography>
-      </Box>
 
 
       {/* Contenedor principal con transparencia */}
@@ -350,6 +341,30 @@ function Game() {
           )}
         </Box>
           
+
+      {/* Tiempo restante */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "35%",
+          left: "-25%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "15vh",
+          height: "15vh",
+          borderRadius: "50%",
+          backgroundColor: "orange",
+          
+          boxShadow: 3,
+          zIndex: 1000,
+        }}
+      >
+        <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
+          {timeLeft}
+        </Typography>
+      </Box>
+
 
         {/* Opciones de respuesta */}
         <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden"}}>
@@ -446,7 +461,6 @@ function Game() {
         </Box>
 
      
-        {/*<Typography variant="h6">Tiempo: {timeLeft}s</Typography> */}
     </Stack>
   );
 }
