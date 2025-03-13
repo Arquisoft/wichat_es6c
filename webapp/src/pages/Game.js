@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Game() {
-  const QUESTION_TIME = 15;
+  const QUESTION_TIME = 3500;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
@@ -457,7 +457,7 @@ function Game() {
         </IconButton>
 
         <Box sx={{ position: "fixed", bottom: "12vh", right: chatOpen ? "5vw" : "-30vw", width: "25vw", height: "70vh", backgroundColor: "white", borderRadius: "1vw", boxShadow: 3, transition: "right 0.3s ease-in-out", overflow: "hidden", display: "flex", flexDirection: "column", zIndex: 999 }}>
-          {chatOpen && <Chat />}
+          {chatOpen && <Chat questionData={questionData} />}
         </Box>
 
      

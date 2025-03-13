@@ -22,9 +22,9 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/homepage" element={<PrivateRoute element={UserHome} />} />
-            <Route path="/game-mode" element={<PrivateRoute element={GameMode}/>} />
-            <Route path="/game" element={<PrivateRoute element={Game}/>} />
-            <Route path="/game-finished" element={<PrivateRoute element={GameFinished}/>} />
+            <Route path="/game-mode" element={<GameMode/>} />
+            <Route path="/game" element={<Game/>} />
+            <Route path="/game-finished" element={<GameFinished/>} />
           </Routes>
           {/* <Footer /> */}
       </Box>
