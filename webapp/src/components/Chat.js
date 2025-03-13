@@ -23,7 +23,7 @@ function Chat({ questionData }) {
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
     try {
-     let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer: "+input;
+     let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer in a short phrase: "+input;
       const response = await axios.post(
         
         `${apiEndpoint}/askllm`,
@@ -68,7 +68,7 @@ function Chat({ questionData }) {
   }, [messages]);
 
   return (
-    <Container maxWidth="md" sx={{ height: "90vh", display: "flex", flexDirection: "column" }}>
+    <Container maxWidth="md" sx={{ height: "69vh", display: "flex", flexDirection: "column" }}>
       <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#0078ff", color: "white", borderRadius: 2 }}>
         Chat con IA
       </Typography>
@@ -105,7 +105,7 @@ function Chat({ questionData }) {
                 words={[msg.content]} // Aquí le pasamos el contenido del mensaje
                 cursor
                 cursorStyle="|"
-                typeSpeed={50} // Velocidad de escritura
+                typeSpeed={15} // Velocidad de escritura
               />
             ) : (
               <Typography variant="body1">{msg.content}</Typography>
