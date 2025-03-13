@@ -48,6 +48,16 @@ services:
     networks:
       - mynetwork
 
+  questionservice:
+    container_name: questionservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/questionservice:latest
+    profiles: ["dev", "prod"]
+    build: ./questionservice
+    ports:
+      - "8004:8004"
+    networks:
+      - mynetwork
+
   gatewayservice:
     container_name: gatewayservice-wichat_es6c
     image: ghcr.io/arquisoft/wichat_es6c/gatewayservice:latest

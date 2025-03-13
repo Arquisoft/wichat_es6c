@@ -1,11 +1,10 @@
 import React, { useState, useEffect} from 'react';
 import { Box, Button, Typography} from "@mui/material";
-import NavBar from "../components/NavBar"; 
-
+import { useNavigate } from 'react-router-dom';
 const HomePage = () => {
 
     const [username, setUsername] = useState(null); 
-
+    const navigate = useNavigate();
     useEffect(() => {
         const storedSessionId = localStorage.getItem('sessionId');
 
@@ -17,13 +16,12 @@ const HomePage = () => {
 
 
     const gameModes = async () => {
-      //navigate('/game-modes');
+      navigate('/game-mode');
       
     }
       return (
         <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-          <NavBar />
-          
+        
           <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
             {username && ( 
               <Typography variant="h4" sx={{ marginBottom: 2 }}>
