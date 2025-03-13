@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
-function Chat() {
+function Chat({ questionData }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [model, setModel] = useState("empathy");
@@ -12,8 +12,10 @@ function Chat() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
-    const userMessage = { role: "user", content: input };
+    
+    
+    const userMessage = { role: "user", content: input  };
+    console.log("Mensaje del usuario:", userMessage.content);
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
@@ -21,11 +23,12 @@ function Chat() {
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
     try {
-     
+     let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer in a short phrase: "+input;
       const response = await axios.post(
+        
         `${apiEndpoint}/askllm`,
         {
-          question: input,
+          question: petition,
           apiKey: API_KEY,
           model: model
         },
@@ -65,7 +68,7 @@ function Chat() {
   }, [messages]);
 
   return (
-    <Container maxWidth="md" sx={{ height: "90vh", display: "flex", flexDirection: "column" }}>
+    <Container maxWidth="md" sx={{ height: "69vh", display: "flex", flexDirection: "column" }}>
       <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#0078ff", color: "white", borderRadius: 2 }}>
         Chat con IA
       </Typography>
@@ -102,7 +105,7 @@ function Chat() {
                 words={[msg.content]} // Aquí le pasamos el contenido del mensaje
                 cursor
                 cursorStyle="|"
-                typeSpeed={50} // Velocidad de escritura
+                typeSpeed={15} // Velocidad de escritura
               />
             ) : (
               <Typography variant="body1">{msg.content}</Typography>

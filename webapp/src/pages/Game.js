@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Game() {
-  const QUESTION_TIME = 15;
+  const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
@@ -456,9 +456,17 @@ function Game() {
           {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
         </IconButton>
 
-        <Box sx={{ position: "fixed", bottom: "12vh", right: chatOpen ? "5vw" : "-30vw", width: "25vw", height: "70vh", backgroundColor: "white", borderRadius: "1vw", boxShadow: 3, transition: "right 0.3s ease-in-out", overflow: "hidden", display: "flex", flexDirection: "column", zIndex: 999 }}>
-          {chatOpen && <Chat />}
+        <Box sx={{ position: "fixed", bottom: "12vh", right: chatOpen ? "5vw" : "-30vw", width: "24vw", height: "70vh", backgroundColor: "white", borderRadius: "1vw", boxShadow: 3, transition: "right 0.3s ease-in-out", overflow: "hidden", display: "flex", flexDirection: "column", zIndex: 999 }}>
+        {chatOpen && (
+        <Box sx={{ 
+          flexShrink: 0,  // Evita que crezca
+          maxHeight: "100%",  // Asegura que el contenido no exceda la altura del contenedor
+          overflowY: "auto"  // Permite scroll si el contenido es grande
+        }}>
+          <Chat questionData={questionData} />
         </Box>
+        )}
+</Box>
 
      
     </Stack>
