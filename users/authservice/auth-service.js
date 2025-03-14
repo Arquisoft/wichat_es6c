@@ -25,8 +25,8 @@ function validateRequiredFields(req, requiredFields) {
 
 // Route for user login
 app.post('/login',  [
-  check('username').isLength({ min: 3 }).trim().escape(),
-  check('password').isLength({ min: 3 }).trim().escape()
+  check('username').isLength({ min: 3 }).trim().escape().withMessage('Username must be at least 3 characters long'),
+  check('password').isLength({ min: 3 }).trim().escape().withMessage('Password must be at least 3 characters long')
 ],async (req, res) => {
   try {
     // Check if required fields are present in the request body

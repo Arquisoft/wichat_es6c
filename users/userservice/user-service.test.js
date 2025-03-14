@@ -21,13 +21,13 @@ afterAll(async () => {
 });
 
 describe('User Service', () => {
-  it('should add a new user on POST /adduser', async () => {
+  it('should add a new user on POST /user', async () => {
     const newUser = {
       username: 'testuser',
       password: 'testpassword',
     };
 
-    const response = await request(app).post('/adduser').send(newUser);
+    const response = await request(app).post('/user').send(newUser);
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('username', 'testuser');
 

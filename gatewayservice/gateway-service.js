@@ -13,6 +13,7 @@ const port = 8000;
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
 
 app.use(cors());
 app.use(express.json());
@@ -21,10 +22,35 @@ app.use(express.json());
 const metricsMiddleware = promBundle({includeMethod: true});
 app.use(metricsMiddleware);
 
+const handleErrors = (res, error) => {
+  if (error.response && error.response.status) {
+    res.status(error.response.status).json({ error: error.response.data.error });
+  } else if (error.message) {
+    res.status(500).json({ error: error.message });
+  } else {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
+
+
+//-----Questions WIKIDATA endpoint----
+
+app.get('/questions/:category', async (req, res) => {
+  try{
+      const category = req.params.category;
+      const questionResponse = await axios.get(questionServiceUrl+`/getQuestionsDb/${category}`);
+      res.json(questionResponse.data);
+  }catch (error) {
+    handleErrors(res, error);
+  }
+});
+
+//-----------------------------
 
 app.post('/login', async (req, res) => {
   try {
@@ -32,19 +58,20 @@ app.post('/login', async (req, res) => {
     const authResponse = await axios.post(authServiceUrl+'/login', req.body);
     res.json(authResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    handleErrors(res, error);
   }
 });
 
-app.post('/adduser', async (req, res) => {
+app.post('/user', async (req, res) => {
   try {
-    // Forward the add user request to the user service
-    const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
+    const userUrl = new URL(`/user/`, userServiceUrl);
+    const userResponse = await axios.post(userUrl.href, req.body);
     res.json(userResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    handleErrors(res, error);
   }
 });
+
 
 app.post('/askllm', async (req, res) => {
   try {
