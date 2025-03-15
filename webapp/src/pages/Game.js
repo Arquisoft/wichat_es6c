@@ -46,15 +46,15 @@ function Game() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
 
-  
+
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-
+  
   const getTimeMultiplierScore = (timeLeft) => {
-    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH; 
-    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;  
-    return MULTIPLIER_LOW; 
-  }
+    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
+    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
+    return MULTIPLIER_LOW;
+  };
 
   const handleImageLoad = () => {
     let opacity = 0;
@@ -65,7 +65,7 @@ function Game() {
         clearInterval(fadeIn);
         setImageLoaded(true);
       }
-    }, 100); 
+    }, 100);
   };
 
   useEffect(() => {
@@ -80,56 +80,65 @@ function Game() {
     }
   }, [gameMode]);
 
-  
-
   useEffect(() => {
-    if (!questionData || !imageLoaded || showFeedback) return;
-  
-    if (timeLeft === 0) {
-      setShowFeedback(true); 
-      setSelectedAnswer(null); 
-  
-      setTimeout(() => {
-        setShowFeedback(false); 
-        setShowTransition(true); 
-        setStarAnimation(true); 
-  
-        setTimeout(() => {
-          setShowTransition(false); 
-          setStarAnimation(false); 
-  
-          if (round < TOTAL_ROUNDS) {
-            setRound((prevRound) => prevRound + 1);
-            fetchQuestion();
-            setTimeLeft(QUESTION_TIME);
-          } else {
-            navigate('/game-finished');
-          }
-        }, TRANSITION_ROUND_TIME); 
-      }, FEEDBACK_QUESTIONS_TIME); 
-    }
-  
-    if(!starAnimation){
+    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
+
+    let timeUpTriggered = false; 
+
     const timer = setInterval(() => {
-      setTimeLeft((t) => t - 1); 
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          if (!timeUpTriggered) {
+            timeUpTriggered = true; 
+            handleTimeUp(); 
+          }
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+
       setTotalTime((t) => t + 1);
     }, 1000);
-  
-  
+
+
     return () => clearInterval(timer); 
-  }
-  }, [timeLeft, questionData, imageLoaded, showFeedback]);
-  
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
 
-  
+  const handleTimeUp = () => {
+    if (showFeedback || showTransition || starAnimation) return; 
+    console.log("Se ejecuta porque se acabo el tiempo");
+   
 
-  
+    setShowFeedback(true);
+    setSelectedAnswer(null); 
+
+    setTimeout(() => {
+      setShowFeedback(false); 
+      setShowTransition(true);
+      setStarAnimation(true); 
+
+      setTimeout(() => {
+        setShowTransition(false); 
+        setStarAnimation(false); 
+
+        if (round < TOTAL_ROUNDS) {
+          setRound((prevRound) => prevRound + 1); 
+          setTimeLeft(QUESTION_TIME); 
+          fetchQuestion();
+        } else {
+          navigate('/game-finished'); 
+        }
+      }, TRANSITION_ROUND_TIME); 
+    }, FEEDBACK_QUESTIONS_TIME); 
+  };
+
   const fetchQuestion = async () => {
     try {
       if (round > TOTAL_ROUNDS) return;
-      setImageLoaded(false);
+      setImageLoaded(false); 
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
-      setQuestionData(response.data); 
+      setQuestionData(response.data);
     } catch (error) {
       console.error("Error fetching question:", error);
     }
@@ -138,7 +147,9 @@ function Game() {
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
-  
+
+   
+
     if (isCorrect) {
       const multiplier = getTimeMultiplierScore(timeLeft);
       const pointsEarned = BASE_SCORE * multiplier;
@@ -147,30 +158,27 @@ function Game() {
     } else {
       setTempScore(0);
     }
-  
+
     setTimeout(() => {
-      setShowFeedback(false); 
+      setShowFeedback(false);
       setShowTransition(true);
-      setStarAnimation(true); 
-  
+      setStarAnimation(true);
+
       setTimeout(() => {
-        setShowTransition(false); 
-        setStarAnimation(false); 
-  
+        setShowTransition(false);
+        setStarAnimation(false);
+
         if (round < TOTAL_ROUNDS) {
           setRound((prevRound) => prevRound + 1);
           fetchQuestion();
-          setTimeLeft(QUESTION_TIME);
+          setTimeLeft(QUESTION_TIME); 
           setSelectedAnswer(null);
         } else {
           navigate('/game-finished');
         }
-      }, TRANSITION_ROUND_TIME); 
-    }, FEEDBACK_QUESTIONS_TIME); 
+      }, TRANSITION_ROUND_TIME);
+    }, FEEDBACK_QUESTIONS_TIME);
   };
-
-
-
 
 
   if (!questionData) {
