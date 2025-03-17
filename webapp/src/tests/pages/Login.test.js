@@ -9,10 +9,13 @@ import { SessionContext } from '../../SessionContext';
 const mockAxios = new MockAdapter(axios);
 const mockNavigate = jest.fn();
 
+
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
+
 
 describe('Login component', () => {
   beforeEach(() => {
@@ -29,21 +32,23 @@ describe('Login component', () => {
       </SessionContext.Provider>
     );
 
-    const usernameMessage = screen.getByText('Username');
-    expect(usernameMessage).toBeInTheDocument();
+    const usernameInput = screen.getByLabelText('Username');
+    expect(usernameInput).toBeInTheDocument();
 
-    const passwordMessage = screen.getByText('Password');
+    const passwordMessage = screen.getByLabelText('Password');
     expect(passwordMessage).toBeInTheDocument();
 
-    const loginButton = screen.getByRole('button', { name: 'Login'});
-    expect(buttons.length).toBeGreaterThan(0); 
+    const loginButton = screen.getByRole('button', { name: 'Login' });
+    expect(loginButton).toBeInTheDocument();
 
     expect(
-      screen.getByRole('link', { name: '¿Aún no te has registrado? Registro aquí' })
+      screen.getByRole('link', { name: 'Registro aquí' })
     ).toBeInTheDocument();
   });
 
   it('should log in successfully', async () => {
+    mockAxios.onPost('http://localhost:8000/login').reply(200, { createdAt: new Date().toISOString() });
+
     const createSession = jest.fn();
 
     render(
@@ -57,11 +62,10 @@ describe('Login component', () => {
     fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'testuser' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'testpassword' } });
 
-    mockAxios.onPost('http://localhost:8000/login').reply(200, { user: 'testuser' }); 
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-    });
+   
+    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+ 
 
     await waitFor(() => {
       expect(createSession).toHaveBeenCalledWith('testuser');
@@ -70,7 +74,7 @@ describe('Login component', () => {
   });
 
   it('should handle error when logging in', async () => {
-    mockAxios.onPost('http://localhost:8000/login').reply(401, { error: 'Invalid credentials' });
+    mockAxios.onPost('http://localhost:8000/login').reply(401, { error: 'Usuario o contraseña incorrectos' });
 
     const createSession = jest.fn();
 
@@ -82,15 +86,15 @@ describe('Login component', () => {
       </SessionContext.Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'testpassword' } });
+    fireEvent.change(screen.getByLabelText('Username'), { target: { value: ' ' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: ' ' } });
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Login' }));
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Error: Invalid credentials')).toBeInTheDocument();
+      expect(screen.getByText('Usuario o contraseña incorrectos')).toBeInTheDocument();
     });
   });
 });

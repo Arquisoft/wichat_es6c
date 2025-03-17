@@ -3,58 +3,102 @@ import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Register from '../../pages/Register';
-
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { SessionContext } from '../../SessionContext';
 const mockAxios = new MockAdapter(axios);
+const mockNavigate = jest.fn();
 
-describe('AddUser component', () => {
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+describe('Register component', () => {
   beforeEach(() => {
     mockAxios.reset();
+    mockNavigate.mockReset();
+  });
+
+  it('should render register form', () => {
+    render(
+      <SessionContext.Provider value={{}}>
+        <RouterProvider router={createMemoryRouter([{ path: '/', element: <Register /> }])}>
+          <Register />
+        </RouterProvider>
+      </SessionContext.Provider>
+    );
+
+    const usernameMessage = screen.getByLabelText('Usuario');
+    expect(usernameMessage).toBeInTheDocument();
+
+    const passwordMessage = screen.getByLabelText('Contraseña');
+    expect(passwordMessage).toBeInTheDocument();
+
+    const surnameMessage = screen.getByLabelText('Primer apellido');
+    expect(surnameMessage).toBeInTheDocument();
+    const nameMessage = screen.getByLabelText('Nombre');
+    expect(nameMessage).toBeInTheDocument();
+
+    const registerButton = screen.getByRole('button', { name: 'Registrarse'});
+    expect(registerButton).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', { name: 'Inicia sesión aquí' })
+    ).toBeInTheDocument();
   });
 
   it('should add user successfully', async () => {
-    render(<Register />);
+    mockAxios.onPost('http://localhost:8000/user').reply(200);
+    mockAxios.onPost('http://localhost:8000/login').reply(200, { createdAt: new Date().toISOString() });
 
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const addUserButton = screen.getByRole('button', { name: /Add User/i });
 
-    // Mock the axios.post request to simulate a successful response
-    mockAxios.onPost('http://localhost:8000/adduser').reply(200);
+    const createSession = jest.fn();
 
-    // Simulate user input
-    fireEvent.change(usernameInput, { target: { value: 'testUser' } });
-    fireEvent.change(passwordInput, { target: { value: 'testPassword' } });
+    render(
+      <SessionContext.Provider value={{createSession}}>
+        <RouterProvider router={createMemoryRouter([{ path: '/', element: <Register /> }])}>
+          <Register />
+        </RouterProvider>
+      </SessionContext.Provider>
+    );
 
-    // Trigger the add user button click
-    fireEvent.click(addUserButton);
+    fireEvent.change(screen.getByLabelText('Usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'testpassword' } });
+    fireEvent.change(screen.getByLabelText('Primer apellido'), { target: { value: 'testSurname'}});
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'testNombre'}});
+    
+       
+    fireEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
 
-    // Wait for the Snackbar to be open
-    await waitFor(() => {
-      expect(screen.getByText(/User added successfully/i)).toBeInTheDocument();
-    });
+     await waitFor(() => {
+          expect(createSession).toHaveBeenCalledWith('testuser');
+          expect(mockNavigate).toHaveBeenCalledWith('/homepage');
+          expect(mockAxios.history.post.length).toBe(2);
+        });
+  
   });
 
   it('should handle error when adding user', async () => {
-    render(<AddUser />);
+    mockAxios.onPost('http://localhost:8000/user').reply(400, { error: 'Usuario ya registrado'});
 
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const addUserButton = screen.getByRole('button', { name: /Add User/i });
 
-    // Mock the axios.post request to simulate an error response
-    mockAxios.onPost('http://localhost:8000/adduser').reply(500, { error: 'Internal Server Error' });
+    const createSession = jest.fn();
 
-    // Simulate user input
-    fireEvent.change(usernameInput, { target: { value: 'testUser' } });
-    fireEvent.change(passwordInput, { target: { value: 'testPassword' } });
+    render(
+      <SessionContext.Provider value={{}}>
+        <RouterProvider router={createMemoryRouter([{ path: '/', element: <Register /> }])}>
+          <Register />
+        </RouterProvider>
+      </SessionContext.Provider>
+    );
+    
+       
+    fireEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
 
-    // Trigger the add user button click
-    fireEvent.click(addUserButton);
-
-    // Wait for the error Snackbar to be open
-    await waitFor(() => {
-      expect(screen.getByText(/Error: Internal Server Error/i)).toBeInTheDocument();
-    });
+     await waitFor(() => {
+        expect(screen.getByText('Error: Usuario ya registrado')).toBeInTheDocument();
+      });
+  
   });
 });
 

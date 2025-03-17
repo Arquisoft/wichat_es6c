@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import App from './App';
-import { SessionContext } from './SessionContext';
+import App from '../App';
+import { SessionContext } from '../SessionContext';
 
 describe('App component', () => {
   it('renders home by default', () => {
