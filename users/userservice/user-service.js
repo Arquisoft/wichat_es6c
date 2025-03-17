@@ -51,7 +51,7 @@ app.post('/user', async (req, res) => {
     try {
         const { username, password, name, surname } = req.body;
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ username: username.trim() }).lean();
 
         registerValidators(user, username, password, name, surname);
 
