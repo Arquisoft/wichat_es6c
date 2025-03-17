@@ -1,10 +1,29 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
+import Login from '../src/pages/Login'; 
+import { SessionContext } from './SessionContext';
 
-test('renders welcome message', () => {
-  render(<App />);
-  const welcomeMessage = screen.getByText(/Welcome to the 2025 edition of the Software Architecture course/i);
-  expect(welcomeMessage).toBeInTheDocument();
+describe('App component', () => {
+  it('renders home by default', () => {
+    render(
+        <SessionContext.Provider value={{ isLoggedIn: false }}>
+            <MemoryRouter initialEntries={['/']}>
+                <App />
+            </MemoryRouter>
+        </SessionContext.Provider>
+    );
+  });
 });
 
-
+test('redirects to login if not authenticated', () => {
+  render(
+    <SessionContext.Provider value={{ isLoggedIn: false }}>
+      <MemoryRouter initialEntries={['/login']}>
+        <App />
+      </MemoryRouter>
+    </SessionContext.Provider>
+  );
+  const loginMessage = screen.getByText(/login/i);
+  expect(loginMessage).toBeInTheDocument();
+});
