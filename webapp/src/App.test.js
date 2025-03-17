@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
-import Login from '../src/pages/Login'; 
 import { SessionContext } from './SessionContext';
 
 describe('App component', () => {
@@ -24,6 +23,6 @@ test('redirects to login if not authenticated', () => {
       </MemoryRouter>
     </SessionContext.Provider>
   );
-  const loginMessage = screen.getByText(/login/i);
+  const loginMessage = screen.getByRole('heading', { name: /login/i });
   expect(loginMessage).toBeInTheDocument();
 });
