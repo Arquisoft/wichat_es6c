@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
 
 function GameMode() {
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
-    { text: 'País', path: '/game', mode: 'country' },
-    { text: 'Monumento', path: '/game', mode: 'monument' }
+    { text: 'Países', path: '/game', mode: 'country' , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
+    { text: 'Pokemons', path: '/game', mode: 'pokemon', imageSrc: '/images/gameMode/pokemon-gameMode.jpg' }
   ];
 
 
@@ -24,9 +25,18 @@ function GameMode() {
       spacing={3} 
       sx={{ width: "100%", justifyContent: "center", height: "100vh" }}
     >
-     
-      <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Elige el modo de juego
+     <Typography
+        variant="h4"
+        sx={{
+          marginBottom: '40px', 
+          fontWeight: 'bold', 
+          color: '#0a0a0a', 
+          fontSize: '2.5rem', 
+          letterSpacing: '1px', 
+          textAlign: 'center', 
+        }}
+      >
+        Elige un modo de juego
       </Typography>
 
       {/* Stack for adding the buttons */}
@@ -43,16 +53,29 @@ function GameMode() {
             variant="contained"
             onClick={() => handleGameMode(item)}
             sx={{
-              width: "10vw", 
-              height: "30vh", 
-              fontSize: '150%', 
+              width: "300px",  
+              height: "350px", 
+              fontSize: '16px',
               textAlign: "center",
-              textTransform: 'none', 
-              padding: '20px', 
-              whiteSpace: 'normal', 
+              textTransform: 'none',
+              padding: '0',  
+              position: 'relative',
+              overflow: 'hidden',  
             }}
           >
-            {item.text}  {/* Sows the text of the button */}
+            <Box 
+              component="img"
+              src={item.imageSrc}  
+              alt={item.text}
+              sx={{
+                width: '100%',  
+                height: '100%', 
+                objectFit: 'cover', 
+                position: 'absolute',  
+                top: 0,
+                left: 0, 
+              }}
+            />
           </Button>
         ))}
       </Stack>
