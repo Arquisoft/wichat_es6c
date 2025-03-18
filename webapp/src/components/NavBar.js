@@ -35,7 +35,7 @@ const NavMenu = () => {
 
   return (
   
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: "#9b33c0" }}> 
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         
          

@@ -29,7 +29,10 @@ const HomePage = () => {
               </Typography>
             )}
       
-            <Button variant="contained" size="large" sx={{ fontSize: "1.2rem", px: 5, py: 2 }} onClick={gameModes} >
+            <Button 
+              variant="contained" 
+              size="large" 
+              sx={{ fontSize: "1.2rem", px: 5, py: 2, backgroundColor: '#9b33c0'}} onClick={gameModes} >
               Jugar
             </Button>
           </Box>
