@@ -6,7 +6,25 @@ const port = 8003;
 
 // Middleware to parse JSON in request body
 app.use(express.json());
-app.use(cors());
+
+const allowedOrigins = ["http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,POST",
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+
+
+
 // Define configurations for different LLM APIs
 const llmConfigs = {
   empathy: {
