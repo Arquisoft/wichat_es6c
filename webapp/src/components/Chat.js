@@ -23,7 +23,7 @@ function Chat({ questionData }) {
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
     try {
-     let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer in a short phrase: "+input;
+     let petition="The user is being shown a picture of "+ questionData.correctAnswer+". You have to help him guess the photo wthout revealing the answer. For that, you MUST NEVER USE ANY of the following words ("+questionData.options+"). Answer vaguely, in a short phrase and in the same language to the next question: "+input;
       const response = await axios.post(
         
         `${apiEndpoint}/askllm`,
