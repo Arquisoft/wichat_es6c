@@ -9,7 +9,6 @@ function GameMode() {
     { text: 'Monumento', path: '/game', mode: 'monument' }
   ];
 
-
   const navigate = useNavigate();
   
   const handleGameMode = (item) => {
