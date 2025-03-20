@@ -13,7 +13,7 @@ describe('Gateway Service', () => {
   axios.post.mockImplementation((url, data) => {
     if (url.endsWith('/login')) {
       return Promise.resolve({ data: { token: 'mockedToken' } });
-    } else if (url.endsWith('/adduser')) {
+    } else if (url.endsWith('/user/')) {
       return Promise.resolve({ data: { userId: 'mockedUserId' } });
     } else if (url.endsWith('/ask')) {
       return Promise.resolve({ data: { answer: 'llmanswer' } });
@@ -24,17 +24,17 @@ describe('Gateway Service', () => {
   it('should forward login request to auth service', async () => {
     const response = await request(app)
       .post('/login')
-      .send({ username: 'testuser', password: 'testpassword' });
+      .send({ username: 'testuser', password: 'Newpassword1234567' });
 
     expect(response.statusCode).toBe(200);
     expect(response.body.token).toBe('mockedToken');
   });
 
-  // Test /adduser endpoint
+  // Test /user endpoint
   it('should forward add user request to user service', async () => {
     const response = await request(app)
-      .post('/adduser')
-      .send({ username: 'newuser', password: 'newpassword' });
+      .post('/user')
+      .send({ username: 'newuser', password: 'Newpassword1234567', name: 'newname', surname: 'newsurname'});
 
     expect(response.statusCode).toBe(200);
     expect(response.body.userId).toBe('mockedUserId');

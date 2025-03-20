@@ -13,8 +13,8 @@ describe('LLM Service', () => {
   axios.post.mockImplementation((url, data) => {
     if (url.startsWith('https://generativelanguage')) {
       return Promise.resolve({ data: { candidates: [{ content: { parts: [{ text: 'llmanswer' }] } }] } });
-    } else if (url.endsWith('https://empathyai')) {
-      return Promise.resolve({ data: { answer: 'llmanswer' } });
+    } else if (url.startsWith('https://empathyai')) {
+      return Promise.resolve({ data: { choices: [{ message: { content: 'llmanswer' } }] } });
     }
   });
 
@@ -22,7 +22,7 @@ describe('LLM Service', () => {
   it('the llm should reply', async () => {
     const response = await request(app)
       .post('/ask')
-      .send({ question: 'a question', apiKey: 'apiKey', model: 'gemini' });
+      .send({ question: 'a question', apiKey: 'apiKey', model: 'empathy' });
 
     expect(response.statusCode).toBe(200);
     expect(response.body.answer).toBe('llmanswer');
