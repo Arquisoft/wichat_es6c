@@ -19,8 +19,8 @@ function Game() {
   const MULTIPLIER_HIGH = 2.0;
   const MULTIPLIER_MEDIUM = 1.5;
   const MULTIPLIER_LOW = 1.0;
-  const TIME_THRESHOLD_HIGH = 10;
-  const TIME_THRESHOLD_MEDIUM = 5;
+  const TIME_THRESHOLD_HIGH = 45;
+  const TIME_THRESHOLD_MEDIUM = 25;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -127,7 +127,8 @@ function Game() {
           setTimeLeft(QUESTION_TIME); 
           fetchQuestion();
         } else {
-          navigate('/game-finished'); 
+          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
+          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
         }
       }, TRANSITION_ROUND_TIME); 
     }, FEEDBACK_QUESTIONS_TIME); 
@@ -174,7 +175,8 @@ function Game() {
           setTimeLeft(QUESTION_TIME); 
           setSelectedAnswer(null);
         } else {
-          navigate('/game-finished');
+          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
+          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);
