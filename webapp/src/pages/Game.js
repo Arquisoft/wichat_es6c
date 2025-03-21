@@ -13,7 +13,7 @@ function Game() {
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
-  const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
+  const TRANSITION_ROUND_TIME = 3000; // 5 segundos (5000 ms)
   
   
   const MULTIPLIER_HIGH = 2.0;

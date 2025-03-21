@@ -69,7 +69,7 @@ function Chat({ questionData }) {
 
   return (
     <Container maxWidth="md" sx={{ height: "69vh", display: "flex", flexDirection: "column" }}>
-      <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#0078ff", color: "white", borderRadius: 2 }}>
+      <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#9b33c0", color: "white", borderRadius: 2 }}>
         Chat con IA
       </Typography>
 
@@ -143,7 +143,10 @@ function Chat({ questionData }) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <Button variant="contained" color="primary" onClick={sendMessage}>
+        <Button 
+          variant="contained" 
+          style={{ backgroundColor: '#9b33c0', color: 'white' }} 
+          onClick={sendMessage} >
           Enviar
         </Button>
       </Box>
