@@ -16,11 +16,22 @@ const wikidataCategoriesQueries = {
         ORDER BY RAND()
         LIMIT ?limit
         `,
-    }   
+    },
+    "flags": {  // Eliminar el punto al final del nombre de la categoría
+        query: `
+        SELECT ?country ?countryLabel ?image WHERE {
+            ?country wdt:P31 wd:Q6256;  # Pais
+                    wdt:P41 ?image.    # Imagen de la bandera
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],es". }
+          }
+          LIMIT ?limit
+          `,
+    }    
 };
 
 const titlesQuestionsCategories = {
-    "country": "¿A qué país pertenece esta imagen?"
+    "country": "¿A qué país pertenece esta imagen?",
+    "flag": "¿A qué país pertenece esta bandera?"
 };
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
@@ -48,7 +59,28 @@ async function getImagesFromWikidata(category, numImages) {
 
         const data = response.data.results.bindings;
         if (data.length > 0) {
-            const filteredImages = data
+            createCategoryImages(category,data)
+        }
+
+    } catch (error) {
+        console.error(`Error retrieving images: ${error.message}`);
+        return [];
+    }
+}
+
+function createCategoryImages(category,data,numImages){
+    if(category=== 'country'){
+        return generateCountryImages(data,numImages);
+    }else if(category === 'flag'){
+        generateFlagImages(data,numImages);
+    }else{
+        return generateCountryImages(data,numImages);
+    }
+    
+}
+
+function generateCountryImages(data,numImages){
+    const filteredImages = data
                 .filter(item => item.cityLabel && item.image)  // Filtrar solo los elementos con ciudad e imagen
                 .slice(0, numImages)  // Limitar la cantidad de imágenes a `numImages`
                 .map(item => ({
@@ -58,14 +90,19 @@ async function getImagesFromWikidata(category, numImages) {
                 }));
 
             return filteredImages;
-        }
-
-    } catch (error) {
-        console.error(`Error retrieving images: ${error.message}`);
-        return [];
-    }
 }
 
+function generateFlagImages(data,numImages){
+    const filteredImages = data
+                .filter(item => item.countryLabel && item.image)  // Filtrar solo los elementos con ciudad e imagen
+                .slice(0, numImages)  // Limitar la cantidad de imágenes a `numImages`
+                .map(item => ({
+                    label: item.countryLabel.value,
+                    imageUrl: item.image.value
+                }));
+
+            return filteredImages;
+}
 
 // Obtener 3 países incorrectos aleatorios
 async function getIncorrectCountries(correctCountry) {
@@ -125,11 +162,41 @@ async function processQuestionsCountry(images,category) {
     }
 
 }
+
+async function processQuestionsFlag(images,category) {
+    for (const image of images) {
+        const incorrectAnswers = await getIncorrectCountries(image.country);
+        if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
+
+        // Crear opciones y mezclarlas
+        const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
+
+        // Generar pregunta
+        const questionText = titlesQuestionsCategories[category]; 
+        
+        const newQuestion = {
+            question: questionText,
+            options: options,
+            correctAnswer: image.label,
+            category: category,
+            imageUrl: image.imageUrl
+        };
+
+        await dataService.saveQuestion(newQuestion);
+        console.log("Question saved:", newQuestion);
+    }
+
+}
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
     const images = await getImagesFromWikidata(category, numImages);
  
     if(category === 'country'){
+        processQuestionsCountry(images, category);
+    }
+    else if(category === 'flag'){
+        processQuestionsFlag(images,category)
+    }else{
         processQuestionsCountry(images, category);
     }
 }

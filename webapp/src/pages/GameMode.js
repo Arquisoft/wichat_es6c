@@ -7,7 +7,8 @@ function GameMode() {
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
     { text: 'Países', path: '/game', mode: 'country' , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
-    { text: 'Pokemons', path: '/game', mode: 'pokemon', imageSrc: '/images/gameMode/pokemon-gameMode.jpg' }
+    //{ text: 'Pokemons', path: '/game', mode: 'pokemon', imageSrc: '/images/gameMode/pokemon-gameMode.jpg' }
+    { text: 'Banderas', path: '/game', mode: 'flag', imageSrc: '/images/gameMode/flag-gameMode.jpg' }
   ];
 
 
