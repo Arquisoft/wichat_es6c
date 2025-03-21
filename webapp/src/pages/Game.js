@@ -41,14 +41,23 @@ function Game() {
   const [showTransition, setShowTransition] = useState(false); 
   const [tempScore, setTempScore] = useState(0); 
   const [starAnimation, setStarAnimation] = useState(false);
-  
-
+  const [corectAnswers, setCorrectAnswers] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
 
-  const logger = require("./logger");
+  const logger = require("../../../users/historyservice/history-service");
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+  const History = require('./history-model')
+  const [username, setUsername] = useState(null); 
 
+    useEffect(() => {
+        const storedSessionId = localStorage.getItem('sessionId');
+
+        if (storedSessionId) {
+          const storedUsername = localStorage.getItem('username');
+          setUsername(storedUsername); 
+        }
+      }, []);
   
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
@@ -105,6 +114,22 @@ function Game() {
     return () => clearInterval(timer); 
   }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
 
+
+  const createUserHistory = async () => {
+    try {
+      await axios.post(`${apiEndpoint}/createUserHistory`, {
+        username: username,
+        correctAnswers: corectAnswers,
+        wrongAnswers: TOTAL_ROUNDS-corectAnswers,
+        time: totalTime,
+        score: score,
+        gameMode: gameMode
+      });
+    } catch (error) {
+      setError(error.response.data.error);
+    }
+};
+
   const handleTimeUp = () => {
     if (showFeedback || showTransition || starAnimation) return; 
     console.log("Se ejecuta porque se acabo el tiempo");
@@ -128,6 +153,10 @@ function Game() {
           fetchQuestion();
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
+          //LLAMAR AL GATEWAY Y QUE ESTE LO REDIRECCIONE AL SERVICIO
+          (async () => {
+          await createUserHistory();
+          })();
           navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
         }
       }, TRANSITION_ROUND_TIME); 
@@ -149,9 +178,8 @@ function Game() {
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
 
-   
-
     if (isCorrect) {
+      setCorrectAnswers(corectAnswers+1);
       const multiplier = getTimeMultiplierScore(timeLeft);
       const pointsEarned = BASE_SCORE * multiplier;
       setTempScore(pointsEarned);
@@ -176,7 +204,10 @@ function Game() {
           setSelectedAnswer(null);
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
+          (async () => {
+            await createUserHistory();
+          })();
+          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);

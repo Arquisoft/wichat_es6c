@@ -10,10 +10,11 @@ const YAML = require('yaml')
 const app = express();
 const port = 8000;
 
-const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
-const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
+const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
+const historyServiceUrl = process.env.HISTORY_SERVICE_URL || 'http://localhost:8005';
 
 app.use(cors());
 app.use(express.json());
@@ -51,6 +52,22 @@ app.get('/questions/:category', async (req, res) => {
 });
 
 //-----------------------------
+
+//-----User Games History endpoint----
+
+app.post('/createUserHistory', async (req, res) => {
+  try {
+      // Reenviar la solicitud POST al servicio de ranking para crear un ranking para el usuario
+      const historyResponse = await axios.post(`${historyServiceUrl}/createUserHistory`, req.body);
+      res.json(historyResponse.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' }); 
+  }
+});
+
+
+//-----------------------------
+
 
 app.post('/login', async (req, res) => {
   try {

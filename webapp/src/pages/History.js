@@ -1,62 +1,74 @@
-import React from 'react';
-import { Button, Stack, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, Paper, Typography, CircularProgress, Container } from "@mui/material";
 
-function GameMode() {
-  // List of tuples. Saves the text, the path and the game mode of the buttons.
-  const buttonList = [
-    { text: 'País', path: '/game', mode: 'country' },
-    { text: 'Monumento', path: '/game', mode: 'monument' }
-  ];
+export default function UserHistory() {
+  const [username, setUsername] = useState("");
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-  
-  const handleGameMode = (item) => {
-    
-    navigate(item.path, { state: { mode: item.mode } });
+  const fetchHistory = async () => {
+    if (!username) return;
+    setLoading(true);
+    try {
+      const response = await axios.post("http://localhost:8005/getUserHistory", { username });
+      setHistory(response.data.history);
+    } catch (error) {
+      console.error("Error fetching history:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Stack
-      direction="column" 
-      alignItems="center" 
-      spacing={3} 
-      sx={{ width: "100%", justifyContent: "center", height: "100vh" }}
-    >
-     
-      <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Elige el modo de juego
-      </Typography>
-
-      {/* Stack for adding the buttons */}
-      <Stack
-        direction="row" 
-        spacing={2} 
-        alignItems="center" 
-        sx={{ width: "100%", justifyContent: "center" }} 
-      >
-        {/* Creates a new button for each element in buttonList*/}
-        {buttonList.map((item, index) => (
-          <Button
-            key={index}
-            variant="contained"
-            onClick={() => handleGameMode(item)}
-            sx={{
-              width: "10vw", 
-              height: "30vh", 
-              fontSize: '150%', 
-              textAlign: "center",
-              textTransform: 'none', 
-              padding: '20px', 
-              whiteSpace: 'normal', 
-            }}
-          >
-            {item.text}  {/* Sows the text of the button */}
-          </Button>
-        ))}
-      </Stack>
-    </Stack>
+    <Container maxWidth="md" sx={{ mt: 4, p: 3, bgcolor: "background.paper", boxShadow: 3, borderRadius: 2 }}>
+      <Typography variant="h4" gutterBottom>Historial de Partidas</Typography>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <TextField
+          label="Nombre de usuario"
+          variant="outlined"
+          fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <Button variant="contained" color="primary" onClick={fetchHistory}>
+          Buscar
+        </Button>
+      </div>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Paper elevation={3}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Modo</TableCell>
+                <TableCell>Correctas</TableCell>
+                <TableCell>Falladas</TableCell>
+                <TableCell>Tiempo</TableCell>
+                <TableCell>Puntaje</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {history.length > 0 ? (
+                history.map((entry, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{entry.gameMode}</TableCell>
+                    <TableCell>{entry.preguntasCorrectas}</TableCell>
+                    <TableCell>{entry.preguntasFalladas}</TableCell>
+                    <TableCell>{entry.time}s</TableCell>
+                    <TableCell>{entry.score}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">No hay historial disponible</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
+      )}
+    </Container>
   );
 }
-
-export default GameMode;
