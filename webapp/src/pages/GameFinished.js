@@ -8,13 +8,13 @@ const GameFinished = () => {
   
   const [score, setScore] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
-  const [totalRounds, setTotalRounds] = useState(0);
+  const [maxScore, setMaxScore] = useState(0);
 
   useEffect(() => {
     if (location.state) {
       setScore(location.state.score);
       setTotalTime(location.state.totalTime);
-      setTotalRounds(location.state.totalRounds);
+      setMaxScore(location.state.maxScore);
     }
   }, [location]);
 
@@ -41,7 +41,7 @@ const GameFinished = () => {
       {/* Final score */}
       <Box>
         <Typography variant="h6">
-          Puntuación final: {score} / {totalRounds}
+          Puntuación final: {score} / {maxScore}
         </Typography>
         <Typography variant="h6">
           Tiempo total: {totalTime} segundos
