@@ -56,13 +56,15 @@ async function getImagesFromWikidata(category, numImages) {
 
         const data = response.data.results.bindings;
         if (data.length > 0) {
+            const { label, image, extra } = categoryData.fields;
+
             const filteredImages = data
-                .filter(item => item.cityLabel && item.image)  // Filtrar solo los elementos con ciudad e imagen
+                .filter(item => item[label] && item[image])  // Filtrar solo los elementos con ciudad e imagen
                 .slice(0, numImages)  // Limitar la cantidad de imágenes a `numImages`
                 .map(item => ({
-                    label: item.cityLabel.value,
-                    imageUrl: item.image.value,
-                    country: item.countryLabel.value
+                    label: item[label].value,
+                    imageUrl: item[image].value,
+                    country: item[extra].value
                 }));
 
             return filteredImages;
@@ -74,9 +76,7 @@ async function getImagesFromWikidata(category, numImages) {
     }
 }
 
-
-// Obtener 3 países incorrectos aleatorios
-async function getIncorrectCountries(correctCountry) {
+async function getIncorrectOptions(correctCountry) {
     const sparqlQuery = `
         SELECT DISTINCT ?countryLabel
         WHERE {
@@ -109,9 +109,9 @@ async function getIncorrectCountries(correctCountry) {
     }
 }
 
-async function processQuestionsCountry(images,category) {
+async function processQuestions(images,category) {
     for (const image of images) {
-        const incorrectAnswers = await getIncorrectCountries(image.country);
+        const incorrectAnswers = await getIncorrectOptions(image.country);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
 
         // Crear opciones y mezclarlas
@@ -133,13 +133,12 @@ async function processQuestionsCountry(images,category) {
     }
 
 }
+
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
     const images = await getImagesFromWikidata(category, numImages);
  
-    if(category === 'country'){
-        processQuestionsCountry(images, category);
-    }
+    processQuestions(images, category);
 }
 
 module.exports = {
