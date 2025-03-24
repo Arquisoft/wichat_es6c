@@ -107,7 +107,6 @@ function Game() {
 
   const handleTimeUp = () => {
     if (showFeedback || showTransition || starAnimation) return; 
-    console.log("Se ejecuta porque se acabo el tiempo");
    
 
     setShowFeedback(true);

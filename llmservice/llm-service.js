@@ -56,7 +56,8 @@ function validateRequiredFields(req, requiredFields) {
 }
 
 // Generic function to send questions to LLM
-async function sendQuestionToLLM(question, apiKey, model = 'empathy') {
+async function sendQuestionToLLM(question, apiKey) {
+  const model = 'empathy'
   try {
     const config = llmConfigs[model];
     if (!config) {
@@ -84,15 +85,15 @@ async function sendQuestionToLLM(question, apiKey, model = 'empathy') {
 app.post('/ask', async (req, res) => {
   try {
     // Check if required fields are present in the request body
-    validateRequiredFields(req, ['question', 'model']);
+    validateRequiredFields(req, ['question']);
 
-    const { question, model } = req.body;
+    const { question } = req.body;
     //load the api key from an environment variable
     const apiKey = process.env.LLM_API_KEY;
     if (!apiKey) {
       return res.status(400).json({ error: 'API key is missing.' });
     }
-    const answer = await sendQuestionToLLM(question, apiKey, model);
+    const answer = await sendQuestionToLLM(question, apiKey);
     res.json({ answer });
 
   } catch (error) {
