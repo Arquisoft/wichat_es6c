@@ -1,7 +1,7 @@
 const axios = require('axios');
 const dataService = require('./question-data-service');
 
-const wikidataCategoriesQueries = {   
+/*const wikidataCategoriesQueries = {   
     "country": {  // Eliminar el punto al final del nombre de la categoría
         query: `
         SELECT ?city ?cityLabel ?country ?countryLabel ?image
@@ -21,18 +21,26 @@ const wikidataCategoriesQueries = {
 
 const titlesQuestionsCategories = {
     "country": "¿A qué país pertenece esta imagen?"
-};
+};*/
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
+let json = await utils.readFromFile("../questions/utils/question.json");
+const wikidataCategoriesQueries = JSON.parse(json);
+
+
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, numImages) {
-    // Acceder directamente a la consulta correspondiente a la categoría dada
-    const categoryQueries = wikidataCategoriesQueries[category];
 
-    
+    // Acceder directamente a la consulta correspondiente a la categoría dada
+    const categoryQueries = wikidataCategoriesQueries[category]?.query;
+
+    if (!categoryQueries) {
+        throw new Error(`No se encontró una consulta para la categoría: ${category}`);
+    }
+
     // Obtención de la consulta directamente de la categoría dada
-    const sparqlQuery = categoryQueries.query.replace('?limit', numImages);
+    const sparqlQuery = categoryQueries.replace('?limit', numImages);
 
     try {
         const response = await axios.get(urlApiWikidata, {
@@ -110,7 +118,7 @@ async function processQuestionsCountry(images,category) {
         const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
 
         // Generar pregunta
-        const questionText = titlesQuestionsCategories[category]; 
+        const questionText = titlesQuestionsCategories[category]?.question; 
         
         const newQuestion = {
             question: questionText,
