@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress, LinearProgress } from "@mui/material";
+import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat"; 
