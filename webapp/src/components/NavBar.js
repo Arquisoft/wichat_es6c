@@ -39,7 +39,7 @@ const NavMenu = () => {
         
         <IconButton onClick={() => navigate("/")} sx={{ p: 0, background: "transparent" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img src={logo} alt="Logo" style={{ width: 40, height: 40, marginRight: 10 }} />
+            <img src="/icon-app.ico" alt="Logo" style={{ width: 40, height: 40, marginRight: 10 }} />
             <Typography variant="h6" sx={{ color: "white" }}>WICHAT</Typography>
           </Box>
         </IconButton>
