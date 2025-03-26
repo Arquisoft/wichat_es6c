@@ -45,9 +45,7 @@ function Game() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
 
-  const logger = require("../../../users/historyservice/history-service");
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-  const History = require('./history-model')
   const [username, setUsername] = useState(null); 
 
     useEffect(() => {
@@ -126,7 +124,7 @@ function Game() {
         gameMode: gameMode
       });
     } catch (error) {
-      setError(error.response.data.error);
+      console.error(error.response.data.error);
     }
 };
 

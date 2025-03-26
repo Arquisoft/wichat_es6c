@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import GameMode from './pages/GameMode';
 import Game from './pages/Game';
 import GameFinished from './pages/GameFinished';
+import History from './pages/History';
 function App() {
 
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/game-mode" element={<PrivateRoute element={GameMode} />} />
             <Route path="/game" element={<PrivateRoute element={Game} />} />
             <Route path="/game-finished" element={<PrivateRoute element={GameFinished} />} />
+            <Route path="/history" element={<PrivateRoute element={History} />} />
           </Routes>
           {/* <Footer /> */}
       </Box>

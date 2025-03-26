@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors'); // Importa CORS
 const UserHistory = require('./history-model')
 //libraries required for OpenAPI-Swagger
 const swaggerUi = require('swagger-ui-express'); 
@@ -9,9 +10,10 @@ const YAML = require('yaml')
 require('dotenv').config();
 
 const app = express();
-const port = 8005;
+const port = 8007;
 
-// Middleware to parse JSON in request body
+// Middlewares
+app.use(cors()); // Habilita CORS para todas las rutas
 app.use(bodyParser.json());
 
 // Connect to MongoDB
@@ -21,29 +23,37 @@ mongoose.connect(mongoUri);
 //crea un elemento history si no existe 
 app.post('/createUserHistory', async (req, res) => {
   try {
-    const { username } = req.body;
+    const { 
+      username, 
+      correctAnswers, 
+      wrongAnswers, 
+      time, 
+      score, 
+      gameMode 
+    } = req.body;
 
-    // Convertir el nombre de usuario en una cadena
-    const safeUsername = username.toString();
+    // Validación básica
+    if (!username) {
+      return res.status(400).json({ error: "Username es requerido." });
+    }
 
-      const newUserHistory = new UserHistory({
-        username: safeUsername,
-        preguntasCorrectas: 0,
-        preguntasFalladas: 0,
-        time: 0,
-        score: 0,
-        gameMode: 'Country',
-      });
-      await newUserHistory.save();
+    const newUserHistory = new UserHistory({
+      username: username.toString(),
+      preguntasCorrectas: correctAnswers || 0,
+      preguntasFalladas: wrongAnswers || 0,
+      time: time || 0,
+      score: score || 0,
+      gameMode: gameMode || 'Country',
+    });
 
-    // Respuesta inmediata al cliente indicando que la operación se ha completado con éxito
-    res.json({ message: 'Historial de partida creado correctamente.' });
+    await newUserHistory.save();
+    res.json({ message: 'Historial guardado correctamente.' });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.post('/getUserHistory', async (req, res) => {
+app.get('/getUserHistory', async (req, res) => {
   try {
     const { username } = req.body;
 
@@ -55,4 +65,8 @@ app.post('/getUserHistory', async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+});
+
+const server = app.listen(port, () => {
+  console.log(`History Service listening at http://localhost:${port}`);
 });
