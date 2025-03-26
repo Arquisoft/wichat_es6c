@@ -302,7 +302,7 @@ function Game() {
         {/* Imagen */}
         <Box 
           sx={{ 
-            width: "80%", 
+            display: "inline-block", // Ajusta el ancho al contenido (la imagen)
             height: "32vh", 
             overflow: "hidden", 
             borderRadius: "10px", 
@@ -318,7 +318,7 @@ function Game() {
               src={questionData.imageUrl} 
               alt="Imagen de la pregunta"
               style={{ 
-                width: "100%", 
+                width: "auto", 
                 height: "100%", 
                 objectFit: "cover", 
                 opacity: imageOpacity, 

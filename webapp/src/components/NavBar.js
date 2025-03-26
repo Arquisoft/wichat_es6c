@@ -39,10 +39,12 @@ const NavMenu = () => {
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         
          
-         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <img src={logo} alt="Logo" style={{ width: 40, height: 40, marginRight: 10 }} />
-          <Typography variant="h6">WICHAT</Typography>
-        </Box>
+        <IconButton onClick={() => navigate("/")} sx={{ p: 0, background: "transparent" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <img src={logo} alt="Logo" style={{ width: 40, height: 40, marginRight: 10 }} />
+            <Typography variant="h6" sx={{ color: "white" }}>WICHAT</Typography>
+          </Box>
+        </IconButton>
 
        
         {/* Mostrar diferentes opciones dependiendo si el usuario está en sesión */}
