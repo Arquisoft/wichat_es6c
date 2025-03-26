@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AppBar, Toolbar, Typography,Button, IconButton, Menu, MenuItem, Divider, Box } from "@mui/material";
 import { MoreVert, History, Person, Settings, Logout } from "@mui/icons-material";
-import logo from "../logo.svg";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 const NavMenu = () => {
@@ -38,13 +37,13 @@ const NavMenu = () => {
     <AppBar position="static" sx={{ backgroundColor: "#9b33c0" }}> 
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         
-         
         <IconButton onClick={() => navigate("/")} sx={{ p: 0, background: "transparent" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img src={logo} alt="Logo" style={{ width: 40, height: 40, marginRight: 10 }} />
             <Typography variant="h6" sx={{ color: "white" }}>WICHAT</Typography>
           </Box>
         </IconButton>
+
 
        
         {/* Mostrar diferentes opciones dependiendo si el usuario está en sesión */}
