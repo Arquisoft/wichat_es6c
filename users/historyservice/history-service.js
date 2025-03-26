@@ -39,15 +39,15 @@ app.post('/createUserHistory', async (req, res) => {
 
     const newUserHistory = new UserHistory({
       username: username.toString(),
-      preguntasCorrectas: correctAnswers || 0,
-      preguntasFalladas: wrongAnswers || 0,
+      correctAnswers: correctAnswers || 0,
+      wrongAnswers: wrongAnswers || 0,
       time: time || 0,
       score: score || 0,
       gameMode: gameMode || 'Country',
     });
 
     await newUserHistory.save();
-    res.json({ message: 'Historial guardado correctamente.' });
+    console.log('Historial guardado correctamente.');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -55,7 +55,8 @@ app.post('/createUserHistory', async (req, res) => {
 
 app.get('/getUserHistory', async (req, res) => {
   try {
-    const { username } = req.body;
+    console.log('Username:',req.body.username);
+    const { username } = req.body.username;
 
     // Convertir el nombre de usuario en una cadena
     const safeUsername = username.toString();

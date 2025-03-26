@@ -14,7 +14,7 @@ const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
-const historyServiceUrl = process.env.HISTORY_SERVICE_URL || 'http://localhost:8005';
+const historyServiceUrl = process.env.HISTORY_SERVICE_URL || 'http://localhost:8007';
 
 app.use(cors());
 app.use(express.json());
@@ -57,11 +57,16 @@ app.get('/questions/:category', async (req, res) => {
 
 app.post('/createUserHistory', async (req, res) => {
   try {
+    console.log("Datos recibidos:", req.body); 
       // Reenviar la solicitud POST al servicio de ranking para crear un ranking para el usuario
-      const historyResponse = await axios.post(`${historyServiceUrl}/createUserHistory`, req.body);
+      const historyResponse = await axios.post(historyServiceUrl+'/createUserHistory', req.body);
       res.json(historyResponse.data);
   } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' }); 
+    console.error("Error completo en /createUserHistory:", error.response?.data || error.message);
+    res.status(500).json({ 
+      error: 'Ha fallado algo en el servidor',
+      details: error.message,
+    });
   }
 });
 

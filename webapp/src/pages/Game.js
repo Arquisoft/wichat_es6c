@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress, LinearProgress } from "@mui/material";
+import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat"; 
@@ -115,16 +115,39 @@ function Game() {
 
   const createUserHistory = async () => {
     try {
-      await axios.post(`${apiEndpoint}/createUserHistory`, {
+      console.log("Enviando datos:", { 
         username: username,
-        correctAnswers: corectAnswers,
-        wrongAnswers: TOTAL_ROUNDS-corectAnswers,
+        correctAnswers: corectAnswers, 
+        wrongAnswers: TOTAL_ROUNDS - corectAnswers,
         time: totalTime,
         score: score,
         gameMode: gameMode
       });
+      const response = await axios.post(
+              `${apiEndpoint}/createUserHistory`,
+              {
+                username: username,
+                correctAnswers: corectAnswers,
+                wrongAnswers: TOTAL_ROUNDS-corectAnswers,
+                time: totalTime,
+                score: score,
+                gameMode: gameMode
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+      console.log("Respuesta del servidor:" +response.data);
     } catch (error) {
-      console.error(error.response.data.error);
+      console.error('Error completo:', {
+        request: error.config,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers
+      });
+      throw error; 
     }
 };
 
@@ -141,7 +164,7 @@ function Game() {
       setShowTransition(true);
       setStarAnimation(true); 
 
-      setTimeout(() => {
+      setTimeout(async () => {
         setShowTransition(false); 
         setStarAnimation(false); 
 
@@ -152,10 +175,13 @@ function Game() {
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
           //LLAMAR AL GATEWAY Y QUE ESTE LO REDIRECCIONE AL SERVICIO
-          (async () => {
-          await createUserHistory();
-          })();
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
+          try{
+            await createUserHistory();
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
+          }catch (error){
+            console.error(error);
+          }
+           
         }
       }, TRANSITION_ROUND_TIME); 
     }, FEEDBACK_QUESTIONS_TIME); 
@@ -200,12 +226,16 @@ function Game() {
           fetchQuestion();
           setTimeLeft(QUESTION_TIME); 
           setSelectedAnswer(null);
+          (async () => {
+            console.log("Se ejecuta despues de esto:");
+            await createUserHistory();
+            })();
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
           (async () => {
             await createUserHistory();
-          })();
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
+          })(navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }));
+          
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);

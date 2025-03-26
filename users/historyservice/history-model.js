@@ -4,7 +4,6 @@ const historySchema = new mongoose.Schema({
     username: {
       type: String,
       required: true,
-      unique: true,
     },
     correctAnswers: {
       type: Number,
@@ -33,6 +32,6 @@ const historySchema = new mongoose.Schema({
     }
 });
 
-const GameHistory = mongoose.model('User', historySchema);
+const GameHistory = mongoose.model('User2', historySchema);
 
 module.exports = GameHistory
