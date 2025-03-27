@@ -9,8 +9,8 @@ import Chat from "../components/Chat";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Game() {
-  const QUESTION_TIME = 60;
-  const TOTAL_ROUNDS = 10;
+  const QUESTION_TIME = 60; 
+  const TOTAL_ROUNDS = 10; 
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
   const TRANSITION_ROUND_TIME = 3000; // 5 segundos (5000 ms)
@@ -49,7 +49,6 @@ function Game() {
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
     if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
@@ -174,7 +173,7 @@ function Game() {
           setTimeLeft(QUESTION_TIME); 
           setSelectedAnswer(null);
         } else {
-          navigate('/game-finished');
+          navigate('/game-finished', { state: { score, totalTime, totalRounds: TOTAL_ROUNDS}} ); 
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);

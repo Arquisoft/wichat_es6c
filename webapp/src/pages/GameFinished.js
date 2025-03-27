@@ -11,12 +11,26 @@ const GameFinished = () => {
   const [totalTime, setTotalTime] = useState(0);
   const [totalRounds, setTotalRounds] = useState(0);
 
+  const TOTAL_POINTS = 100;
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
   useEffect(() => {
     if (location.state) {
       setScore(location.state.score);
       setTotalTime(location.state.totalTime);
       setTotalRounds(location.state.totalRounds);
     }
+
+    // Handle the size of the window - confetti
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [location]);
 
   const handleRestart = () => {
@@ -32,8 +46,12 @@ const GameFinished = () => {
       alignItems="center"
       justifyContent="center"
       spacing={4}
-      sx={{ height: "100vh", textAlign: "center" }}
+      sx={{ height: "100vh", textAlign: "center"}}
     >
+
+      {/* Confetti */}
+      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
+
       {/* Title */}
       <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative",  top: "-200px"}}>
         ¡Juego Terminado!
@@ -53,7 +71,7 @@ const GameFinished = () => {
         }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Puntuación Final</Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
-            {score} / {totalRounds}
+            {score} / {TOTAL_POINTS}
           </Typography>
         </Box>
 
