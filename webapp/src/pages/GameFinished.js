@@ -6,10 +6,9 @@ import Confetti from 'react-confetti';
 const GameFinished = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const [score, setScore] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
-  const [totalRounds, setTotalRounds] = useState(0);
 
   const TOTAL_POINTS = 100;
 
@@ -20,7 +19,6 @@ const GameFinished = () => {
     if (location.state) {
       setScore(location.state.score);
       setTotalTime(location.state.totalTime);
-      setTotalRounds(location.state.totalRounds);
     }
 
     // Handle the size of the window - confetti

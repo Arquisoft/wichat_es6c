@@ -13,14 +13,14 @@ function Game() {
   const TOTAL_ROUNDS = 10; 
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
-  const TRANSITION_ROUND_TIME = 3000; // 5 segundos (5000 ms)
+  const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
   
   
   const MULTIPLIER_HIGH = 2.0;
   const MULTIPLIER_MEDIUM = 1.5;
   const MULTIPLIER_LOW = 1.0;
-  const TIME_THRESHOLD_HIGH = 10;
-  const TIME_THRESHOLD_MEDIUM = 5;
+  const TIME_THRESHOLD_HIGH = 45;
+  const TIME_THRESHOLD_MEDIUM = 25;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -379,6 +379,10 @@ function Game() {
             const isSelected = selectedAnswer === option; 
             const isCorrect = option === questionData.correctAnswer;
 
+            const backgroundColor = index % 2 === 0 ? "#6A0DAD" : "#A680C5"; // Morado y morado menos claro
+            const hoverColor = index % 2 === 0 ? "#5A0C9A" : "#8F6BAF"; // Tonos más oscuros para hover
+
+
             return (
               <Button
                 key={index}
@@ -395,7 +399,7 @@ function Game() {
                         : "red" 
                       : showFeedback && isCorrect
                       ? "green"
-                      : "primary", 
+                      : backgroundColor, 
                   color: "white",
                   "&:hover": {
                     backgroundColor:
@@ -405,7 +409,7 @@ function Game() {
                           : "red"
                         : showFeedback && isCorrect
                         ? "green"
-                        : "primary",
+                        : hoverColor,
                   },
                   "&.Mui-disabled": { 
                     backgroundColor:
@@ -415,7 +419,7 @@ function Game() {
                           : "red"
                         : showFeedback && isCorrect
                         ? "green"
-                        : "primary",
+                        : backgroundColor,
                     color: "white",
                     opacity: 1, 
                   },
