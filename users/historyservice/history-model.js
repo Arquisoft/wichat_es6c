@@ -8,27 +8,27 @@ const historySchema = new mongoose.Schema({
     correctAnswers: {
       type: Number,
       required: true,
-      degfault: 0,
+      default: 0,
     },
     wrongAnswers: { 
       type: Number,
       required: true,
-      degfault: 0,
+      default: 0,
     },
     time: {
       type: Number,
       required: true,
-      degfault: 0,
+      default: 0,
     },
     score: {
       type: Number,
       required: true,
-      degfault: 0,
+      default: 0,
     },
     gameMode: {
       type: String,
       required: true,
-      degfault: 'Country',
+      default: 'Country',
     }
 });
 

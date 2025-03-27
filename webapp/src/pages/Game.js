@@ -217,7 +217,7 @@ function Game() {
       setShowTransition(true);
       setStarAnimation(true);
 
-      setTimeout(() => {
+      setTimeout(async () => {
         setShowTransition(false);
         setStarAnimation(false);
 
@@ -226,15 +226,14 @@ function Game() {
           fetchQuestion();
           setTimeLeft(QUESTION_TIME); 
           setSelectedAnswer(null);
-          (async () => {
-            console.log("Se ejecuta despues de esto:");
-            await createUserHistory();
-            })();
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          (async () => {
+          try{
             await createUserHistory();
-          })(navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }));
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
+          }catch (error){
+            console.error(error);
+          }
           
         }
       }, TRANSITION_ROUND_TIME);

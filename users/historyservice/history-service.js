@@ -53,18 +53,18 @@ app.post('/createUserHistory', async (req, res) => {
   }
 });
 
-app.get('/getUserHistory', async (req, res) => {
+app.get("/getUserHistory", async (req, res) => {
   try {
-    console.log('Username:',req.body.username);
-    const { username } = req.body.username;
-
-    // Convertir el nombre de usuario en una cadena
-    const safeUsername = username.toString();
-
-    const history = await UserHistory.find({ username: safeUsername });
-    res.json({history: history});
+    const { username } = req.query;
+    if (!username) {
+      return res.status(400).json({ error: "Se requiere un username" });
+    }
+    
+    // CAMBIA History por UserHistory
+    const history = await UserHistory.find({ username });
+    res.json({ history });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: "Error en el servidor" });
   }
 });
 

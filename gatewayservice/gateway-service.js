@@ -62,11 +62,30 @@ app.post('/createUserHistory', async (req, res) => {
       const historyResponse = await axios.post(historyServiceUrl+'/createUserHistory', req.body);
       res.json(historyResponse.data);
   } catch (error) {
-    console.error("Error completo en /createUserHistory:", error.response?.data || error.message);
     res.status(500).json({ 
       error: 'Ha fallado algo en el servidor',
       details: error.message,
     });
+  }
+});
+
+app.get("/getUserHistory", async (req, res) => {
+  try {
+    console.log("Datos recibidos:", req.query); 
+    const { username } = req.query; // Obtener el parámetro de la URL
+    if (!username) {
+      return res.status(400).json({ error: "Se requiere un username" });
+    }
+
+    // Reenviar la petición al microservicio de historial
+    const response = await axios.get(`${historyServiceUrl}/getUserHistory`, {
+      params: { username }, // Pasar el parámetro como query
+    });
+
+    res.json(response.data); // Enviar la respuesta al cliente
+  } catch (error) {
+    console.error("Error en Gateway:", error.response?.data || error.message);
+    res.status(500).json({ error: "Error en el servidor del Gateway" });
   }
 });
 
