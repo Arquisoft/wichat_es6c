@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import Confetti from 'react-confetti';
 
 const GameFinished = () => {
   const location = useLocation();
@@ -19,10 +20,10 @@ const GameFinished = () => {
   }, [location]);
 
   const handleRestart = () => {
-    navigate('/'); 
+    navigate('/game-Mode'); 
   };
 
-  const handleGoToLogin = () => {
+  const handleGoToHistorical = () => {
     navigate('/login'); 
   };
 
@@ -34,27 +35,56 @@ const GameFinished = () => {
       sx={{ height: "100vh", textAlign: "center" }}
     >
       {/* Title */}
-      <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+      <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative",  top: "-200px"}}>
         ¡Juego Terminado!
       </Typography>
 
       {/* Final score */}
-      <Box>
-        <Typography variant="h6">
-          Puntuación final: {score} / {totalRounds}
-        </Typography>
-        <Typography variant="h6">
-          Tiempo total: {totalTime} segundos
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, position: "relative",  top: "-100px"}}>
+        {/* Score */}
+        <Box sx={{
+          padding: 3,
+          border: '2px solid #9b33c0',
+          borderRadius: 2,
+          backgroundColor: '#c7f28e',
+          textAlign: 'center',
+          boxShadow: 3,
+          width: '200px'
+        }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Puntuación Final</Typography>
+          <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
+            {score} / {totalRounds}
+          </Typography>
+        </Box>
+
+        {/* Total time */}
+        <Box sx={{
+          padding: 3,
+          border: '2px solid #9b33c0',
+          borderRadius: 2,
+          backgroundColor: '#e3f2fd',
+          textAlign: 'center',
+          boxShadow: 3,
+          width: '200px'
+        }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tiempo Total</Typography>
+          <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
+            {totalTime} segundos
+          </Typography>
+        </Box>
       </Box>
 
       {/* Buttons */}
-      <Stack direction="row" spacing={2}>
-        <Button variant="contained" onClick={handleRestart}>
+      <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
+        <Button variant="contained" 
+          sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0'}}
+          onClick={handleRestart}>
           Volver a jugar
         </Button>
-        <Button variant="outlined" onClick={handleGoToLogin}>
-          Iniciar sesión
+        <Button variant="contained" 
+          sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black'}}
+          onClick={handleGoToHistorical}>
+          Consultar historial
         </Button>
       </Stack>
     </Stack>

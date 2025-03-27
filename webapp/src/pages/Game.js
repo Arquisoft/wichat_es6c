@@ -127,7 +127,7 @@ function Game() {
           setTimeLeft(QUESTION_TIME); 
           fetchQuestion();
         } else {
-          navigate('/game-finished'); 
+          navigate('/game-finished', { state: { score, totalTime, totalRounds: TOTAL_ROUNDS}} ); 
         }
       }, TRANSITION_ROUND_TIME); 
     }, FEEDBACK_QUESTIONS_TIME); 
@@ -474,7 +474,7 @@ function Game() {
           <Chat questionData={questionData} />
         </Box>
         )}
-</Box>
+    </Box>
 
      
     </Stack>
