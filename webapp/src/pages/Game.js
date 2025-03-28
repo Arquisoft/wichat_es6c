@@ -181,7 +181,6 @@ function Game() {
           }catch (error){
             console.error(error);
           }
-           
         }
       }, TRANSITION_ROUND_TIME); 
     }, FEEDBACK_QUESTIONS_TIME); 
@@ -440,6 +439,10 @@ function Game() {
             const isSelected = selectedAnswer === option; 
             const isCorrect = option === questionData.correctAnswer;
 
+            const backgroundColor = index % 2 === 0 ? "#6A0DAD" : "#A680C5"; // Morado y morado menos claro
+            const hoverColor = index % 2 === 0 ? "#5A0C9A" : "#8F6BAF"; // Tonos más oscuros para hover
+
+
             return (
               <Button
                 key={index}
@@ -456,7 +459,7 @@ function Game() {
                         : "red" 
                       : showFeedback && isCorrect
                       ? "green"
-                      : "primary", 
+                      : backgroundColor, 
                   color: "white",
                   "&:hover": {
                     backgroundColor:
@@ -466,7 +469,7 @@ function Game() {
                           : "red"
                         : showFeedback && isCorrect
                         ? "green"
-                        : "primary",
+                        : hoverColor,
                   },
                   "&.Mui-disabled": { 
                     backgroundColor:
@@ -476,7 +479,7 @@ function Game() {
                           : "red"
                         : showFeedback && isCorrect
                         ? "green"
-                        : "primary",
+                        : backgroundColor,
                     color: "white",
                     opacity: 1, 
                   },

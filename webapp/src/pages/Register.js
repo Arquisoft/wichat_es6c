@@ -97,7 +97,7 @@ const AddUser = () => {
             padding: '12px',
             fontWeight: 'bold',
             borderRadius: '8px',
-            backgroundColor: '#1976d2',
+            backgroundColor: '#9b33c0',
             '&:hover': { backgroundColor: '#1565c0' },
           }}
         >

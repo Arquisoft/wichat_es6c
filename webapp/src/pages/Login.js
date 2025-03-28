@@ -128,7 +128,7 @@ const Login = () => {
               padding: '0.75rem', // 12px en rem
               fontWeight: 'bold',
               borderRadius: '0.5rem', // 8px en rem
-              backgroundColor: '#1976d2',
+              backgroundColor: '#9b33c0',
               '&:hover': { backgroundColor: '#1565c0' },
             }}
           >
