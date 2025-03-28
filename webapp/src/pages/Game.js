@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 function Game() {
   const QUESTION_TIME = 60;
-  const TOTAL_ROUNDS = 10;
+  const TOTAL_ROUNDS = 2;
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
   const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
@@ -113,16 +113,9 @@ function Game() {
   }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
 
 
-  const createUserHistory = async () => {
+  const createUserHistory = async (score, totalTime, corectAnswers, gameMode) => {
     try {
-      console.log("Enviando datos:", { 
-        username: username,
-        correctAnswers: corectAnswers, 
-        wrongAnswers: TOTAL_ROUNDS - corectAnswers,
-        time: totalTime,
-        score: score,
-        gameMode: gameMode
-      });
+      console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode);
       const response = await axios.post(
               `${apiEndpoint}/createUserHistory`,
               {
@@ -176,8 +169,9 @@ function Game() {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
           //LLAMAR AL GATEWAY Y QUE ESTE LO REDIRECCIONE AL SERVICIO
           try{
-            await createUserHistory();
+            createUserHistory(score, totalTime, corectAnswers, gameMode);
             navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
+            
           }catch (error){
             console.error(error);
           }
@@ -200,13 +194,19 @@ function Game() {
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
-
+    let correct=corectAnswers;
+    let thisScore=score;
     if (isCorrect) {
-      setCorrectAnswers(corectAnswers+1);
+      console.log("Respuesta correcta = "+corectAnswers);
+      correct=corectAnswers+1;
+      setCorrectAnswers(correct);
+      console.log("Respuesta correcta = "+corectAnswers);
       const multiplier = getTimeMultiplierScore(timeLeft);
       const pointsEarned = BASE_SCORE * multiplier;
       setTempScore(pointsEarned);
-      setScore((prevScore) => prevScore + pointsEarned);
+      thisScore=score+pointsEarned;
+      setScore(thisScore);
+      console.log("Respuesta correcta = "+corectAnswers);
     } else {
       setTempScore(0);
     }
@@ -228,8 +228,8 @@ function Game() {
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
           try{
-            await createUserHistory();
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
+            createUserHistory(thisScore, totalTime, correct, gameMode);
+            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore:maxScore  } });
           }catch (error){
             console.error(error);
           }
