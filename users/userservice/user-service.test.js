@@ -24,13 +24,16 @@ describe('User Service', () => {
   it('should add a new user on POST /user', async () => {
     const newUser = {
       username: 'testuser',
-      password: 'testpassword',
+      password: 'Testpassword12345678',
+      name: 'testname',
+      surname:'testsurname'
     };
 
     const response = await request(app).post('/user').send(newUser);
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('username', 'testuser');
-
+    expect(response.body).toHaveProperty('name', 'testname');
+    expect(response.body).toHaveProperty('surname', 'testsurname');
     // Check if the user is inserted into the database
     const userInDb = await User.findOne({ username: 'testuser' });
 
@@ -39,7 +42,7 @@ describe('User Service', () => {
     expect(userInDb.username).toBe('testuser');
 
     // Assert that the password is encrypted
-    const isPasswordValid = await bcrypt.compare('testpassword', userInDb.password);
+    const isPasswordValid = await bcrypt.compare('Testpassword12345678', userInDb.password);
     expect(isPasswordValid).toBe(true);
   });
 });

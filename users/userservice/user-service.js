@@ -51,7 +51,11 @@ app.post('/user', async (req, res) => {
     try {
         const { username, password, name, surname } = req.body;
 
-        const user = await User.findOne({ username });
+        const usernameReq = req.body.username.toString();
+        const user = await User.findOne({ usernameReq });
+        if(user!=null){
+            throw new Error(`El usuario "${req.body.username}" ya existe.`);
+        }
 
         registerValidators(user, username, password, name, surname);
 

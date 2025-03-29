@@ -18,7 +18,6 @@ const Login = () => {
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-  const apiKey = process.env.REACT_APP_LLM_API_KEY || 'None';
   const navigate = useNavigate();
 
   const loginUser = async () => {
@@ -34,16 +33,7 @@ const Login = () => {
 
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
       
-      const question = "Please, generate a greeting message for a student called " + username + " that is a student of the Software Architecture course in the University of Oviedo. Be nice and polite. Two to three sentences max.";
-      const model = "empathy"
-
-      if (apiKey==='None'){
-        setMessage("LLM API key is not set. Cannot contact the LLM.");
-      }
-      else{
-        const message = await axios.post(`${apiEndpoint}/askllm`, { question, model, apiKey })
-        setMessage(message.data.answer);
-      }
+     
       // Extract data from the response
       const { createdAt: userCreatedAt } = response.data;
 
@@ -52,15 +42,22 @@ const Login = () => {
       createSession(username);
       navigate('/homepage'); 
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        setError({ field: 'general', message: error.response.data.error });
-      }else if(error.response && error.response.status === 401){
-        setError({ field: 'general', message: 'Usuario o contraseña incorrectos' });
+      if (error.response) {
+        // El servidor respondió con un código de estado fuera del rango 2xx
+        if (error.response.status === 400) {
+          setError({ field: 'general', message: error.response.data.error });
+        } else if (error.response.status === 401) {
+          setError({ field: 'general', message: 'Usuario o contraseña incorrectos' });
+        } else {
+          setError({ field: 'general', message: 'Error desconocido del servidor' });
+        }
+      } else if (error.request) {
+        // La solicitud fue hecha pero no se recibió respuesta
+        setError({ field: 'general', message: 'No se recibió respuesta del servidor' });
+      } else {
+        // Algo sucedió al configurar la solicitud
+        setError({ field: 'general', message: 'Error al enviar la solicitud' });
       }
-      else{
-        setError(error.response.data.error);
-      }
-      
     }
   };
 
@@ -131,7 +128,7 @@ const Login = () => {
               padding: '0.75rem', // 12px en rem
               fontWeight: 'bold',
               borderRadius: '0.5rem', // 8px en rem
-              backgroundColor: '#1976d2',
+              backgroundColor: '#9b33c0',
               '&:hover': { backgroundColor: '#1565c0' },
             }}
           >
