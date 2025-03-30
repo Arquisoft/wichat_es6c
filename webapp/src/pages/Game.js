@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { IconButton, Button, Stack, Typography, Box, CircularProgress} from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ function Game() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(0); 
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
   const [round, setRound] = useState(1);
@@ -49,106 +49,20 @@ function Game() {
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  
-  const getTimeMultiplierScore = (timeLeft) => {
-    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
-    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
-    return MULTIPLIER_LOW;
-  };
-
-  const handleImageLoad = () => {
-    let opacity = 0;
-    const fadeIn = setInterval(() => {
-      opacity += 0.1;
-      setImageOpacity(opacity);
-      if (opacity >= 1) {
-        clearInterval(fadeIn);
-        setImageLoaded(true);
-      }
-    }, 100);
-  };
-
-  useEffect(() => {
-    if (location.state?.mode) {
-      setGameMode(location.state.mode);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    if (gameMode) {
-      fetchQuestion();
-    }
-  }, [gameMode]);
-
-  useEffect(() => {
-    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
-
-    let timeUpTriggered = false; 
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          if (!timeUpTriggered) {
-            timeUpTriggered = true; 
-            handleTimeUp(); 
-          }
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-
-      setTotalTime((t) => t + 1);
-    }, 1000);
-
-
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
-
-  const handleTimeUp = () => {
-    if (showFeedback || showTransition || starAnimation) return; 
-   
-
-    setShowFeedback(true);
-    setSelectedAnswer(null); 
-
-    setTimeout(() => {
-      setShowFeedback(false); 
-      setShowTransition(true);
-      setStarAnimation(true); 
-
-      setTimeout(() => {
-        setShowTransition(false); 
-        setStarAnimation(false); 
-
-        if (round < TOTAL_ROUNDS) {
-          setRound((prevRound) => prevRound + 1); 
-          setTimeLeft(QUESTION_TIME); 
-          fetchQuestion();
-        } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
-        }
-      }, TRANSITION_ROUND_TIME); 
-    }, FEEDBACK_QUESTIONS_TIME); 
-  };
-
-  const fetchQuestion = async () => {
+  const fetchQuestion = useCallback(async () => {
     try {
       if (round > TOTAL_ROUNDS) return;
-      setImageLoaded(false); 
+      setImageLoaded(false);
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setQuestionData(response.data);
     } catch (error) {
       console.error("Error fetching question:", error);
     }
-  };
+  }, [gameMode, round, apiEndpoint])
 
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
-
-   
 
     if (isCorrect) {
       const multiplier = getTimeMultiplierScore(timeLeft);
@@ -180,6 +94,92 @@ function Game() {
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);
   };
+
+  
+  const handleTimeUp = useCallback(() => {
+    if (showFeedback || showTransition || starAnimation) return; 
+   
+
+    setShowFeedback(true);
+    setSelectedAnswer(null); 
+
+    setTimeout(() => {
+      setShowFeedback(false); 
+      setShowTransition(true);
+      setStarAnimation(true); 
+
+      setTimeout(() => {
+        setShowTransition(false); 
+        setStarAnimation(false); 
+
+        if (round < TOTAL_ROUNDS) {
+          setRound((prevRound) => prevRound + 1); 
+          setTimeLeft(QUESTION_TIME); 
+          fetchQuestion();
+        } else {
+          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
+          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
+        }
+      }, TRANSITION_ROUND_TIME); 
+    }, FEEDBACK_QUESTIONS_TIME); 
+  }, [round, TOTAL_ROUNDS, showFeedback, showTransition, starAnimation, navigate, score, totalTime, fetchQuestion]);
+
+
+  const getTimeMultiplierScore = (timeLeft) => {
+    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
+    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
+    return MULTIPLIER_LOW;
+  };
+
+  const handleImageLoad = () => {
+    let opacity = 0;
+    const fadeIn = setInterval(() => {
+      opacity += 0.1;
+      setImageOpacity(opacity);
+      if (opacity >= 1) {
+        clearInterval(fadeIn);
+        setImageLoaded(true);
+      }
+    }, 100);
+  };
+
+  useEffect(() => {
+    if (location.state?.mode) {
+      setGameMode(location.state.mode);
+    }
+  }, [location.state]);
+
+  useEffect(() => {  
+    if (gameMode) {
+      fetchQuestion();
+    }
+  }, [gameMode, fetchQuestion]);
+
+  useEffect(() => {
+    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
+
+    let timeUpTriggered = false; 
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          if (!timeUpTriggered) {
+            timeUpTriggered = true; 
+            handleTimeUp(); 
+          }
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+
+      setTotalTime((t) => t + 1);
+    }, 1000);
+
+
+    return () => clearInterval(timer); 
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition, handleTimeUp, starAnimation ]);
+
 
 
   if (!questionData) {
