@@ -24,7 +24,7 @@ function Chat({ questionData }) {
 
     try {
      let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer in a short phrase: "+input;
-      const response = await axios.post(
+     const response = await axios.post(
         
         `${apiEndpoint}/askllm`,
         {
@@ -38,7 +38,7 @@ function Chat({ questionData }) {
           }
         }
       );
-
+      
       const data = response.data;
       const botMessage = { role: "assistant", content: "" };
 
