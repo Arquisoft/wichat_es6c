@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Container,Snackbar } from '@mui/material';
+import { Container, Snackbar, Button } from '@mui/material'; // Añade Button
 import { useNavigate, useLocation } from 'react-router-dom';
 import Login from './Login';
 import AddUser from './Register';
@@ -19,15 +19,17 @@ const Home = () => {
     }
   }, [sessionId, navigate]);
 
-
-  
   useEffect(() => {
-    if (location.state && location.state.message) {
+    if (location.state?.message) {
       setMessage(location.state.message);
       setOpenSnackbar(true);
     }
-  },[location.state]);
+  }, [location.state]);
 
+  // Function to toggle between login and registration views
+  const toggleView = () => {
+    setShowLogin(prev => !prev); 
+  };
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -35,15 +37,26 @@ const Home = () => {
 
   return (
     <>
-    <Container component="main" maxWidth="xs">
-      {showLogin ? <Login /> : <AddUser />}
+      <Container component="main" maxWidth="xs">
+        {showLogin ? <Login /> : <AddUser />}
+        
+        {/*  Button to toggle between Login and Register */}
+        <Button 
+          fullWidth
+          onClick={toggleView}
+          sx={{ mt: 2 }}
+        >
+        </Button>
+      </Container>
 
-     
-    </Container>
-
-    <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message={message}/>
+      <Snackbar 
+        open={openSnackbar} 
+        autoHideDuration={6000} 
+        onClose={handleCloseSnackbar} 
+        message={message}
+      />
     </>
   );
 };
 
-export default Home;
+export default Home; 
