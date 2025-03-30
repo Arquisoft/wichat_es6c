@@ -6,14 +6,14 @@ import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star"; 
 import Chat from "../components/Chat";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
-  const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
-  const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
+  const FEEDBACK_QUESTIONS_TIME = 1000; // 1 segundo (1000 ms)
+  const TRANSITION_ROUND_TIME = 3000; // 3 segundos (3000 ms)
   
   
   const MULTIPLIER_HIGH = 2.0;
@@ -33,6 +33,7 @@ function Game() {
 
 
   const [questionData, setQuestionData] = useState(null);
+  const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageOpacity, setImageOpacity] = useState(0);
 
@@ -41,6 +42,7 @@ function Game() {
   const [showTransition, setShowTransition] = useState(false); 
   const [tempScore, setTempScore] = useState(0); 
   const [starAnimation, setStarAnimation] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false); // Nuevo estado para controlar la animación
   
 
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -58,12 +60,19 @@ function Game() {
 
   const handleImageLoad = () => {
     let opacity = 0;
+
     const fadeIn = setInterval(() => {
       opacity += 0.1;
-      setImageOpacity(opacity);
+
+      // Actualizar directamente el estilo del elemento en lugar de usar el estado
+      const imgElement = document.querySelector("img[alt='Imagen de la pregunta']");
+      if (imgElement) {
+        imgElement.style.opacity = opacity;
+      }
+
       if (opacity >= 1) {
         clearInterval(fadeIn);
-        setImageLoaded(true);
+        setImageLoaded(true); // Marcar la imagen como cargada
       }
     }, 100);
   };
@@ -81,7 +90,7 @@ function Game() {
   }, [gameMode]);
 
   useEffect(() => {
-    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
+    if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;
 
     let timeUpTriggered = false; 
 
@@ -105,32 +114,44 @@ function Game() {
     return () => clearInterval(timer); 
   }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
 
+  useEffect(() => {
+    if (animationComplete && imageLoaded) {
+      setAnimationComplete(false); // Resetear el estado de la animación
+      setTimeLeft(QUESTION_TIME); // Iniciar el temporizador solo después de que todo esté listo
+    }
+  }, [animationComplete, imageLoaded]);
+
   const handleTimeUp = () => {
-    if (showFeedback || showTransition || starAnimation) return; 
-   
+    if (showFeedback || showTransition || starAnimation) return;
 
     setShowFeedback(true);
-    setSelectedAnswer(null); 
+    setSelectedAnswer(null);
 
     setTimeout(() => {
-      setShowFeedback(false); 
+      setShowFeedback(false);
       setShowTransition(true);
-      setStarAnimation(true); 
 
+      // Activar la animación de la estrella solo si no está ya activa
+      if (!starAnimation) {
+        setStarAnimation(true);
+      }
+
+      // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
+      if (round < TOTAL_ROUNDS) {
+        handleNextRound(); // Cargar la siguiente pregunta y avanzar la ronda
+      }
+
+      // Finalizar la animación de la estrella después de un tiempo fijo
       setTimeout(() => {
-        setShowTransition(false); 
-        setStarAnimation(false); 
+        setStarAnimation(false); // Desactivar la animación de la estrella
+        setShowTransition(false);
 
-        if (round < TOTAL_ROUNDS) {
-          setRound((prevRound) => prevRound + 1); 
-          setTimeLeft(QUESTION_TIME); 
-          fetchQuestion();
-        } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
+        if (round >= TOTAL_ROUNDS) {
+          let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
+          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore } });
         }
-      }, TRANSITION_ROUND_TIME); 
-    }, FEEDBACK_QUESTIONS_TIME); 
+      }, TRANSITION_ROUND_TIME); // Duración fija para la animación
+    }, FEEDBACK_QUESTIONS_TIME);
   };
 
   const fetchQuestion = async () => {
@@ -139,16 +160,42 @@ function Game() {
       setImageLoaded(false); 
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setQuestionData(response.data);
+
+      // Iniciar la precarga de la siguiente pregunta
+      preloadNextQuestion();
     } catch (error) {
       console.error("Error fetching question:", error);
     }
   };
 
+  const preloadNextQuestion = async () => {
+    try {
+      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      setNextQuestionData(response.data); // Guardar la pregunta precargada
+    } catch (error) {
+      console.error("Error preloading next question:", error);
+    }
+  };
+
+  const handleNextRound = () => {
+    if (nextQuestionData) {
+      setQuestionData(nextQuestionData); // Usar la pregunta precargada
+      setNextQuestionData(null); // Limpiar la pregunta precargada
+
+      // Iniciar la precarga de la siguiente pregunta
+      preloadNextQuestion();
+    } else {
+      fetchQuestion(); // Si no hay pregunta precargada, cargar una nueva
+    }
+
+    setRound((prevRound) => prevRound + 1); // Incrementar la ronda
+    setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
+    setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
+  };
+
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
-
-   
 
     if (isCorrect) {
       const multiplier = getTimeMultiplierScore(timeLeft);
@@ -162,20 +209,24 @@ function Game() {
     setTimeout(() => {
       setShowFeedback(false);
       setShowTransition(true);
-      setStarAnimation(true);
+
+      // Activar la animación de la estrella solo si no está ya activa
+      if (!starAnimation) {
+        setStarAnimation(true);
+      }
+
+      // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
+      if (round < TOTAL_ROUNDS) {
+        handleNextRound(); // Cargar la siguiente pregunta y precargar la imagen
+      }
 
       setTimeout(() => {
         setShowTransition(false);
         setStarAnimation(false);
 
-        if (round < TOTAL_ROUNDS) {
-          setRound((prevRound) => prevRound + 1);
-          fetchQuestion();
-          setTimeLeft(QUESTION_TIME); 
-          setSelectedAnswer(null);
-        } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
+        if (round >= TOTAL_ROUNDS) {
+          let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
+          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore } });
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);
@@ -234,23 +285,20 @@ function Game() {
             <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} /> 
           </Box>
   
-          <AnimatePresence>
-            {starAnimation && (
-              <motion.div
-                
-                style={{
-                  position: "absolute",
-                  top: "35%",
-                  left: "33%",
-                  fontSize: "2.5rem", 
-                  fontWeight: "bold",
-                  color: "#333",
-                }}
-              >
-                +{tempScore}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {starAnimation && (
+            <motion.div
+              style={{
+                position: "absolute",
+                top: "35%",
+                left: "33%",
+                fontSize: "2.5rem", 
+                fontWeight: "bold",
+                color: "#333",
+              }}
+            >
+              +{tempScore}
+            </motion.div>
+          )}
         </Box>
   
         {/* Puntuación total */}
