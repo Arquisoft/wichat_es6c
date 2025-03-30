@@ -9,7 +9,7 @@ const Home = () => {
   const location = useLocation();
   const { sessionId } = useContext(SessionContext);
   const navigate = useNavigate();
-  const [showLogin] = useState(true);
+  const [showLogin, setShowLogin] = useState(true);
   const [message, setMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
