@@ -26,7 +26,7 @@ const Home = () => {
       setMessage(location.state.message);
       setOpenSnackbar(true);
     }
-  },[]);
+  },[location.state]);
 
 
   const handleCloseSnackbar = () => {

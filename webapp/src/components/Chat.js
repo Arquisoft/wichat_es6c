@@ -5,7 +5,7 @@ import axios from "axios";
 function Chat({ questionData }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [model, setModel] = useState("empathy");
+  //const [model, setModel] = useState("empathy");
   const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
   const API_KEY = process.env.REACT_APP_LLM_API_KEY; // Usa .env en producción
   const messagesEndRef = useRef(null); // Ref para hacer scroll al final
@@ -30,7 +30,7 @@ function Chat({ questionData }) {
         {
           question: petition,
           apiKey: API_KEY,
-          model: model
+          model: "empathy"
         },
         {
           headers: {
