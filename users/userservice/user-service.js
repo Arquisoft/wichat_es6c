@@ -53,7 +53,7 @@ app.post('/user', async (req, res) => {
 
         const usernameReq = req.body.username.toString();
         const user = await User.findOne({ usernameReq });
-        if(user!=null){
+        if(user){
             throw new Error(`El usuario "${req.body.username}" ya existe.`);
         }
 
