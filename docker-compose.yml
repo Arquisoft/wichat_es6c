@@ -55,11 +55,15 @@ services:
     container_name: questionservice-wichat_es6c
     image: ghcr.io/arquisoft/wichat_es6c/questionservice:latest
     profiles: ["dev", "prod"]
-    build: ./questionservice
+    build: ./questions/services
+    depends_on:
+      - mongodb
     ports:
       - "8004:8004"
     networks:
       - mynetwork
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/questiondb
 
   gatewayservice:
     container_name: gatewayservice-wichat_es6c
@@ -79,6 +83,7 @@ services:
       AUTH_SERVICE_URL: http://authservice:8002
       USER_SERVICE_URL: http://userservice:8001
       LLM_SERVICE_URL: http://llmservice:8003
+      QUESTION_SERVICE: http://questionservice:8004
 
   webapp:
     container_name: webapp-wichat_es6c
