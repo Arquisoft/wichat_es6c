@@ -65,7 +65,6 @@ services:
     environment:
       MONGODB_URI: mongodb://mongodb:27017/questiondb
       
-    
 
   gatewayservice:
     container_name: gatewayservice-wichat_es6c
