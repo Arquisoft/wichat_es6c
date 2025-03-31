@@ -44,6 +44,8 @@ services:
     profiles: ["dev", "prod"]
     env_file:
       - .env
+    environment:
+      - LLM_API_KEY=${LLM_API_KEY}
     build: 
       context: ./llmservice
     ports:
