@@ -111,6 +111,8 @@ jobs:
     needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
+    - name: Crear .env
+      run: echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > llmservice/.env
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       with:
@@ -172,8 +174,7 @@ jobs:
          host: ${{ secrets.DEPLOY_HOST }}
          user: ${{ secrets.DEPLOY_USER }}
          key: ${{ secrets.DEPLOY_KEY }}
-         command: |
-           echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > .env
+         command: |           
            wget https://raw.githubusercontent.com/arquisoft/wichat_es6c/develop-deploy/docker-compose.yml -O docker-compose.yml     
            docker compose --profile prod down
            docker compose --profile prod up -d --pull always
