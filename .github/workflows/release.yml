@@ -111,8 +111,6 @@ jobs:
     #needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
-    - name: Crear .env
-      run: echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > .env
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       with:
@@ -121,6 +119,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
         workdir: llmservice
+        buildargs: LLM_API_KEY=${{ secrets.LLM_API_KEY }}
     
 
   docker-push-gatewayservice:
