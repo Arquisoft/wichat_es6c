@@ -15,6 +15,7 @@ jobs:
         node-version: 22
     - run: npm --prefix users/authservice ci
     - run: npm --prefix users/userservice ci
+    - run: npm --prefix questionservice ci
     - run: npm --prefix llmservice ci
     - run: npm --prefix gatewayservice ci
     - run: npm --prefix webapp ci
