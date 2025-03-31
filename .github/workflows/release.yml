@@ -114,7 +114,7 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       env:
-        API_URI: ${{ secrets.DEPLOY_KEY }}
+        LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
       with:
         name: arquisoft/wichat_es6c/llmservice
         username: ${{ github.actor }}
