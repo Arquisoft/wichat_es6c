@@ -100,6 +100,7 @@ services:
     environment:
       AUTH_SERVICE_URL: http://authservice:8002
       USER_SERVICE_URL: http://userservice:8001
+      HISTORY_SERVICE_URL: http://historyservice:8007
       LLM_SERVICE_URL: http://llmservice:8003
       QUESTION_SERVICE_URL: http://questionservice:8004
 
