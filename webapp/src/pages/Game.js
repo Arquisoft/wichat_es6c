@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 function Game() {
   const QUESTION_TIME = 60;
-  const TOTAL_ROUNDS = 10;
+  const TOTAL_ROUNDS = 2;
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
   const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
@@ -41,13 +41,134 @@ function Game() {
   const [showTransition, setShowTransition] = useState(false); 
   const [tempScore, setTempScore] = useState(0); 
   const [starAnimation, setStarAnimation] = useState(false);
-  
-
+  const [corectAnswers, setCorrectAnswers] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
 
-
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+  const [username, setUsername] = useState(null); 
+
+    useEffect(() => {
+        const storedSessionId = localStorage.getItem('sessionId');
+
+        if (storedSessionId) {
+          const storedUsername = localStorage.getItem('username');
+          setUsername(storedUsername); 
+        }
+      }, []);
+  
+  const getTimeMultiplierScore = (timeLeft) => {
+    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
+    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
+    return MULTIPLIER_LOW;
+  };
+
+  useEffect(() => {
+    if (location.state?.mode) {
+      setGameMode(location.state.mode);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (gameMode) {
+      fetchQuestion();
+    }
+  }, [gameMode]);
+
+  useEffect(() => {
+    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
+
+    let timeUpTriggered = false; 
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          if (!timeUpTriggered) {
+            timeUpTriggered = true; 
+            handleTimeUp(); 
+          }
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+
+      setTotalTime((t) => t + 1);
+    }, 1000);
+
+
+    return () => clearInterval(timer); 
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
+
+
+  const createUserHistory = async (score, totalTime, corectAnswers, gameMode) => {
+    try {
+      console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode);
+      const response = await axios.post(
+              `${apiEndpoint}/createUserHistory`,
+              {
+                username: username,
+                correctAnswers: corectAnswers,
+                wrongAnswers: TOTAL_ROUNDS-corectAnswers,
+                time: totalTime,
+                score: score,
+                gameMode: gameMode
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+      console.log("Respuesta del servidor:" +response.data);
+    } catch (error) {
+      console.error('Error completo:', {
+        request: error.config,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers
+      });
+      throw error; 
+    }
+};
+
+const handleTimeUp = useCallback(() => {
+    if (showFeedback || showTransition || starAnimation) return; 
+    console.log("Se ejecuta porque se acabo el tiempo");
+   
+
+    setShowFeedback(true);
+    setSelectedAnswer(null); 
+
+    setTimeout(() => {
+      setShowFeedback(false); 
+      setShowTransition(true);
+      setStarAnimation(true); 
+
+      setTimeout(async () => {
+        setShowTransition(false); 
+        setStarAnimation(false); 
+
+        if (round < TOTAL_ROUNDS) {
+          setRound((prevRound) => prevRound + 1); 
+          setTimeLeft(QUESTION_TIME); 
+          fetchQuestion();
+        } else {
+          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
+          //LLAMAR AL GATEWAY Y QUE ESTE LO REDIRECCIONE AL SERVICIO
+          try{
+            createUserHistory(score, totalTime, corectAnswers, gameMode);
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
+            
+          }catch (error){
+            console.error(error);
+          }
+        }
+      }, TRANSITION_ROUND_TIME); 
+    }, FEEDBACK_QUESTIONS_TIME); 
+  });
+
+  //const fetchQuestion = async () => {
 
   const fetchQuestion = useCallback(async () => {
     try {
@@ -63,12 +184,20 @@ function Game() {
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
+    let correct=corectAnswers;
+    let thisScore=score;
 
     if (isCorrect) {
+      console.log("Respuesta correcta = "+corectAnswers);
+      correct=corectAnswers+1;
+      setCorrectAnswers(correct);
+      console.log("Respuesta correcta = "+corectAnswers);
       const multiplier = getTimeMultiplierScore(timeLeft);
       const pointsEarned = BASE_SCORE * multiplier;
       setTempScore(pointsEarned);
-      setScore((prevScore) => prevScore + pointsEarned);
+      thisScore=score+pointsEarned;
+      setScore(thisScore);
+      console.log("Respuesta correcta = "+corectAnswers);
     } else {
       setTempScore(0);
     }
@@ -78,7 +207,7 @@ function Game() {
       setShowTransition(true);
       setStarAnimation(true);
 
-      setTimeout(() => {
+      setTimeout(async () => {
         setShowTransition(false);
         setStarAnimation(false);
 
@@ -89,47 +218,18 @@ function Game() {
           setSelectedAnswer(null);
         } else {
           let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
+          try{
+            createUserHistory(thisScore, totalTime, correct, gameMode);
+            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore:maxScore  } });
+          }catch (error){
+            console.error(error);
+          }
+          
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);
   };
 
-  
-  const handleTimeUp = useCallback(() => {
-    if (showFeedback || showTransition || starAnimation) return; 
-   
-
-    setShowFeedback(true);
-    setSelectedAnswer(null); 
-
-    setTimeout(() => {
-      setShowFeedback(false); 
-      setShowTransition(true);
-      setStarAnimation(true); 
-
-      setTimeout(() => {
-        setShowTransition(false); 
-        setStarAnimation(false); 
-
-        if (round < TOTAL_ROUNDS) {
-          setRound((prevRound) => prevRound + 1); 
-          setTimeLeft(QUESTION_TIME); 
-          fetchQuestion();
-        } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } }); 
-        }
-      }, TRANSITION_ROUND_TIME); 
-    }, FEEDBACK_QUESTIONS_TIME); 
-  }, [round, TOTAL_ROUNDS, showFeedback, showTransition, starAnimation, navigate, score, totalTime, fetchQuestion]);
-
-
-  const getTimeMultiplierScore = (timeLeft) => {
-    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
-    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
-    return MULTIPLIER_LOW;
-  };
 
   const handleImageLoad = () => {
     let opacity = 0;
