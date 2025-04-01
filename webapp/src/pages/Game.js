@@ -48,60 +48,19 @@ function Game() {
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const [username, setUsername] = useState(null); 
 
-    useEffect(() => {
-        const storedSessionId = localStorage.getItem('sessionId');
 
-        if (storedSessionId) {
-          const storedUsername = localStorage.getItem('username');
-          setUsername(storedUsername); 
-        }
-      }, []);
-  
-  const getTimeMultiplierScore = (timeLeft) => {
-    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
-    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
-    return MULTIPLIER_LOW;
-  };
-
-  useEffect(() => {
-    if (location.state?.mode) {
-      setGameMode(location.state.mode);
+  const fetchQuestion = useCallback(async () => {
+    try {
+      if (round > TOTAL_ROUNDS) return;
+      setImageLoaded(false);
+      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      setQuestionData(response.data);
+    } catch (error) {
+      console.error("Error fetching question:", error);
     }
-  }, [location.state]);
+  }, [gameMode, round, apiEndpoint]);
 
-  useEffect(() => {
-    if (gameMode) {
-      fetchQuestion();
-    }
-  }, [gameMode]);
-
-  useEffect(() => {
-    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
-
-    let timeUpTriggered = false; 
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          if (!timeUpTriggered) {
-            timeUpTriggered = true; 
-            handleTimeUp(); 
-          }
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-
-      setTotalTime((t) => t + 1);
-    }, 1000);
-
-
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
-
-
-  const createUserHistory = async (score, totalTime, corectAnswers, gameMode) => {
+  const createUserHistory = useCallback(async (score, totalTime, corectAnswers, gameMode) => {
     try {
       console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode);
       const response = await axios.post(
@@ -130,13 +89,12 @@ function Game() {
       });
       throw error; 
     }
-};
+  }, [apiEndpoint, username]);
 
-const handleTimeUp = useCallback(() => {
+  const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return; 
     console.log("Se ejecuta porque se acabo el tiempo");
    
-
     setShowFeedback(true);
     setSelectedAnswer(null); 
 
@@ -166,20 +124,8 @@ const handleTimeUp = useCallback(() => {
         }
       }, TRANSITION_ROUND_TIME); 
     }, FEEDBACK_QUESTIONS_TIME); 
-  });
+  }, [round, TOTAL_ROUNDS, showFeedback, showTransition, starAnimation, navigate, score, totalTime, fetchQuestion, corectAnswers, gameMode, createUserHistory]);
 
-  //const fetchQuestion = async () => {
-
-  const fetchQuestion = useCallback(async () => {
-    try {
-      if (round > TOTAL_ROUNDS) return;
-      setImageLoaded(false);
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
-      setQuestionData(response.data);
-    } catch (error) {
-      console.error("Error fetching question:", error);
-    }
-  }, [gameMode, round, apiEndpoint])
 
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
@@ -230,6 +176,58 @@ const handleTimeUp = useCallback(() => {
     }, FEEDBACK_QUESTIONS_TIME);
   };
 
+
+    useEffect(() => {
+        const storedSessionId = localStorage.getItem('sessionId');
+
+        if (storedSessionId) {
+          const storedUsername = localStorage.getItem('username');
+          setUsername(storedUsername); 
+        }
+      }, []);
+  
+  const getTimeMultiplierScore = (timeLeft) => {
+    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
+    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
+    return MULTIPLIER_LOW;
+  };
+
+  useEffect(() => {
+    if (location.state?.mode) {
+      setGameMode(location.state.mode);
+    }
+  }, [location.state]);
+
+  useEffect(() => {  
+    if (gameMode) {
+      fetchQuestion();
+    }
+  }, [gameMode, fetchQuestion]);
+
+  useEffect(() => {
+    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
+
+    let timeUpTriggered = false; 
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          if (!timeUpTriggered) {
+            timeUpTriggered = true; 
+            handleTimeUp(); 
+          }
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+
+      setTotalTime((t) => t + 1);
+    }, 1000);
+
+
+    return () => clearInterval(timer); 
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition, handleTimeUp, starAnimation ]);
 
   const handleImageLoad = () => {
     let opacity = 0;

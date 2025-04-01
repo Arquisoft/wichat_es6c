@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {  Container,  Typography,  Button,  Table,  TableBody,  TableCell,  TableContainer,  TableHead,  TableRow,  Paper,  CircularProgress,  Box,} from "@mui/material";
+import {  Container,  Typography,  Button,  Table,  TableBody,  TableCell,  TableContainer,  TableHead,  TableRow,  Paper,  CircularProgress} from "@mui/material";
 
 export default function UserHistory() {
   const [username, setUsername] = useState("");
