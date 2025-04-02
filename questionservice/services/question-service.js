@@ -19,7 +19,7 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
     let numberQuestions = await dataService.getNumberQuestionsByCategory(category);
     console.log(`Número de preguntas en la base de datos: ${numberQuestions} para la categoría: ${category}`);
 
-    if (numberQuestions < 10) {
+    if (numberQuestions < 5) {
       generateService.generateQuestionsByCategory(category, questionsToGenerate - numberQuestions);
 
       // Esperar hasta que haya al menos 10 preguntas en la base de datos
@@ -27,7 +27,7 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
       const retryDelay = 1000; // 1 segundo entre intentos
       let retries = 0;
 
-      while (numberQuestions < 10 ) {
+      while (numberQuestions < 4 ) {
         console.log(`Esperando más preguntas en la categoría: ${category}. Intento ${retries + 1}`);
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         numberQuestions = await dataService.getNumberQuestionsByCategory(category);
