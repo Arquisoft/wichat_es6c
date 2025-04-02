@@ -14,7 +14,7 @@ const port = 8007;
 
 // Middlewares
 app.use(cors()); // Habilita CORS para todas las rutas
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Connect to MongoDB
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/userdb';
@@ -47,7 +47,9 @@ app.post('/createUserHistory', async (req, res) => {
     });
 
     await newUserHistory.save();
+    res.json(newUserHistory);
     console.log('Historial guardado correctamente.');
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -71,3 +73,5 @@ app.get("/getUserHistory", async (req, res) => {
 const server = app.listen(port, () => {
   console.log(`History Service listening at http://localhost:${port}`);
 });
+
+module.exports = server
