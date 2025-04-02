@@ -6,8 +6,6 @@ const port = 8003;
 
 // Middleware to parse JSON in request body
 app.use(express.json());
-// Load enviornment variables
-require('dotenv').config();
 
 const allowedOrigins = ["http://localhost:3000"];
 
@@ -56,8 +54,7 @@ function validateRequiredFields(req, requiredFields) {
 }
 
 // Generic function to send questions to LLM
-async function sendQuestionToLLM(question, apiKey) {
-  const model = 'empathy'
+async function sendQuestionToLLM(question, apiKey, model = 'empathy') {
   try {
     const config = llmConfigs[model];
     if (!config) {
@@ -85,15 +82,10 @@ async function sendQuestionToLLM(question, apiKey) {
 app.post('/ask', async (req, res) => {
   try {
     // Check if required fields are present in the request body
-    validateRequiredFields(req, ['question']);
+    validateRequiredFields(req, ['question', 'model', 'apiKey']);
 
-    const { question } = req.body;
-    //load the api key from an environment variable
-    const apiKey = process.env.LLM_API_KEY;
-    if (!apiKey) {
-      return res.status(400).json({ error: 'API key is missing.' });
-    }
-    const answer = await sendQuestionToLLM(question, apiKey);
+    const { question, model, apiKey } = req.body;
+    const answer = await sendQuestionToLLM(question, apiKey, model);
     res.json({ answer });
 
   } catch (error) {

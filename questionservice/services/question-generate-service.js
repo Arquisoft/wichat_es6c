@@ -101,7 +101,7 @@ async function getIncorrectCountries(correctCountry) {
     }
 }
 
-async function processQuestionsCountry(images,category) {
+async function processQuestionsCountry(images, category) {
     for (const image of images) {
         const incorrectAnswers = await getIncorrectCountries(image.country);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
@@ -123,14 +123,14 @@ async function processQuestionsCountry(images,category) {
         await dataService.saveQuestion(newQuestion);
         console.log("Question saved:", newQuestion);
     }
-
 }
+
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
     const images = await getImagesFromWikidata(category, numImages);
  
-    if(category === 'country'){
-        processQuestionsCountry(images, category);
+    if (category === 'country') {
+        await processQuestionsCountry(images, category);
     }
 }
 

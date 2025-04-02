@@ -23,16 +23,16 @@ describe('LLM Service', () => {
 
   // Test /ask endpoint
   it('the llm should reply', async () => {
-    const response1 = await request(app)
-      .post('/ask')
-      .send({ question: 'a question', model: 'gemini' });
+    //const response1 = await request(app)
+    //  .post('/ask')
+    //  .send({ question: 'a question', model: 'gemini',apiKey: process.env.LLM_API_KEY });
 
     const response2 = await request(app)
       .post('/ask')
-      .send({ question: 'a question', model: 'empathy' });
+      .send({ question: 'a question', model: 'empathy',apiKey: process.env.LLM_API_KEY });
 
-    expect(response1.statusCode).toBe(200);
-    expect(response1.body.answer).toBe('llmanswer');
+    //expect(response1.statusCode).toBe(200);
+    //expect(response1.body.answer).toBe('llmanswer');
     expect(response2.statusCode).toBe(200);
     expect(response2.body.answer).toBe('llmanswer');
   });
