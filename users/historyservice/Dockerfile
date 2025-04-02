@@ -2,7 +2,7 @@
 FROM node:22
 
 # Set the working directory in the container
-WORKDIR /usr/src/llmservice
+WORKDIR /usr/src/historyservice
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 8003
+EXPOSE 8007
 
 # Define the command to run your app
-CMD ["node", "llm-service.js"]
+CMD ["node", "history-service.js"]
