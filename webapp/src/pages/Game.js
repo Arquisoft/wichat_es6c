@@ -112,10 +112,9 @@ function Game() {
           setTimeLeft(QUESTION_TIME); 
           fetchQuestion();
         } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          //LLAMAR AL GATEWAY Y QUE ESTE LO REDIRECCIONE AL SERVICIO
           try{
             createUserHistory(score, totalTime, corectAnswers, gameMode);
+            let maxScore = TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
             navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
             
           }catch (error){
@@ -479,8 +478,8 @@ function Game() {
             const isSelected = selectedAnswer === option; 
             const isCorrect = option === questionData.correctAnswer;
 
-            const backgroundColor = index % 2 === 0 ? "#6A0DAD" : "#A680C5"; // Morado y morado menos claro
-            const hoverColor = index % 2 === 0 ? "#5A0C9A" : "#8F6BAF"; // Tonos más oscuros para hover
+            const backgroundColor =  "#6A0DAD";
+            const hoverColor = "#8F6BAF"; 
 
 
             return (

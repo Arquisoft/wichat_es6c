@@ -9,8 +9,7 @@ const GameFinished = () => {
 
   const [score, setScore] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
-
-  const TOTAL_POINTS = 100;
+  const [maxScore, setMaxScore] = useState(0);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -19,6 +18,7 @@ const GameFinished = () => {
     if (location.state) {
       setScore(location.state.score);
       setTotalTime(location.state.totalTime);
+      setMaxScore(location.state.maxScore);
     }
 
     // Handle the size of the window - confetti
@@ -36,7 +36,7 @@ const GameFinished = () => {
   };
 
   const handleGoToHistorical = () => {
-    navigate('/login'); 
+    navigate('/history'); 
   };
 
   return (
@@ -69,7 +69,7 @@ const GameFinished = () => {
         }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Puntuación Final</Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
-            {score} / {TOTAL_POINTS}
+            {score} / {maxScore}
           </Typography>
         </Box>
 
