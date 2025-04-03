@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const Question = require('../models/question-model');
+const Question = require('./models/question-model');
 const axios = require('axios');
 var generateService = "";
 let mongoServer;
@@ -72,7 +72,7 @@ beforeAll(async () => {
   const uri = mongoServer.getUri();
   // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
   process.env.MONGODB_URI = uri;
-  generateService = require('../services/question-generate-service');
+  generateService = require('./services/question-generate-service');
   
 });
 
