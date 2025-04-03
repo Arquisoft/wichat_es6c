@@ -16,7 +16,8 @@ module.exports = {
             return numberQuestions;
 
         }catch (error) {
-            res.status(500).json({ error: error.message });
+            console.error("Error counting questions:", error);
+            throw new Error(error.message);
 
         }
 
@@ -29,7 +30,8 @@ module.exports = {
             await newQuestion.save();
 
         }catch (error) {
-            res.status(500).json({ error: error.message });
+            console.error("Error saving question:", error);
+            throw new Error(error.message);
 
         }
     },
@@ -45,7 +47,7 @@ module.exports = {
 
         } catch (error) {
             console.error('Error deleting question:', error.message);
-            return error.message;
+            throw new Error(error.message);
         }
     },
 
