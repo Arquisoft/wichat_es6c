@@ -218,10 +218,9 @@ export default function UserHistory() {
       )}
 
 {leaderboard.length > 0 && (
-  
-  <Box sx={{ mt: 3 }}>
+  <Box sx={{ mt: 3, height: { xs: 300, sm: 400, md: 500 } }}> {/* Dynamic height based on screen size */}
     <Typography variant="h5" gutterBottom>Ranking Global</Typography>
-    <ResponsiveContainer width="100%" height={"20%"}>
+    <ResponsiveContainer width="100%" height="70%"> {/* Adjust height dynamically */}
       <BarChart
         data={leaderboard}
         layout="vertical"
