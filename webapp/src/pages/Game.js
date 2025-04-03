@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress} from "@mui/material";
+import React, { useState, useEffect,useCallback } from "react";
+import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat"; 
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star"; 
 import Chat from "../components/Chat";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 function Game() {
   const QUESTION_TIME = 60;
-  const TOTAL_ROUNDS = 2;
+  const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
-  const FEEDBACK_QUESTIONS_TIME = 2000; // 2 segundos (2000 ms)
-  const TRANSITION_ROUND_TIME = 5000; // 5 segundos (5000 ms)
+  const FEEDBACK_QUESTIONS_TIME = 1000; // 1 segundo (1000 ms)
+  const TRANSITION_ROUND_TIME = 3000; // 3 segundos (3000 ms)
   
   
   const MULTIPLIER_HIGH = 2.0;
@@ -25,7 +25,7 @@ function Game() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [score, setScore] = useState(0); 
+  const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
   const [round, setRound] = useState(1);
@@ -33,8 +33,9 @@ function Game() {
 
 
   const [questionData, setQuestionData] = useState(null);
+  const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageOpacity, setImageOpacity] = useState(0);
+  const imageOpacity=0;
 
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -42,23 +43,72 @@ function Game() {
   const [tempScore, setTempScore] = useState(0); 
   const [starAnimation, setStarAnimation] = useState(false);
   const [corectAnswers, setCorrectAnswers] = useState(0);
+  const [animationComplete, setAnimationComplete] = useState(false); // Nuevo estado para controlar la animación
+  
+
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
-
-  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const [username, setUsername] = useState(null); 
 
+
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+
+  useEffect(() => {
+          const storedSessionId = localStorage.getItem('sessionId');
+  
+          if (storedSessionId) {
+            const storedUsername = localStorage.getItem('username');
+            setUsername(storedUsername); 
+          }
+        }, []);
+  
+  const getTimeMultiplierScore = (timeLeft) => {
+    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
+    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
+    return MULTIPLIER_LOW;
+  };
+
+  const handleImageLoad = () => {
+    let opacity = 0;
+
+    const fadeIn = setInterval(() => {
+      opacity += 0.1;
+
+      // Actualizar directamente el estilo del elemento en lugar de usar el estado
+      const imgElement = document.querySelector("img[alt='Imagen de la pregunta']");
+      if (imgElement) {
+        imgElement.style.opacity = opacity;
+      }
+
+      if (opacity >= 1) {
+        clearInterval(fadeIn);
+        setImageLoaded(true); // Marcar la imagen como cargada
+      }
+    }, 100);
+  };
+
+  const preloadNextQuestion = useCallback(async () => {
+    try {
+      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      setNextQuestionData(response.data); // Guardar la pregunta precargada
+    } catch (error) {
+      console.error("Error preloading next question:", error);
+    }
+  }, [ apiEndpoint, gameMode,setNextQuestionData]);
 
   const fetchQuestion = useCallback(async () => {
     try {
       if (round > TOTAL_ROUNDS) return;
-      setImageLoaded(false);
+      setImageLoaded(false); 
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setQuestionData(response.data);
+
+      // Iniciar la precarga de la siguiente pregunta
+      preloadNextQuestion();
     } catch (error) {
       console.error("Error fetching question:", error);
     }
-  }, [gameMode, round, apiEndpoint]);
+  }, [round, TOTAL_ROUNDS, apiEndpoint, gameMode, preloadNextQuestion]);
 
   const createUserHistory = useCallback(async (score, totalTime, corectAnswers, gameMode) => {
     try {
@@ -89,43 +139,106 @@ function Game() {
       });
       throw error; 
     }
-  }, [apiEndpoint, username]);
+  },[apiEndpoint, username]);
+  
+  const handleNextRound = useCallback(() => {
+    if (nextQuestionData) {
+      setQuestionData(nextQuestionData); // Usar la pregunta precargada
+      setNextQuestionData(null); // Limpiar la pregunta precargada
+
+      // Iniciar la precarga de la siguiente pregunta
+      preloadNextQuestion();
+    } else {
+      fetchQuestion(); // Si no hay pregunta precargada, cargar una nueva
+    }
+
+    setRound((prevRound) => prevRound + 1); // Incrementar la ronda
+    setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
+    setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
+  },[nextQuestionData, fetchQuestion, preloadNextQuestion]);
 
   const handleTimeUp = useCallback(() => {
-    if (showFeedback || showTransition || starAnimation) return; 
-    console.log("Se ejecuta porque se acabo el tiempo");
-   
+    if (showFeedback || showTransition || starAnimation) return;
+
     setShowFeedback(true);
-    setSelectedAnswer(null); 
+    setSelectedAnswer(null);
 
     setTimeout(() => {
-      setShowFeedback(false); 
+      setShowFeedback(false);
       setShowTransition(true);
-      setStarAnimation(true); 
 
-      setTimeout(async () => {
-        setShowTransition(false); 
-        setStarAnimation(false); 
+      // Activar la animación de la estrella solo si no está ya activa
+      if (!starAnimation) {
+        setStarAnimation(true);
+      }
 
-        if (round < TOTAL_ROUNDS) {
-          setRound((prevRound) => prevRound + 1); 
-          setTimeLeft(QUESTION_TIME); 
-          fetchQuestion();
-        } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
-          //LLAMAR AL GATEWAY Y QUE ESTE LO REDIRECCIONE AL SERVICIO
+      // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
+      if (round < TOTAL_ROUNDS) {
+        handleNextRound(); // Cargar la siguiente pregunta y avanzar la ronda
+      }
+
+      // Finalizar la animación de la estrella después de un tiempo fijo
+      setTimeout(() => {
+        setStarAnimation(false); // Desactivar la animación de la estrella
+        setShowTransition(false);
+
+        if (round >= TOTAL_ROUNDS) {
+          let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try{
-            createUserHistory(score, totalTime, corectAnswers, gameMode);
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore:maxScore  } });
-            
+            createUserHistory(score, totalTime, round, gameMode);
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore } });
           }catch (error){
             console.error(error);
           }
+          
         }
-      }, TRANSITION_ROUND_TIME); 
-    }, FEEDBACK_QUESTIONS_TIME); 
-  }, [round, TOTAL_ROUNDS, showFeedback, showTransition, starAnimation, navigate, score, totalTime, fetchQuestion, corectAnswers, gameMode, createUserHistory]);
+      }, TRANSITION_ROUND_TIME); // Duración fija para la animación
+    }, FEEDBACK_QUESTIONS_TIME);
+  },[showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate,createUserHistory, gameMode]);
 
+  useEffect(() => {
+    if (location.state?.mode) {
+      setGameMode(location.state.mode);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (gameMode) {
+      fetchQuestion();
+    }
+  }, [gameMode,fetchQuestion]);
+
+  useEffect(() => {
+    if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;
+
+    let timeUpTriggered = false; 
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          if (!timeUpTriggered) {
+            timeUpTriggered = true; 
+            handleTimeUp(); 
+          }
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+
+      setTotalTime((t) => t + 1);
+    }, 1000);
+
+
+    return () => clearInterval(timer); 
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition,handleTimeUp, starAnimation]);
+
+  useEffect(() => {
+    if (animationComplete && imageLoaded) {
+      setAnimationComplete(false); // Resetear el estado de la animación
+      setTimeLeft(QUESTION_TIME); // Iniciar el temporizador solo después de que todo esté listo
+    }
+  }, [animationComplete, imageLoaded]); 
 
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
@@ -151,133 +264,33 @@ function Game() {
     setTimeout(() => {
       setShowFeedback(false);
       setShowTransition(true);
-      setStarAnimation(true);
 
-      setTimeout(async () => {
+      // Activar la animación de la estrella solo si no está ya activa
+      if (!starAnimation) {
+        setStarAnimation(true);
+      }
+
+      // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
+      if (round < TOTAL_ROUNDS) {
+        handleNextRound(); // Cargar la siguiente pregunta y precargar la imagen
+      }
+
+      setTimeout(() => {
         setShowTransition(false);
         setStarAnimation(false);
 
-        if (round < TOTAL_ROUNDS) {
-          setRound((prevRound) => prevRound + 1);
-          fetchQuestion();
-          setTimeLeft(QUESTION_TIME); 
-          setSelectedAnswer(null);
-        } else {
-          let maxScore=TOTAL_ROUNDS*BASE_SCORE*MULTIPLIER_HIGH;
+        if (round >= TOTAL_ROUNDS) {
+          let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try{
             createUserHistory(thisScore, totalTime, correct, gameMode);
             navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore:maxScore  } });
           }catch (error){
             console.error(error);
           }
-          
         }
       }, TRANSITION_ROUND_TIME);
     }, FEEDBACK_QUESTIONS_TIME);
   };
-
-
-    useEffect(() => {
-        const storedSessionId = localStorage.getItem('sessionId');
-
-        if (storedSessionId) {
-          const storedUsername = localStorage.getItem('username');
-          setUsername(storedUsername); 
-        }
-      }, []);
-  
-  const getTimeMultiplierScore = (timeLeft) => {
-    if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
-    if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
-    return MULTIPLIER_LOW;
-  };
-
-  useEffect(() => {
-    if (location.state?.mode) {
-      setGameMode(location.state.mode);
-    }
-  }, [location.state]);
-
-  useEffect(() => {  
-    if (gameMode) {
-      fetchQuestion();
-    }
-  }, [gameMode, fetchQuestion]);
-
-  useEffect(() => {
-    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
-
-    let timeUpTriggered = false; 
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          if (!timeUpTriggered) {
-            timeUpTriggered = true; 
-            handleTimeUp(); 
-          }
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-
-      setTotalTime((t) => t + 1);
-    }, 1000);
-
-
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition, handleTimeUp, starAnimation ]);
-
-  const handleImageLoad = () => {
-    let opacity = 0;
-    const fadeIn = setInterval(() => {
-      opacity += 0.1;
-      setImageOpacity(opacity);
-      if (opacity >= 1) {
-        clearInterval(fadeIn);
-        setImageLoaded(true);
-      }
-    }, 100);
-  };
-
-  useEffect(() => {
-    if (location.state?.mode) {
-      setGameMode(location.state.mode);
-    }
-  }, [location.state]);
-
-  useEffect(() => {  
-    if (gameMode) {
-      fetchQuestion();
-    }
-  }, [gameMode, fetchQuestion]);
-
-  useEffect(() => {
-    if (!questionData || !imageLoaded || starAnimation ||showFeedback || showTransition) return;
-
-    let timeUpTriggered = false; 
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          if (!timeUpTriggered) {
-            timeUpTriggered = true; 
-            handleTimeUp(); 
-          }
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-
-      setTotalTime((t) => t + 1);
-    }, 1000);
-
-
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition, handleTimeUp, starAnimation ]);
-
 
 
   if (!questionData) {
@@ -332,27 +345,32 @@ function Game() {
             <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} /> 
           </Box>
   
-          <AnimatePresence>
-            {starAnimation && (
-              <motion.div
-                
-                style={{
-                  position: "absolute",
-                  top: "35%",
-                  left: "33%",
-                  fontSize: "2.5rem", 
-                  fontWeight: "bold",
-                  color: "#333",
-                }}
-              >
-                +{tempScore}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {starAnimation && (
+            <motion.div
+              style={{
+                position: "absolute",
+                top: "50%", // Centrar verticalmente
+                left: "50%", // Centrar horizontalmente
+                transform: "translate(-50%, -50%)", // Ajustar para centrar completamente
+                fontSize: "2.5rem", 
+                fontWeight: "bold",
+                color: "#333",
+              }}
+            >
+              +{tempScore}
+            </motion.div>
+          )}
         </Box>
   
         {/* Puntuación total */}
-        <Typography variant="h5" sx={{ mt: 5, color: "#666" }}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 5,
+            color: "#666",
+            textAlign: "center",
+          }}
+        >
           Puntuación total: {score}
         </Typography>
       </Box>

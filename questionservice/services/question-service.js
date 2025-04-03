@@ -11,14 +11,28 @@ app.use(express.json());
 
 
 app.get('/getQuestionsDb/:category', async (req, res) => {
-  try{
-    const questionsToGenerate = 50;
-
+  try {
     const category = req.params.category;
-    const numberQuestions = await dataService.getNumberQuestionsByCategory(category);
-    console.log("Numero de preguntas " + numberQuestions + " category " + category);
-    if(numberQuestions < 10){
-        await generateService.generateQuestionsByCategory(category,questionsToGenerate);
+
+    // Verificar y generar preguntas si es necesario
+    const questionsToGenerate = 20;
+    let numberQuestions = await dataService.getNumberQuestionsByCategory(category);
+    console.log(`Número de preguntas en la base de datos: ${numberQuestions} para la categoría: ${category}`);
+
+    if (numberQuestions < 5) {
+      generateService.generateQuestionsByCategory(category, questionsToGenerate - numberQuestions);
+
+      // Esperar hasta que haya al menos 10 preguntas en la base de datos
+      const maxRetries = 10; // Máximo de intentos
+      const retryDelay = 1000; // 1 segundo entre intentos
+      let retries = 0;
+
+      while (numberQuestions < 4 ) {
+        console.log(`Esperando más preguntas en la categoría: ${category}. Intento ${retries + 1}`);
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        numberQuestions = await dataService.getNumberQuestionsByCategory(category);
+        retries++;
+      }
     }
 
     const question = await dataService.getRandomQuestionByCategory(category);
@@ -27,13 +41,9 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
       return res.status(404).json({ message: "There are no more questions available." });
     }
 
-    
-    dataService.deleteQuestionById(question._id);
-    
+    await dataService.deleteQuestionById(question._id);
     res.json(question);
-
-
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
