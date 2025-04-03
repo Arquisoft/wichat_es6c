@@ -497,8 +497,8 @@ function Game() {
             const isSelected = selectedAnswer === option; 
             const isCorrect = option === questionData.correctAnswer;
 
-            const backgroundColor = index % 2 === 0 ? "#6A0DAD" : "#A680C5"; // Morado y morado menos claro
-            const hoverColor = index % 2 === 0 ? "#5A0C9A" : "#8F6BAF"; // Tonos más oscuros para hover
+            const backgroundColor =  "#6A0DAD";
+            const hoverColor = "#8F6BAF"; 
 
 
             return (
@@ -595,7 +595,7 @@ function Game() {
           <Chat questionData={questionData} />
         </Box>
         )}
-</Box>
+    </Box>
 
      
     </Stack>
