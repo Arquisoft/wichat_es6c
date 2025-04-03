@@ -112,9 +112,7 @@ app.get('/getLeaderboard', async (req, res) => {
   }
 });
 
-
 //-----------------------------
-
 
 app.post('/login', async (req, res) => {
   try {
