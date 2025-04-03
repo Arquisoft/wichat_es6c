@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Divider } from "@mui/material";
-import { History, Person, Settings, Logout, Description, MoreVert } from "@mui/icons-material";
+import { Person, Settings, Logout, Description, MoreVert } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 
