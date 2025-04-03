@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography,Button, IconButton, Menu, MenuItem, Divider
 import { MoreVert, History, Person, Settings, Logout } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
+
 const NavMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -29,6 +30,10 @@ const NavMenu = () => {
 
   const handleRegister = async () => {
     navigate('/register');  
+  };
+
+  const handleHistory = async () => {
+    navigate('/history');
   };
 
 
@@ -58,7 +63,7 @@ const NavMenu = () => {
                   <Settings sx={{ mr: 1 }} /> Ajustes
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleMenuClose}>
+                <MenuItem onClick={handleHistory}>
                   <History sx={{ mr: 1 }} /> Ver Histórico
                 </MenuItem>
                 <Divider />

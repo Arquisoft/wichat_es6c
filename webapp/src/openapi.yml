@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: API de Historial de Usuarios
+  description: API para gestionar el historial de juegos de los usuarios.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Servidor del Gateway
+
+paths:
+  /createUserHistory:
+    post:
+      summary: Crear un historial de usuario
+      description: Registra una nueva entrada en el historial de juegos de un usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "juanperez"
+                correctAnswers:
+                  type: integer
+                  example: 5
+                wrongAnswers:
+                  type: integer
+                  example: 2
+                time:
+                  type: integer
+                  example: 120
+                score:
+                  type: integer
+                  example: 500
+                gameMode:
+                  type: string
+                  example: "Geography"
+      responses:
+        200:
+          description: Historial creado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: "juanperez"
+                  correctAnswers:
+                    type: integer
+                    example: 5
+                  wrongAnswers:
+                    type: integer
+                    example: 2
+                  time:
+                    type: integer
+                    example: 120
+                  score:
+                    type: integer
+                    example: 500
+                  gameMode:
+                    type: string
+                    example: "Geography"
+        400:
+          description: Error en los datos enviados
+        500:
+          description: Error en el servidor
+
+  /getUserHistory:
+    get:
+      summary: Obtener historial de un usuario
+      description: Retorna el historial de juegos de un usuario específico.
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Nombre de usuario del cual se quiere obtener el historial.
+          schema:
+            type: string
+            example: "juanperez"
+      responses:
+        200:
+          description: Historial obtenido correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: "juanperez"
+                        correctAnswers:
+                          type: integer
+                          example: 5
+                        wrongAnswers:
+                          type: integer
+                          example: 2
+                        time:
+                          type: integer
+                          example: 120
+                        score:
+                          type: integer
+                          example: 500
+                        gameMode:
+                          type: string
+                          example: "Geography"
+        400:
+          description: Se requiere un username
+        500:
+          description: Error en el servidor

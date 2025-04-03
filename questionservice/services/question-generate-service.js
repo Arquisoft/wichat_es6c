@@ -27,6 +27,16 @@ const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, numImages) {
+    
+    if (!wikidataCategoriesQueries[category]) {
+        console.error(`Category ${category} not found in queries.`);
+        throw new Error("The given category does not exist: ", category);
+    }
+    if(!numImages || numImages <= 0 || isNaN(numImages)){
+        // Verifica si numImages es un número positivo{
+        console.error(`numImages must be a positive number`);
+        throw new Error("numImages must be a positive number");
+    }
     // Acceder directamente a la consulta correspondiente a la categoría dada
     const categoryQueries = wikidataCategoriesQueries[category];
 
@@ -102,6 +112,7 @@ async function getIncorrectCountries(correctCountry) {
 }
 
 async function processQuestionsCountry(images, category) {
+    let questions=[];
     for (const image of images) {
         const incorrectAnswers = await getIncorrectCountries(image.country);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
@@ -119,19 +130,29 @@ async function processQuestionsCountry(images, category) {
             category: category,
             imageUrl: image.imageUrl
         };
+        questions.push(newQuestion);
 
         await dataService.saveQuestion(newQuestion);
         console.log("Question saved:", newQuestion);
+
     }
+    console.error("Images retrieved:", questions);
+    return questions;
 }
 
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
-    const images = await getImagesFromWikidata(category, numImages);
- 
-    if (category === 'country') {
-        await processQuestionsCountry(images, category);
+    try{
+        const images = await getImagesFromWikidata(category, numImages);
+    
+        if (category === 'country') {
+            return await processQuestionsCountry(images, category);
+        }
+    }catch (error) {
+        console.error("Error generating questions:", error.message);
+        throw new Error(error.message);
     }
+    return [];
 }
 
 module.exports = {
