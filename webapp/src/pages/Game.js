@@ -35,7 +35,7 @@ function Game() {
   const [questionData, setQuestionData] = useState(null);
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageOpacity, setImageOpacity] = useState(0);
+  const imageOpacity=0;
 
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -87,51 +87,30 @@ function Game() {
     }, 100);
   };
 
-  useEffect(() => {
-    if (location.state?.mode) {
-      setGameMode(location.state.mode);
+  const preloadNextQuestion = useCallback(async () => {
+    try {
+      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      setNextQuestionData(response.data); // Guardar la pregunta precargada
+    } catch (error) {
+      console.error("Error preloading next question:", error);
     }
-  }, [location.state]);
+  }, [ apiEndpoint, gameMode,setNextQuestionData]);
 
-  useEffect(() => {
-    if (gameMode) {
-      fetchQuestion();
+  const fetchQuestion = useCallback(async () => {
+    try {
+      if (round > TOTAL_ROUNDS) return;
+      setImageLoaded(false); 
+      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      setQuestionData(response.data);
+
+      // Iniciar la precarga de la siguiente pregunta
+      preloadNextQuestion();
+    } catch (error) {
+      console.error("Error fetching question:", error);
     }
-  }, [gameMode]);
+  }, [round, TOTAL_ROUNDS, apiEndpoint, gameMode, preloadNextQuestion]);
 
-  useEffect(() => {
-    if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;
-
-    let timeUpTriggered = false; 
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          if (!timeUpTriggered) {
-            timeUpTriggered = true; 
-            handleTimeUp(); 
-          }
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-
-      setTotalTime((t) => t + 1);
-    }, 1000);
-
-
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition]);
-
-  useEffect(() => {
-    if (animationComplete && imageLoaded) {
-      setAnimationComplete(false); // Resetear el estado de la animación
-      setTimeLeft(QUESTION_TIME); // Iniciar el temporizador solo después de que todo esté listo
-    }
-  }, [animationComplete, imageLoaded]);
-
-  const createUserHistory = async (score, totalTime, corectAnswers, gameMode) => {
+  const createUserHistory = useCallback(async (score, totalTime, corectAnswers, gameMode) => {
     try {
       console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode);
       const response = await axios.post(
@@ -160,7 +139,23 @@ function Game() {
       });
       throw error; 
     }
-  };
+  },[apiEndpoint, username]);
+  
+  const handleNextRound = useCallback(() => {
+    if (nextQuestionData) {
+      setQuestionData(nextQuestionData); // Usar la pregunta precargada
+      setNextQuestionData(null); // Limpiar la pregunta precargada
+
+      // Iniciar la precarga de la siguiente pregunta
+      preloadNextQuestion();
+    } else {
+      fetchQuestion(); // Si no hay pregunta precargada, cargar una nueva
+    }
+
+    setRound((prevRound) => prevRound + 1); // Incrementar la ronda
+    setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
+    setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
+  },[nextQuestionData, fetchQuestion, preloadNextQuestion]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
@@ -199,46 +194,51 @@ function Game() {
         }
       }, TRANSITION_ROUND_TIME); // Duración fija para la animación
     }, FEEDBACK_QUESTIONS_TIME);
-  });
+  },[showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate,createUserHistory, gameMode]);
 
-  const fetchQuestion = useCallback(async () => {
-    try {
-      if (round > TOTAL_ROUNDS) return;
-      setImageLoaded(false); 
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
-      setQuestionData(response.data);
-
-      // Iniciar la precarga de la siguiente pregunta
-      preloadNextQuestion();
-    } catch (error) {
-      console.error("Error fetching question:", error);
+  useEffect(() => {
+    if (location.state?.mode) {
+      setGameMode(location.state.mode);
     }
-  });
+  }, [location.state]);
 
-  const preloadNextQuestion = useCallback(async () => {
-    try {
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
-      setNextQuestionData(response.data); // Guardar la pregunta precargada
-    } catch (error) {
-      console.error("Error preloading next question:", error);
+  useEffect(() => {
+    if (gameMode) {
+      fetchQuestion();
     }
-  });
+  }, [gameMode,fetchQuestion]);
 
-  const handleNextRound = useCallback(() => {
-    if (nextQuestionData) {
-      setQuestionData(nextQuestionData); // Usar la pregunta precargada
-      setNextQuestionData(null); // Limpiar la pregunta precargada
+  useEffect(() => {
+    if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;
 
-      // Iniciar la precarga de la siguiente pregunta
-      preloadNextQuestion();
-    } else {
-      fetchQuestion(); // Si no hay pregunta precargada, cargar una nueva
+    let timeUpTriggered = false; 
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          if (!timeUpTriggered) {
+            timeUpTriggered = true; 
+            handleTimeUp(); 
+          }
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+
+      setTotalTime((t) => t + 1);
+    }, 1000);
+
+
+    return () => clearInterval(timer); 
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition,handleTimeUp, starAnimation]);
+
+  useEffect(() => {
+    if (animationComplete && imageLoaded) {
+      setAnimationComplete(false); // Resetear el estado de la animación
+      setTimeLeft(QUESTION_TIME); // Iniciar el temporizador solo después de que todo esté listo
     }
-
-    setRound((prevRound) => prevRound + 1); // Incrementar la ronda
-    setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
-    setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
-  });
+  }, [animationComplete, imageLoaded]); 
 
   const handleAnswer = (isCorrect, selectedOption) => {
     setSelectedAnswer(selectedOption);
@@ -349,8 +349,9 @@ function Game() {
             <motion.div
               style={{
                 position: "absolute",
-                top: "35%",
-                left: "33%",
+                top: "50%", // Centrar verticalmente
+                left: "50%", // Centrar horizontalmente
+                transform: "translate(-50%, -50%)", // Ajustar para centrar completamente
                 fontSize: "2.5rem", 
                 fontWeight: "bold",
                 color: "#333",
@@ -362,7 +363,14 @@ function Game() {
         </Box>
   
         {/* Puntuación total */}
-        <Typography variant="h5" sx={{ mt: 5, color: "#666" }}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 5,
+            color: "#666",
+            textAlign: "center",
+          }}
+        >
           Puntuación total: {score}
         </Typography>
       </Box>
