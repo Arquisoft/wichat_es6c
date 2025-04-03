@@ -11,12 +11,12 @@ import Home from './pages/Home';
 import GameMode from './pages/GameMode';
 import Game from './pages/Game';
 import GameFinished from './pages/GameFinished';
-import History from './pages/History';
-import SwaggerDocs from './pages/SwaggerDocs';  
+import History from './pages/History'; 
+
 function App() {
 
   return (
-    
+
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           { <NavBar />}
           <Routes>
@@ -28,11 +28,10 @@ function App() {
             <Route path="/game" element={<PrivateRoute element={Game} />} />
             <Route path="/game-finished" element={<PrivateRoute element={GameFinished} />} />
             <Route path="/history" element={<PrivateRoute element={History} />} />
-            <Route path="/api-docs" element={<SwaggerDocs />} />
           </Routes>
+          
           {/* <Footer /> */}
       </Box>
-    
    
   );
 }

@@ -89,6 +89,29 @@ app.get("/getUserHistory", async (req, res) => {
   }
 });
 
+// Obtener estadísticas de usuario
+app.get('/getUserStats', async (req, res) => {
+  try {
+    const { username } = req.query;
+    if (!username) return res.status(400).json({ error: "Se requiere un username" });
+    
+    const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener estadísticas", details: error.message });
+  }
+});
+
+// Obtener ranking global
+app.get('/getLeaderboard', async (req, res) => {
+  try {
+    const response = await axios.get(`${historyServiceUrl}/getLeaderboard`);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener ranking", details: error.message });
+  }
+});
+
 
 //-----------------------------
 
