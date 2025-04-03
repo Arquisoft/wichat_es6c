@@ -11,29 +11,27 @@ import Home from './pages/Home';
 import GameMode from './pages/GameMode';
 import Game from './pages/Game';
 import GameFinished from './pages/GameFinished';
+import History from './pages/History'; 
+
 function App() {
 
   return (
-    
+
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-           { <NavBar />}
+          { <NavBar />}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/homepage" element={<PrivateRoute element={UserHome} />} />
-            {/* <Footer /> 
-            <Route path="/game-mode2" element={<GameMode/>} />
-            <Route path="/game2" element={<Game/>} />
-            <Route path="/game-finished2" element={<GameFinished/>} />
-            */}
             <Route path="/game-mode" element={<PrivateRoute element={GameMode} />} />
             <Route path="/game" element={<PrivateRoute element={Game} />} />
             <Route path="/game-finished" element={<PrivateRoute element={GameFinished} />} />
+            <Route path="/history" element={<PrivateRoute element={History} />} />
           </Routes>
+          
           {/* <Footer /> */}
       </Box>
-    
    
   );
 }

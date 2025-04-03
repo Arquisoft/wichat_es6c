@@ -2,12 +2,10 @@ openapi: 3.1.0
 info:
   title: API de Historial de Usuarios
   description: API para gestionar el historial de juegos de los usuarios.
-  version: 1.2.0
+  version: 1.0.0
 servers:
-   - url: http://localhost:8000
-     description: Development server
-   - url: http://SOMEIP:8000
-     description: Production server
+  - url: http://localhost:8000
+    description: Servidor del Gateway
 
 paths:
   /createUserHistory:
@@ -117,69 +115,3 @@ paths:
           description: Se requiere un username
         500:
           description: Error en el servidor
-  /getUserStats:
-    get:
-      summary: Obtener estadísticas de usuario
-      description: Obtiene las estadísticas del usuario, como el número de juegos jugados, respuestas correctas, respuestas incorrectas, entre otras.
-      parameters:
-        - name: username
-          in: query
-          required: true
-          description: Nombre de usuario para obtener las estadísticas.
-          schema:
-            type: string
-            example: "juanperez"
-      responses:
-        200:
-          description: Estadísticas del usuario obtenidas correctamente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                    example: "juanperez"
-                  totalGames:
-                    type: integer
-                    example: 10
-                  correctAnswers:
-                    type: integer
-                    example: 50
-                  wrongAnswers:
-                    type: integer
-                    example: 20
-                  averageScore:
-                    type: number
-                    format: float
-                    example: 450.5
-        400:
-          description: Se requiere un username
-        500:
-          description: Error al obtener estadísticas
-
-  /getLeaderboard:
-    get:
-      summary: Obtener ranking global
-      description: Obtiene el ranking global de los usuarios basado en sus puntajes.
-      responses:
-        200:
-          description: Ranking global obtenido correctamente
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    username:
-                      type: string
-                      example: "juanperez"
-                    score:
-                      type: integer
-                      example: 1200
-                    rank:
-                      type: integer
-                      example: 1
-        500:
-          description: Error al obtener el ranking

@@ -38,25 +38,49 @@ services:
     environment:
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
+  historyservice:
+    container_name: historyservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/historyservice:latest
+    profiles: ["dev", "prod"]
+    build: ./users/historyservice
+    depends_on:
+      - mongodb
+    ports:
+      - "8007:8007"
+    networks:
+      - mynetwork
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/userdb   
+
   llmservice:
     container_name: llmservice-wichat_es6c
     image: ghcr.io/arquisoft/wichat_es6c/llmservice:latest
     profiles: ["dev", "prod"]
-    build: ./llmservice
+    env_file:
+      - .env
+    build: 
+      context: ./llmservice
     ports:
       - "8003:8003"
     networks:
       - mynetwork
+    environment:
+      - LLM_API_KEY=${LLM_API_KEY}
 
   questionservice:
     container_name: questionservice-wichat_es6c
     image: ghcr.io/arquisoft/wichat_es6c/questionservice:latest
     profiles: ["dev", "prod"]
     build: ./questionservice
+    depends_on:
+      - mongodb
     ports:
       - "8004:8004"
     networks:
       - mynetwork
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/questiondb
+      
 
   gatewayservice:
     container_name: gatewayservice-wichat_es6c
@@ -68,6 +92,7 @@ services:
       - userservice
       - authservice
       - llmservice
+      - questionservice
     ports:
       - "8000:8000"
     networks:
@@ -75,16 +100,15 @@ services:
     environment:
       AUTH_SERVICE_URL: http://authservice:8002
       USER_SERVICE_URL: http://userservice:8001
+      HISTORY_SERVICE_URL: http://historyservice:8007
       LLM_SERVICE_URL: http://llmservice:8003
+      QUESTION_SERVICE_URL: http://questionservice:8004
 
   webapp:
     container_name: webapp-wichat_es6c
     image: ghcr.io/arquisoft/wichat_es6c/webapp:latest
     profiles: ["dev", "prod"]
-    build: 
-      context: ./webapp
-      args:
-        LLM_API_KEY: ${LLM_API_KEY}
+    build: ./webapp
     depends_on:
       - gatewayservice
     ports:
