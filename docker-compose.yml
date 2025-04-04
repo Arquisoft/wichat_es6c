@@ -93,6 +93,7 @@ services:
       - authservice
       - llmservice
       - questionservice
+      - historyservice
     ports:
       - "8000:8000"
     networks:
