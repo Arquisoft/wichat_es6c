@@ -1,0 +1,27 @@
+.MuiAppBar-root {
+    position:static;
+    background-color: #9b33c0  !important;
+}
+
+.MuiToolbar-root {
+    display: flex ;
+    justify-content:  space-between;
+}
+
+.MuiToolbar-root .MuiIconButton-root {
+  padding:  0;
+  background: transparent;
+}
+
+.MuiAppBar-root .MuiBox-root {
+    display: flex;
+    align-items: center;
+    gap: 3 ;
+}
+
+.nav-menu-login-buttons{
+    display: flex !important;
+    align-items: safe !important;
+    gap: 2  !important;
+}
+
