@@ -28,6 +28,43 @@ const questions = [
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     }
 ];
+const fullQuestions = [
+    {
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Singapur", "Guatemala", "Paraguay", "Polonia"],
+        correctAnswer: "Polonia",
+        category: "country",
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Szczecin%20aerial%203a.jpg"
+    },
+    {
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Turquía", "Islandia", "Nauru", "Uzbekistán"],
+        correctAnswer: "Turquía",
+        category: "country",
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Byzantine%20Constantinople-en.png"
+    },
+    {
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Australia", "Indonesia", "República Dominicana", "Finlandia"],
+        correctAnswer: "Australia",
+        category: "country",
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
+    },
+    {
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Italia", "Indonesia", "República Dominicana", "Finlandia"],
+        correctAnswer: "Italia",
+        category: "country",
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
+    },
+    {
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Reino Unido", "Indonesia", "República Dominicana", "Finlandia"],
+        correctAnswer: "Reino Unido",
+        category: "country",
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
+    }
+];
 
 const testResponse = {
     data: {
@@ -41,6 +78,21 @@ const testResponse = {
                 {
                     cityLabel: { value: "París" },
                     countryLabel: { value: "Francia" },
+                    image: { value: "http://fakeurl.com/paris.jpg" }
+                },
+                {
+                    cityLabel: { value: "Pekin" },
+                    countryLabel: { value: "China" },
+                    image: { value: "http://fakeurl.com/paris.jpg" }
+                },
+                {
+                    cityLabel: { value: "Tokio" },
+                    countryLabel: { value: "Japon" },
+                    image: { value: "http://fakeurl.com/paris.jpg" }
+                },
+                {
+                    cityLabel: { value: "Nueva York" },
+                    countryLabel: { value: "Estados Unidos" },
                     image: { value: "http://fakeurl.com/paris.jpg" }
                 }
             ]
@@ -122,8 +174,19 @@ describe('Question Generate Service', () => {
         return Promise.reject(new Error('Unexpected URL'));
     });
 
-    it('should return a random question when asking', async () => {
-        var countries=["España","Francia","Polonia","Australia","Turquía"];
+    it('should return a random question when asking and delete it from the database', async () => {
+        const collections = mongoose.connection.collections;
+        for (const key in collections) {
+            await collections[key].deleteMany({});
+        }
+        var countries=["Italia","Reino Unido","Polonia","Australia","Turquía"];
+        for (const question of fullQuestions) {
+            let newQuestion = new Question(question); // Crea una nueva instancia de la pregunta
+            // Guarda la pregunta en la base de datos
+            await newQuestion.save();
+        }
+
+        
         const response = await request(app)
             .get('/getQuestionsDb/country')
             ;
@@ -131,7 +194,27 @@ describe('Question Generate Service', () => {
         expect(response.statusCode).toBe(200);
         
         expect(countries).toContainEqual(response.body.correctAnswer);
+        const questionCount = await Question.countDocuments();
+        expect(questionCount).toBe(4); 
+    });
+
+    it('should add questions from wikidata if the databse is empty, return a random question and then delete one', async () => {
+        const collections = mongoose.connection.collections;
+        for (const key in collections) {
+            await collections[key].deleteMany({});
+        }
+        var countries=["España","Francia","Japon","China","Estados Unidos"];
+
         
+        const response = await request(app)
+            .get('/getQuestionsDb/country')
+            ;
+
+        expect(response.statusCode).toBe(200);
+        
+        expect(countries).toContainEqual(response.body.correctAnswer);
+        const questionCount = await Question.countDocuments();
+        expect(questionCount).toBe(4); 
     });
 
     it('should return an error if there are no questions', async () => {
@@ -157,7 +240,8 @@ describe('Question Generate Service', () => {
         const response = await request(app)
             .get('/getQuestionsDb/country');
 
-        expect(response.statusCode).toBe(500); // Expect a 400 Bad Request status
-        expect(response.body.error).toBe("There are no more questions available."); // Verify the error message
-    }, 1200);
+        expect(response.statusCode).toBe(404); // Expect a 400 Bad Request status
+        expect(response.body.message).toBe("There are no more questions available."); // Verify the error message
+
+    }, 300000);
 });

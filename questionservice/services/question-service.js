@@ -23,11 +23,11 @@ app.get('/getQuestionsDb/:category', async (req, res) => {
       generateService.generateQuestionsByCategory(category, questionsToGenerate - numberQuestions);
 
       // Esperar hasta que haya al menos 10 preguntas en la base de datos
-      const maxRetries = 10; // Máximo de intentos
+      const maxRetries = 100; // Máximo de intentos
       const retryDelay = 1000; // 1 segundo entre intentos
       let retries = 0;
 
-      while (numberQuestions < 4 ) {
+      while (numberQuestions < 4 && maxRetries > retries) {
         console.log(`Esperando más preguntas en la categoría: ${category}. Intento ${retries + 1}`);
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         numberQuestions = await dataService.getNumberQuestionsByCategory(category);

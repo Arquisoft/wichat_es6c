@@ -123,6 +123,7 @@ describe('Question Generate Service', () => {
     });
 
     it('should get images from Wikidata', async () => {
+      
         const category = 'country';
         const numImages = 2;
         const questions = await generateService.generateQuestionsByCategory(category, numImages);
@@ -162,6 +163,29 @@ describe('Question Generate Service', () => {
         await expect(generateService.generateQuestionsByCategory(category, numImages))
         .rejects
         .toThrow("numImages must be a positive number");
+    });
+
+    it('should return an empty array when no images found', async () => {
+      axios.get.mockImplementation((url, config) => {
+                  if (url.startsWith('https://query.wikidata')) {
+                      if (config.params.query.includes('LIMIT 100')) {
+                          // Mock empty response for getIncorrectCountries
+                          return Promise.resolve({ data: { results: { bindings: [] } } });
+                      } else if (config.params.query.includes('ORDER BY RAND()')) {
+                          // Mock empty response for getImagesFromWikidata
+                          return Promise.resolve({ data: { results: { bindings: [] } } });
+                      }
+                  }
+                  return Promise.reject(new Error('Unexpected URL'));
+              });
+        const category = 'country';
+        const numImages = 2;
+        
+        // Verifica que el número de preguntas generadas sea correcto
+        const questions = await generateService.generateQuestionsByCategory(category, numImages);
+
+        // Verifica que el número de preguntas generadas sea correcto
+        expect(questions.length).toBe(0);
     });
 
     
