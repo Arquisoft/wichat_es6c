@@ -70,6 +70,53 @@ app.get("/getUserHistory", async (req, res) => {
   }
 });
 
+// Obtener estadísticas de usuario
+app.get('/getUserStats', async (req, res) => {
+  try {
+    const { username } = req.query;
+    if (!username) return res.status(400).json({ error: "Se requiere un username" });
+    
+    const history = await UserHistory.find({ username });
+    if (!history.length) return res.json({ message: "No hay datos para este usuario" });
+    
+    const totalGames = history.length;
+    const totalCorrect = history.reduce((sum, game) => sum + game.correctAnswers, 0);
+    const totalWrong = history.reduce((sum, game) => sum + game.wrongAnswers, 0);
+    const totalTime = history.reduce((sum, game) => sum + game.time, 0);
+    const averageScore = history.reduce((sum, game) => sum + game.score, 0) / totalGames;
+    
+    res.json({ totalGames, totalCorrect, totalWrong, totalTime, averageScore });
+  } catch (error) {
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+app.get('/getLeaderboard', async (req, res) => {
+  try {
+    const topPlayers = await UserHistory.aggregate([
+      // Ordenar todos los registros por score de forma descendente
+      { $sort: { score: -1 } },
+      // Agrupar por username y tomar el primer documento (con el score más alto)
+      {
+        $group: {
+          _id: "$username",
+          doc: { $first: "$$ROOT" }
+        }
+      },
+      // Reemplazar la raíz del documento por el contenido de 'doc'
+      { $replaceRoot: { newRoot: "$doc" } },
+      // Volver a ordenar los resultados (porque el group pierde el orden)
+      { $sort: { score: -1 } },
+      // Limitar a 10 resultados
+      { $limit: 10 }
+    ]);
+
+    res.json({ topPlayers });
+  } catch (error) {
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
 const server = app.listen(port, () => {
   console.log(`History Service listening at http://localhost:${port}`);
 });

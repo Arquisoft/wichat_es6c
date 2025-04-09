@@ -88,6 +88,7 @@ function Game() {
   };
 
   const preloadNextQuestion = useCallback(async () => {
+    
     try {
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setNextQuestionData(response.data); // Guardar la pregunta precargada
@@ -97,6 +98,7 @@ function Game() {
   }, [ apiEndpoint, gameMode,setNextQuestionData]);
 
   const fetchQuestion = useCallback(async () => {
+    console.log("fetchQuestion ejecutado");
     try {
       if (round > TOTAL_ROUNDS) return;
       setImageLoaded(false); 
@@ -142,6 +144,7 @@ function Game() {
   },[apiEndpoint, username]);
   
   const handleNextRound = useCallback(() => {
+    console.log("handleNextRound ejecutado");
     if (nextQuestionData) {
       setQuestionData(nextQuestionData); // Usar la pregunta precargada
       setNextQuestionData(null); // Limpiar la pregunta precargada
@@ -203,7 +206,7 @@ function Game() {
   }, [location.state]);
 
   useEffect(() => {
-    if (gameMode) {
+    if (gameMode && round === 1) {
       fetchQuestion();
     }
   }, [gameMode,fetchQuestion]);
@@ -247,16 +250,13 @@ function Game() {
     let thisScore=score;
 
     if (isCorrect) {
-      console.log("Respuesta correcta = "+corectAnswers);
       correct=corectAnswers+1;
       setCorrectAnswers(correct);
-      console.log("Respuesta correcta = "+corectAnswers);
       const multiplier = getTimeMultiplierScore(timeLeft);
       const pointsEarned = BASE_SCORE * multiplier;
       setTempScore(pointsEarned);
       thisScore=score+pointsEarned;
       setScore(thisScore);
-      console.log("Respuesta correcta = "+corectAnswers);
     } else {
       setTempScore(0);
     }
@@ -497,8 +497,8 @@ function Game() {
             const isSelected = selectedAnswer === option; 
             const isCorrect = option === questionData.correctAnswer;
 
-            const backgroundColor = index % 2 === 0 ? "#6A0DAD" : "#A680C5"; // Morado y morado menos claro
-            const hoverColor = index % 2 === 0 ? "#5A0C9A" : "#8F6BAF"; // Tonos más oscuros para hover
+            const backgroundColor =  "#6A0DAD";
+            const hoverColor = "#8F6BAF"; 
 
 
             return (
@@ -595,7 +595,7 @@ function Game() {
           <Chat questionData={questionData} />
         </Box>
         )}
-</Box>
+    </Box>
 
      
     </Stack>
