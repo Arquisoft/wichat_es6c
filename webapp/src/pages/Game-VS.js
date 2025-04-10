@@ -11,7 +11,7 @@ function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
-  const FEEDBACK_QUESTIONS_TIME = 0; // 1 segundo (1000 ms)
+  const FEEDBACK_QUESTIONS_TIME = 1; // 1 segundo (1000 ms)
   const TRANSITION_ROUND_TIME = 2000; // 3 segundos (3000 ms)
   
   
@@ -150,36 +150,28 @@ function Game() {
     setTempScore(0);
     setTimeout(() => {
       setShowFeedback(false);
-      setShowTransition(true);
+      //setShowTransition(true);
 
-      // Activar la animación de la estrella solo si no está ya activa
-      if (!starAnimation) {
-        setStarAnimation(true);
-      }
-
-      // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
+      // Skip star animation when time runs out
       if (round < TOTAL_ROUNDS) {
         handleNextRound(); // Cargar la siguiente pregunta y avanzar la ronda
       }
 
-      // Finalizar la animación de la estrella después de un tiempo fijo
       setTimeout(() => {
-        setStarAnimation(false); // Desactivar la animación de la estrella
         setShowTransition(false);
 
         if (round >= TOTAL_ROUNDS) {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
-          try{
-            createUserHistory(score, totalTime, round, gameMode,"vs");
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType:"vs" } });
-          }catch (error){
+          try {
+            createUserHistory(score, totalTime, round, gameMode, "vs");
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType: "vs" } });
+          } catch (error) {
             console.error(error);
           }
-          
         }
-      }, TRANSITION_ROUND_TIME); // Duración fija para la animación
+      }, TRANSITION_ROUND_TIME); // Duración fija para la transición
     }, FEEDBACK_QUESTIONS_TIME);
-  },[showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate,createUserHistory, gameMode]);
+  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
 
   useEffect(() => {
     if (location.state?.mode) {
@@ -426,7 +418,7 @@ function Game() {
             overflow: "hidden", 
             borderRadius: "10px", 
             position: "relative", 
-            backgroundColor: "#6A0DAD",
+            backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD", // Change to red if time runs out
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
