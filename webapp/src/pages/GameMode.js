@@ -9,10 +9,10 @@ function GameMode() {
   const [buttonList, setButtonList] = useState([]);
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const normalButtonList = [
-    { text: 'Países', path: '/game', mode: 'country' , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
+    { text: 'Países', path: '/game', mode: 'country' ,name:"país", imageSrc: '/images/gameMode/pais-gameMode.jpg'},
   ];
   const vsButtonList = [
-    { text: 'Países', path: '/game-vs', mode: 'country' , imageSrc: '/images/gameMode/pai-gameMode.jpg'},
+    { text: 'Países', path: '/game-vs', mode: 'country',name:"país" , imageSrc: '/images/gameMode/pai-gameMode.jpg'},
   ];
 
   useEffect(() => {
@@ -33,7 +33,7 @@ useEffect(() => {
   const navigate = useNavigate();
   
   const handleGameMode = (item) => {
-    navigate(item.path, { state: { mode: item.mode } });
+    navigate(item.path, { state: { mode: item.mode, name:item.name } });
   };
 
   return (
@@ -54,7 +54,7 @@ useEffect(() => {
           textAlign: 'center', 
         }}
       >
-        Elige un modo de juego
+        Elige una temática
       </Typography>
 
       {/* Stack for adding the buttons */}
