@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
+import { Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios"; 
 import { useLocation, useNavigate } from 'react-router-dom';
-import ChatIcon from "@mui/icons-material/Chat"; 
-import CloseIcon from "@mui/icons-material/Close";
+
 import StarIcon from "@mui/icons-material/Star"; 
 import Chat from "../components/Chat";
 import { motion } from "framer-motion";
@@ -37,23 +36,16 @@ function Game() {
   const [questionData, setQuestionData] = useState(null);
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
   const [imageLoaded, setImageLoaded] = useState(false);
-  const imageOpacity=0;
-
-  const [chatOpen, setChatOpen] = useState(false);
 
   const [showTransition, setShowTransition] = useState(false); 
   const [tempScore, setTempScore] = useState(0); 
   const [starAnimation, setStarAnimation] = useState(false);
   const [corectAnswers, setCorrectAnswers] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false); // Nuevo estado para controlar la animación
-  
 
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false); 
   const [username, setUsername] = useState(null); 
 
-  const [lastUserMessage, setLastUserMessage] = useState(null); // Nuevo estado para el último mensaje del usuario
-  const [lastBotResponse, setLastBotResponse] = useState(null); // Nuevo estado para la última respuesta del bot
   const [userMessages, setUserMessages] = useState([]); // Nuevo estado para almacenar todos los mensajes del usuario en la ronda actual
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
@@ -73,24 +65,7 @@ function Game() {
     return MULTIPLIER_LOW;
   };
 
-  const handleImageLoad = () => {
-    let opacity = 0;
 
-    const fadeIn = setInterval(() => {
-      opacity += 0.1;
-
-      // Actualizar directamente el estilo del elemento en lugar de usar el estado
-      const imgElement = document.querySelector("img[alt='Imagen de la pregunta']");
-      if (imgElement) {
-        imgElement.style.opacity = opacity;
-      }
-
-      if (opacity >= 1) {
-        clearInterval(fadeIn);
-        setImageLoaded(true); // Marcar la imagen como cargada
-      }
-    }, 100);
-  };
 
   const preloadNextQuestion = useCallback(async () => {
     
@@ -120,7 +95,7 @@ function Game() {
 
   const createUserHistory = useCallback(async (score, totalTime, corectAnswers, gameMode) => {
     try {
-      console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode);
+      console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode, "vs");
       const response = await axios.post(
               `${apiEndpoint}/createUserHistory`,
               {
@@ -164,15 +139,15 @@ function Game() {
 
     setRound((prevRound) => prevRound + 1); // Incrementar la ronda
     setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
-    setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
+  
    
   },[nextQuestionData, fetchQuestion, preloadNextQuestion]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
     setShowFeedback(true);
-    setSelectedAnswer(null);
-
+  
+    setTempScore(0);
     setTimeout(() => {
       setShowFeedback(false);
       setShowTransition(true);
@@ -195,8 +170,8 @@ function Game() {
         if (round >= TOTAL_ROUNDS) {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try{
-            createUserHistory(score, totalTime, round, gameMode);
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore } });
+            createUserHistory(score, totalTime, round, gameMode,"vs");
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType:"vs" } });
           }catch (error){
             console.error(error);
           }
@@ -290,8 +265,8 @@ function Game() {
         if (round >= TOTAL_ROUNDS) {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try{
-            createUserHistory(thisScore, totalTime, correct, gameMode);
-            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore:maxScore  } });
+            createUserHistory(thisScore, totalTime, correct, gameMode,"vs");
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType:"vs" } });
           }catch (error){
             console.error(error);
           }
@@ -303,7 +278,6 @@ function Game() {
   
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
-    setLastUserMessage(message); // Guardar el último mensaje del usuario
     setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
     if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
       console.log("El usuario eligió la opción incorrecta según la respuesta del chat.");
@@ -313,7 +287,7 @@ function Game() {
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-    setLastBotResponse(response); // Guardar la última respuesta del bot
+    
     if (questionData!==null &&response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
@@ -493,11 +467,6 @@ function Game() {
             {timeLeft}
           </Typography>
         </Box>
-
-
-       
-
-
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
         {round} de {TOTAL_ROUNDS} rondas
       </Typography>

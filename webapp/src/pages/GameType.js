@@ -7,8 +7,8 @@ function GameType() {
     
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
-    { text: 'Normal',  type: 'normal' , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
-    { text: 'VS IA',  type: 'vs' , imageSrc: '/images/gameMode/pais-gameMode.jpg'}
+    { text: 'Normal',  type: 'normal' , imageSrc: '/images/gameMode/default-type.jpg'},
+    { text: 'VS IA',  type: 'vs' , imageSrc: '/images/gameMode/vs-ia.jpg'}
   ];
 
 

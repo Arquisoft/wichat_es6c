@@ -12,7 +12,7 @@ function GameMode() {
     { text: 'Países', path: '/game', mode: 'country' ,name:"país", imageSrc: '/images/gameMode/pais-gameMode.jpg'},
   ];
   const vsButtonList = [
-    { text: 'Países', path: '/game-vs', mode: 'country',name:"país" , imageSrc: '/images/gameMode/pai-gameMode.jpg'},
+    { text: 'Países', path: '/game-vs', mode: 'country',name:"país" , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
   ];
 
   useEffect(() => {

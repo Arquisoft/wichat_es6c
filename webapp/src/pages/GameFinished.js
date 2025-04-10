@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
+import { set } from "mongoose";
 
 const GameFinished = () => {
   const location = useLocation();
@@ -13,12 +14,14 @@ const GameFinished = () => {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const [gameType, setGameType]=  useState('normal');
 
   useEffect(() => {
     if (location.state) {
       setScore(location.state.score);
       setTotalTime(location.state.totalTime);
       setMaxScore(location.state.maxScore);
+      setGameType(location.state.gameType);
     }
 
     // Handle the size of the window - confetti
@@ -32,7 +35,8 @@ const GameFinished = () => {
   }, [location]);
 
   const handleRestart = () => {
-    navigate('/game-Mode'); 
+    console.log(gameType);
+    navigate('/game-mode',{ state: { type: gameType } }); 
   };
 
   const handleGoToHistorical = () => {
