@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { profile } = require('winston');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -17,6 +18,14 @@ const userSchema = new mongoose.Schema({
     surname: { 
       type: String,
       required: true,
+    },
+    profilePicture: {
+      type: String,
+      default: 'https://avatars.githubusercontent.com/u/158502509?v=4', 
+    },
+    description: {
+      type: String,
+      default: 'Hola, soy un nuevo usuario!', 
     },
     createdAt: {
       type: Date,
