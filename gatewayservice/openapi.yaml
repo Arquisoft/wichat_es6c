@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: API de Historial de Usuarios
   description: API para gestionar el historial de juegos de los usuarios.
-  version: 1.2.0
+  version: 1.3.0
 servers:
    - url: http://localhost:8000
      description: Development server
@@ -183,3 +183,200 @@ paths:
                       example: 1
         500:
           description: Error al obtener el ranking
+  /health:
+    get:
+      summary: Verificar estado del servicio
+      description: Endpoint de comprobación de salud del sistema
+      responses:
+        200:
+          description: Servicio operativo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+
+  /questions/{category}:
+    get:
+      summary: Obtener preguntas por categoría
+      description: Devuelve preguntas de una categoría específica desde Wikidata
+      parameters:
+        - name: category
+          in: path
+          required: true
+          description: Categoría de las preguntas (ej. country)
+          schema:
+            type: string
+            example: "country"
+      responses:
+        200:
+          description: Lista de preguntas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    question:
+                      type: string
+                      example: "¿Cuál es la capital de Francia?"
+                    correctAnswer:
+                      type: string
+                      example: "Paris"
+                    options:
+                      type: array
+                      items:
+                        type: string
+                      example: ["Londres", "Berlin", "Paris"]
+        404:
+          description: Categoría no encontrada
+        500:
+          description: Error del servidor
+
+  /login:
+    post:
+      summary: Autenticación de usuario
+      description: Inicio de sesión para usuarios registrados
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "juanperez"
+                password:
+                  type: string
+                  example: "Pass1234"
+      responses:
+        200:
+          description: Autenticación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: "juanperez"
+        401:
+          description: Credenciales inválidas
+        500:
+          description: Error de autenticación
+
+  /user:
+    post:
+      summary: Registrar nuevo usuario
+      description: Creación de una nueva cuenta de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+                - email
+              properties:
+                username:
+                  type: string
+                  example: "juanperez"
+                password:
+                  type: string
+                  example: "Pass1234"
+                email:
+                  type: string
+                  format: email
+                  example: "juan@example.com"
+      responses:
+        201:
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "5f8d04b3ab35b2d3c4d8f9a2"
+                  username:
+                    type: string
+                    example: "juanperez"
+        400:
+          description: Datos de usuario inválidos
+        500:
+          description: Error en el servidor
+
+  /askllm:
+    post:
+      summary: Consultar al modelo de lenguaje
+      description: |
+        Obtener respuesta generada por el modelo de lenguaje (LLM).
+        Actualmente soporta el modelo Mistral-7B a través de la API de EmpathyAI.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+                - model
+                - apiKey
+              properties:
+                question:
+                  type: string
+                  description: Pregunta o prompt para el modelo
+                  example: "Explica la teoría de la relatividad en términos simples"
+                model:
+                  type: string
+                  description: Modelo LLM a utilizar (actualmente solo 'empathy' soportado)
+                  enum: ["empathy"]
+                  default: "empathy"
+                  example: "empathy"
+                apiKey:
+                  type: string
+                  description: API Key para autenticación con el servicio LLM
+                  example: "sk-123456789abcdef"
+                context:
+                  type: string
+                  description: Contexto adicional para la pregunta (opcional)
+                  example: "Para un estudiante de secundaria"
+      responses:
+        200:
+          description: Respuesta generada por el LLM
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:
+                    type: string
+                    description: Respuesta generada por el modelo
+                    example: "La teoría de la relatividad de Einstein establece que..."
+        400:
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensaje de error detallado
+                    example: "Missing required field: apiKey"
+        500:
+          description: Error en el servidor o en la conexión con el servicio LLM      

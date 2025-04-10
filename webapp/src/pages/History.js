@@ -145,20 +145,29 @@ export default function UserHistory() {
               </PieChart>
             </ResponsiveContainer>
           </Grid>
-
-          {/* Gráfico de barras para puntuaciones */}
+          {/* Gráfico de torta para respuestas correctas/incorrectas */}
           <Grid item xs={12} md={6}>
-            <Typography variant="h6" gutterBottom>Rendimiento por modo de juego</Typography>
+            <Typography variant="h6" gutterBottom>Distribución de respuestas</Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={history}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="gameMode" />
-                <YAxis />
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Perdidas', value: stats.totalCorrect },
+                    { name: 'Ganadas', value: stats.totalWrong }
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell key="correct" fill="#4caf50" />
+                  <Cell key="wrong" fill="#ff5722" />
+                </Pie>
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="score" fill="#6200ea" name="Puntos" />
-                <Bar dataKey="correctAnswers" fill="#4caf50" name="Correctas" />
-              </BarChart>
+              </PieChart>
             </ResponsiveContainer>
           </Grid>
 
