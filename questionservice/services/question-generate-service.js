@@ -57,6 +57,7 @@ async function getImagesFromWikidata(category, numImages) {
         });
 
         const data = response.data.results.bindings;
+        
         if (data.length > 0) {
             const filteredImages = data
                 .filter(item => item.cityLabel && item.image)  // Filtrar solo los elementos con ciudad e imagen
@@ -69,6 +70,7 @@ async function getImagesFromWikidata(category, numImages) {
 
             return filteredImages;
         }
+        return []; // Retornar un array vacío si no hay datos
 
     } catch (error) {
         console.error(`Error retrieving images: ${error.message}`);
@@ -144,6 +146,10 @@ async function processQuestionsCountry(images, category) {
 async function generateQuestionsByCategory(category, numImages) {
     try{
         const images = await getImagesFromWikidata(category, numImages);
+        if (images.length === 0) {
+            console.error(`No images found for category ${category}`);
+            return [];
+        }
     
         if (category === 'country') {
             return await processQuestionsCountry(images, category);
