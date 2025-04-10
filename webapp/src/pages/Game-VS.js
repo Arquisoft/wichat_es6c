@@ -184,7 +184,7 @@ function Game() {
     if (gameMode && round === 1) {
       fetchQuestion();
     }
-  }, [gameMode,fetchQuestion]);
+  }, [gameMode,fetchQuestion,round]);
 
   useEffect(() => {
     if (!questionData  || starAnimation || showFeedback || showTransition) return;

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
-import { set } from "mongoose";
 
 const GameFinished = () => {
   const location = useLocation();

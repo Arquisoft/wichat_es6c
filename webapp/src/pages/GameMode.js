@@ -1,4 +1,4 @@
-import {React,useState,useEffect} from 'react';
+import {React, useState, useEffect, useMemo} from 'react';
 import { Button, Stack, Typography, Box } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -8,12 +8,12 @@ function GameMode() {
   const location = useLocation();
   const [buttonList, setButtonList] = useState([]);
   // List of tuples. Saves the text, the path and the game mode of the buttons.
-  const normalButtonList = [
+  const normalButtonList = useMemo(() => [
     { text: 'Países', path: '/game', mode: 'country' ,name:"país", imageSrc: '/images/gameMode/pais-gameMode.jpg'},
-  ];
-  const vsButtonList = [
+  ], []);
+  const vsButtonList = useMemo(() => [
     { text: 'Países', path: '/game-vs', mode: 'country',name:"país" , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
-  ];
+  ], []);
 
   useEffect(() => {
     if (location.state?.type) {
@@ -28,7 +28,7 @@ useEffect(() => {
     } else if (gameType === 'vs') {
       setButtonList(vsButtonList);
     }
-}, [gameType]);
+}, [gameType, normalButtonList, vsButtonList]); // Added normalButtonList and vsButtonList
 
   const navigate = useNavigate();
   
