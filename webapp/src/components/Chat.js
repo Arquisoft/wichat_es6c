@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }) {
   const [messages, setMessages] = useState([]);
@@ -10,6 +11,7 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
   const API_KEY = process.env.REACT_APP_LLM_API_KEY; // Usa .env en producción
   const messagesEndRef = useRef(null); // Ref para hacer scroll al final
 
+  
   const sendMessage = async () => {
     if (!input.trim()) return; // No enviar mensajes si ignoreChat es verdadero
     
@@ -156,5 +158,13 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
     </Container>
   );
 }
-
+Chat.propTypes = {
+  questionData: PropTypes.shape({
+    correctAnswer: PropTypes.string.isRequired
+  }).isRequired,
+  header: PropTypes.string.isRequired,
+  onUserMessage: PropTypes.func,
+  onBotResponse: PropTypes.func,
+  ignoreChat: PropTypes.bool
+};
 export default Chat;
