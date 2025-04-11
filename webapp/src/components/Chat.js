@@ -2,30 +2,34 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
-function Chat({ questionData }) {
+import PropTypes from "prop-types";
+
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  //const [model, setModel] = useState("empathy");
   const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
   const API_KEY = process.env.REACT_APP_LLM_API_KEY; // Usa .env en producción
   const messagesEndRef = useRef(null); // Ref para hacer scroll al final
 
+  
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim()) return; // No enviar mensajes si ignoreChat es verdadero
     
-    
-    const userMessage = { role: "user", content: input  };
+    const userMessage = { role: "user", content: input };
     console.log("Mensaje del usuario:", userMessage.content);
     setMessages((prev) => [...prev, userMessage]);
+    onUserMessage && onUserMessage(userMessage.content); // Llamar al callback con el mensaje del usuario
+    
     setInput("");
+    if(userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) return;
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
     try {
-     let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer in a short phrase: "+input;
-     const response = await axios.post(
-        
+      let petition = header + input;
+      console.log("Petición al LLM:", petition);
+      const response = await axios.post(
         `${apiEndpoint}/askllm`,
         {
           question: petition,
@@ -38,7 +42,7 @@ function Chat({ questionData }) {
           }
         }
       );
-      
+
       const data = response.data;
       const botMessage = { role: "assistant", content: "" };
 
@@ -52,6 +56,7 @@ function Chat({ questionData }) {
         return newMessages;
       });
 
+      onBotResponse && onBotResponse(text); // Llamar al callback con la respuesta del bot
       setIsTyping(false); // Terminar el estado de "escribiendo"
       
     } catch (error) {
@@ -153,5 +158,13 @@ function Chat({ questionData }) {
     </Container>
   );
 }
-
+Chat.propTypes = {
+  questionData: PropTypes.shape({
+    correctAnswer: PropTypes.string.isRequired
+  }).isRequired,
+  header: PropTypes.string.isRequired,
+  onUserMessage: PropTypes.func,
+  onBotResponse: PropTypes.func,
+  ignoreChat: PropTypes.bool
+};
 export default Chat;

@@ -29,6 +29,11 @@ const historySchema = new mongoose.Schema({
       type: String,
       required: true,
       default: 'Country',
+    },
+    gameType: {
+      type: String,
+      required: true,
+      default: 'Normal',
     }
 });
 

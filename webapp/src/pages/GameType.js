@@ -1,39 +1,22 @@
-import {React, useState, useEffect, useMemo} from 'react';
+import React from 'react';
 import { Button, Stack, Typography, Box } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
-function GameMode() {
-  const [gameType, setGameType] = useState('');
-  const location = useLocation();
-  const [buttonList, setButtonList] = useState([]);
+function GameType() {
+    
   // List of tuples. Saves the text, the path and the game mode of the buttons.
-  const normalButtonList = useMemo(() => [
-    { text: 'Países', path: '/game', mode: 'country' ,name:"país", imageSrc: '/images/gameMode/pais-gameMode.jpg'},
-  ], []);
-  const vsButtonList = useMemo(() => [
-    { text: 'Países', path: '/game-vs', mode: 'country',name:"país" , imageSrc: '/images/gameMode/pais-gameMode.jpg'},
-  ], []);
+  const buttonList = [
+    { text: 'Normal',  type: 'normal' , imageSrc: '/images/gameMode/default-type.jpg'},
+    { text: 'VS IA',  type: 'vs' , imageSrc: '/images/gameMode/vs-ia.jpg'}
+  ];
 
-  useEffect(() => {
-    if (location.state?.type) {
-        
-        setGameType(location.state.type);
-    }
-}, [location]);
-
-useEffect(() => {
-    if (gameType === 'normal') {
-      setButtonList(normalButtonList);
-    } else if (gameType === 'vs') {
-      setButtonList(vsButtonList);
-    }
-}, [gameType, normalButtonList, vsButtonList]); // Added normalButtonList and vsButtonList
 
   const navigate = useNavigate();
   
   const handleGameMode = (item) => {
-    navigate(item.path, { state: { mode: item.mode, name:item.name } });
+    
+    navigate("/game-mode", { state: { type: item.type } });
   };
 
   return (
@@ -54,7 +37,7 @@ useEffect(() => {
           textAlign: 'center', 
         }}
       >
-        Elige una temática
+        Elige un modo de juego
       </Typography>
 
       {/* Stack for adding the buttons */}
@@ -101,4 +84,4 @@ useEffect(() => {
   );
 }
 
-export default GameMode;
+export default GameType;
