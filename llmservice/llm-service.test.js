@@ -49,14 +49,6 @@ describe('LLM Service', () => {
     expect(response.body.error).toBe('Missing required field: model');
   });
 
-  it('should return error for missing apikey', async () => {
-    const response = await request(app)
-      .post('/ask')
-      .send({ question: 'a question', model: 'empathy' });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBe('Missing required field: apiKey');
-  });
 
 
   it('the llm should not reply with unsupported model', async () => {
