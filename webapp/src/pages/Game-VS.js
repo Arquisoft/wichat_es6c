@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Stack, Typography, Box, CircularProgress } from "@mui/material";
-import axios from "axios"; 
+import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import StarIcon from "@mui/icons-material/Star"; 
+import StarIcon from "@mui/icons-material/Star";
 import Chat from "../components/Chat";
 import { motion } from "framer-motion";
 
+import { useTranslation } from "react-i18next";
 function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
   const FEEDBACK_QUESTIONS_TIME = 1; // 1 segundo (1000 ms)
   const TRANSITION_ROUND_TIME = 2000; // 3 segundos (3000 ms)
-  
-  
+
+
   const MULTIPLIER_HIGH = 2.0;
   const MULTIPLIER_MEDIUM = 1.5;
   const MULTIPLIER_LOW = 1.0;
@@ -23,6 +24,8 @@ function Game() {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { t } = useTranslation(); 
 
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
@@ -37,28 +40,28 @@ function Game() {
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const [showTransition, setShowTransition] = useState(false); 
-  const [tempScore, setTempScore] = useState(0); 
+  const [showTransition, setShowTransition] = useState(false);
+  const [tempScore, setTempScore] = useState(0);
   const [starAnimation, setStarAnimation] = useState(false);
   const [corectAnswers, setCorrectAnswers] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false); // Nuevo estado para controlar la animación
 
-  const [showFeedback, setShowFeedback] = useState(false); 
-  const [username, setUsername] = useState(null); 
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [username, setUsername] = useState(null);
 
   const [userMessages, setUserMessages] = useState([]); // Nuevo estado para almacenar todos los mensajes del usuario en la ronda actual
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
   useEffect(() => {
-          const storedSessionId = localStorage.getItem('sessionId');
-  
-          if (storedSessionId) {
-            const storedUsername = localStorage.getItem('username');
-            setUsername(storedUsername); 
-          }
-        }, []);
-  
+    const storedSessionId = localStorage.getItem('sessionId');
+
+    if (storedSessionId) {
+      const storedUsername = localStorage.getItem('username');
+      setUsername(storedUsername);
+    }
+  }, []);
+
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
     if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
@@ -68,21 +71,21 @@ function Game() {
 
 
   const preloadNextQuestion = useCallback(async () => {
-    
+
     try {
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setNextQuestionData(response.data); // Guardar la pregunta precargada
     } catch (error) {
       console.error("Error preloading next question:", error);
     }
-  }, [ apiEndpoint, gameMode,setNextQuestionData]);
+  }, [apiEndpoint, gameMode, setNextQuestionData]);
 
   const fetchQuestion = useCallback(async () => {
     console.log("fetchQuestion ejecutado");
     setQuestionData(null);
     try {
       if (round > TOTAL_ROUNDS) return;
-      setImageLoaded(false); 
+      setImageLoaded(false);
       const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
       setQuestionData(response.data);
 
@@ -97,22 +100,22 @@ function Game() {
     try {
       console.log("Se ejecuta el createUserHistory con los siguientes datos: ", score, totalTime, corectAnswers, gameMode, "vs");
       const response = await axios.post(
-              `${apiEndpoint}/createUserHistory`,
-              {
-                username: username,
-                correctAnswers: corectAnswers,
-                wrongAnswers: TOTAL_ROUNDS-corectAnswers,
-                time: totalTime,
-                score: score,
-                gameMode: gameMode
-              },
-              {
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-      console.log("Respuesta del servidor:" +response.data);
+        `${apiEndpoint}/createUserHistory`,
+        {
+          username: username,
+          correctAnswers: corectAnswers,
+          wrongAnswers: TOTAL_ROUNDS - corectAnswers,
+          time: totalTime,
+          score: score,
+          gameMode: gameMode
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      console.log("Respuesta del servidor:" + response.data);
     } catch (error) {
       console.error('Error completo:', {
         request: error.config,
@@ -120,10 +123,10 @@ function Game() {
         status: error.response?.status,
         headers: error.response?.headers
       });
-      throw error; 
+      throw error;
     }
-  },[apiEndpoint, username]);
-  
+  }, [apiEndpoint, username]);
+
   const handleNextRound = useCallback(() => {
     console.log("handleNextRound ejecutado");
     setUserMessages([]); // Vaciar los mensajes del usuario al cambiar de ronda
@@ -139,14 +142,14 @@ function Game() {
 
     setRound((prevRound) => prevRound + 1); // Incrementar la ronda
     setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
-  
-   
-  },[nextQuestionData, fetchQuestion, preloadNextQuestion]);
+
+
+  }, [nextQuestionData, fetchQuestion, preloadNextQuestion]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
     setShowFeedback(true);
-  
+
     setTempScore(0);
     setTimeout(() => {
       setShowFeedback(false);
@@ -184,19 +187,19 @@ function Game() {
     if (gameMode && round === 1) {
       fetchQuestion();
     }
-  }, [gameMode,fetchQuestion,round]);
+  }, [gameMode, fetchQuestion, round]);
 
   useEffect(() => {
-    if (!questionData  || starAnimation || showFeedback || showTransition) return;
+    if (!questionData || starAnimation || showFeedback || showTransition) return;
 
-    let timeUpTriggered = false; 
+    let timeUpTriggered = false;
 
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           if (!timeUpTriggered) {
-            timeUpTriggered = true; 
-            handleTimeUp(); 
+            timeUpTriggered = true;
+            handleTimeUp();
           }
           clearInterval(timer);
           return 0;
@@ -208,29 +211,29 @@ function Game() {
     }, 1000);
 
 
-    return () => clearInterval(timer); 
-  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition,handleTimeUp, starAnimation]);
+    return () => clearInterval(timer);
+  }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition, handleTimeUp, starAnimation]);
 
   useEffect(() => {
     if (animationComplete && imageLoaded) {
       setAnimationComplete(false); // Resetear el estado de la animación
       setTimeLeft(QUESTION_TIME); // Iniciar el temporizador solo después de que todo esté listo
     }
-  }, [animationComplete, imageLoaded]); 
+  }, [animationComplete, imageLoaded]);
 
   const handleAnswer = (isCorrect, selectedOption) => {
-    
+
     setShowFeedback(true);
-    let correct=corectAnswers;
-    let thisScore=score;
+    let correct = corectAnswers;
+    let thisScore = score;
 
     if (isCorrect) {
-      correct=corectAnswers+1;
+      correct = corectAnswers + 1;
       setCorrectAnswers(correct);
       const multiplier = getTimeMultiplierScore(timeLeft);
       const pointsEarned = BASE_SCORE * multiplier;
       setTempScore(pointsEarned);
-      thisScore=score+pointsEarned;
+      thisScore = score + pointsEarned;
       setScore(thisScore);
     } else {
       setTempScore(0);
@@ -256,10 +259,10 @@ function Game() {
 
         if (round >= TOTAL_ROUNDS) {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
-          try{
-            createUserHistory(thisScore, totalTime, correct, gameMode,"vs");
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType:"vs" } });
-          }catch (error){
+          try {
+            createUserHistory(thisScore, totalTime, correct, gameMode, "vs");
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType: "vs" } });
+          } catch (error) {
             console.error(error);
           }
         }
@@ -267,7 +270,7 @@ function Game() {
     }, FEEDBACK_QUESTIONS_TIME);
   };
 
-  
+
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
     setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
@@ -279,8 +282,8 @@ function Game() {
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-    
-    if (questionData!==null &&response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
+
+    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
     }
@@ -289,7 +292,7 @@ function Game() {
   if (!questionData) {
     return (
       <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
-        <Typography variant="h4" sx={{ marginTop: 2 }}>Cargando ronda...</Typography>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>{t("Game-VS.loading")}</Typography>
         <CircularProgress />
 
       </Stack>
@@ -320,14 +323,14 @@ function Game() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "10rem", 
-            height: "10rem", 
+            width: "10rem",
+            height: "10rem",
           }}
         >
           <Box
             sx={{
-              position: "absolute", 
-              animation: starAnimation ? "pulse 1s infinite" : "none", 
+              position: "absolute",
+              animation: starAnimation ? "pulse 1s infinite" : "none",
               "@keyframes pulse": {
                 "0%": { transform: "scale(1)" },
                 "50%": { transform: "scale(1.5)" },
@@ -335,9 +338,9 @@ function Game() {
               },
             }}
           >
-            <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} /> 
+            <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} />
           </Box>
-  
+
           {starAnimation && (
             <motion.div
               style={{
@@ -345,7 +348,7 @@ function Game() {
                 top: "50%", // Centrar verticalmente
                 left: "50%", // Centrar horizontalmente
                 transform: "translate(-50%, -50%)", // Ajustar para centrar completamente
-                fontSize: "2.5rem", 
+                fontSize: "2.5rem",
                 fontWeight: "bold",
                 color: "#333",
               }}
@@ -354,7 +357,7 @@ function Game() {
             </motion.div>
           )}
         </Box>
-  
+
         {/* Puntuación total */}
         <Typography
           variant="h5"
@@ -364,35 +367,36 @@ function Game() {
             textAlign: "center",
           }}
         >
-          Puntuación total: {score}
+         {t("Game-VS.totalScore")}: {score}
         </Typography>
       </Box>
     );
   };
 
-  
+
   return (
-    <Stack alignItems="center" justifyContent="center" 
-          sx={{ height: "93.5vh",
-            backgroundImage: "url('/background-quiz.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center"
-         }}>
+    <Stack alignItems="center" justifyContent="center"
+      sx={{
+        height: "93.5vh",
+        backgroundImage: "url('/background-quiz.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      }}>
 
 
 
-    {/* Pantalla de transición */}
-    {showTransition && (
-      <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
-    )}
+      {/* Pantalla de transición */}
+      {showTransition && (
+        <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
+      )}
 
 
       {/* Contenedor principal con transparencia */}
       <Box
         sx={{
-          width: "20vw",
+          width: "23vw",
           minHeight: "10vh",
-          backgroundColor: "rgb(255, 255, 255)", 
+          backgroundColor: "rgb(255, 255, 255)",
           backdropFilter: "blur(10px)",
           borderRadius: "10px",
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
@@ -406,18 +410,18 @@ function Game() {
       >
         {/* Pregunta */}
         <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
-          Describe el siguiente {gameModeName}:
+          {t("Game-VS.describeMode-" + gameModeName)}
         </Typography>
 
         {/* Respuesta correcta */}
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             width: "60%", // Reducir el ancho de la caja
             minHeight: "10vh", // Altura mínima de la caja
             maxHeight: "auto", // Permitir que crezca si es necesario
-            overflow: "hidden", 
-            borderRadius: "10px", 
-            position: "relative", 
+            overflow: "hidden",
+            borderRadius: "10px",
+            position: "relative",
             backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD", // Change to red if time runs out
             display: "flex",
             alignItems: "center",
@@ -425,11 +429,11 @@ function Game() {
             padding: "1rem", // Agregar padding para evitar que el texto toque los bordes
           }}
         >
-          <Typography 
-            variant="h4" 
-            fontWeight="bold" 
-            sx={{ 
-              color: "white", 
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            sx={{
+              color: "white",
               textAlign: "center", // Centrar el texto
               wordWrap: "break-word", // Permitir que el texto se ajuste si es muy largo
             }}
@@ -460,8 +464,8 @@ function Game() {
           </Typography>
         </Box>
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
-        {round} de {TOTAL_ROUNDS} rondas
-      </Typography>
+          {t("Game-VS.rounds",{round, TOTAL_ROUNDS})}
+        </Typography>
 
       </Box>
 
@@ -503,7 +507,7 @@ function Game() {
         </Box>
       </Box>
 
-   
+
     </Stack>
   );
 }

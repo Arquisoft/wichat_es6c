@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {  Container, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid
+import {
+  Container, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
-
+import { useTranslation, Trans } from 'react-i18next';
 export default function UserHistory() {
   const [username, setUsername] = useState("");
   const [history, setHistory] = useState([]);
@@ -12,7 +13,7 @@ export default function UserHistory() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const historyServiceUrl = process.env.HISTORY_SERVICE_URL || 'http://localhost:8007';
 
   useEffect(() => {
@@ -23,9 +24,9 @@ export default function UserHistory() {
   const fetchHistory = async () => {
     if (!username) return;
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial anterior
-    setStats(null);       // 🔹 Limpiar estadísticas
-    setLeaderboard([]);   // 🔹 Limpiar ranking
+    setHistory([]);
+    setStats(null);
+    setLeaderboard([]);
     try {
       const response = await axios.get(`${historyServiceUrl}/getUserHistory`, { params: { username } });
       setHistory(response.data.history);
@@ -35,13 +36,13 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
-  
+
   const fetchStats = async () => {
     if (!username) return;
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial
-    setStats(null);       // 🔹 Limpiar estadísticas anteriores
-    setLeaderboard([]);   // 🔹 Limpiar ranking
+    setHistory([]);
+    setStats(null);
+    setLeaderboard([]);
     try {
       const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
       setStats(response.data);
@@ -51,12 +52,12 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
-  
+
   const fetchLeaderboard = async () => {
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial
-    setStats(null);       // 🔹 Limpiar estadísticas
-    setLeaderboard([]);   // 🔹 Limpiar ranking anterior antes de cargar el nuevo
+    setHistory([]);
+    setStats(null);
+    setLeaderboard([]);
     try {
       const response = await axios.get(`${historyServiceUrl}/getLeaderboard`);
       setLeaderboard(response.data.topPlayers);
@@ -72,10 +73,14 @@ export default function UserHistory() {
   return (
     <Container maxWidth="md" sx={{ textAlign: "center", mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Historial de Usuario
+        {t('History.title')}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Usuario: <strong>{username}</strong>
+        <Trans
+          i18nKey="History.usernameDisplay"
+          values={{ username }}
+          components={{ strong: <strong /> }}
+        />
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}>
@@ -85,7 +90,8 @@ export default function UserHistory() {
           onClick={fetchHistory}
           disabled={loading}
         >
-          Ver Historial
+          {t('History.viewHistory')}
+
         </Button>
         <Button
           variant="contained"
@@ -93,7 +99,7 @@ export default function UserHistory() {
           onClick={fetchStats}
           disabled={loading}
         >
-          Ver Estadísticas
+          {t('History.viewStats')}
         </Button>
         <Button
           variant="contained"
@@ -101,114 +107,123 @@ export default function UserHistory() {
           onClick={fetchLeaderboard}
           disabled={loading}
         >
-          Ver Ranking
+          {t('History.viewRanking')}
+
         </Button>
         <Button
           variant="contained"
           sx={{ backgroundColor: "#bdbdbd", color: "black", "&:hover": { backgroundColor: "#9e9e9e" } }}
           onClick={goToHomepage}
         >
-          Menú Principal
+          {t('History.mainPage')}
+
         </Button>
       </Box>
 
       {loading && <CircularProgress sx={{ display: "block", margin: "auto", mt: 2 }} />}
 
       {stats && (
-    <Card sx={{ mt: 3, p: 2, backgroundColor: "#f3f3f3" }}>
-      <CardContent>
-        <Typography variant="h5" gutterBottom>Estadísticas Generales</Typography>
-        
-        <Grid container spacing={3}>
-          {/* Gráfico de torta para respuestas correctas/incorrectas */}
-          <Grid item xs={12} md={6}>
-            <Typography variant="h6" gutterBottom>Distribución de respuestas</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={[
-                    { name: 'Correctas', value: stats.totalCorrect },
-                    { name: 'Incorrectas', value: stats.totalWrong }
-                  ]}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  <Cell key="correct" fill="#4caf50" />
-                  <Cell key="wrong" fill="#ff5722" />
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </Grid>
-          {/* Gráfico de torta para respuestas correctas/incorrectas */}
-          <Grid item xs={12} md={6}>
-            <Typography variant="h6" gutterBottom>Distribución de respuestas</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={[
-                    { name: 'Perdidas', value: stats.totalCorrect },
-                    { name: 'Ganadas', value: stats.totalWrong }
-                  ]}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  <Cell key="correct" fill="#4caf50" />
-                  <Cell key="wrong" fill="#ff5722" />
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </Grid>
+        <Card sx={{ mt: 3, p: 2, backgroundColor: "#f3f3f3" }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>{t('History.generalStats')}
+            </Typography>
 
-          {/* Estadísticas numéricas con diseño mejorado */}
-          <Grid item xs={12}>
-            <Grid container spacing={2} justifyContent="center">
-              <Grid item>
-                <Card sx={{ backgroundColor: '#6200ea', color: 'white', p: 2 }}>
-                  <Typography>Total Partidas</Typography>
-                  <Typography variant="h4">{stats.totalGames}</Typography>
-                </Card>
+            <Grid container spacing={3}>
+              {/* Gráfico de torta para respuestas correctas/incorrectas */}
+              <Grid item xs={12} md={6}>
+                <Typography variant="h6" gutterBottom>{t('History.distributionAnswers')}
+                </Typography>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: t('History.correct'), value: stats.totalCorrect },
+                        { name: t('History.incorrect'), value: stats.totalWrong }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      <Cell key="correct" fill="#4caf50" />
+                      <Cell key="wrong" fill="#ff5722" />
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
               </Grid>
-              <Grid item>
-                <Card sx={{ backgroundColor: '#4caf50', color: 'white', p: 2 }}>
-                  <Typography>Promedio de puntos</Typography>
-                  <Typography variant="h4">{stats.averageScore.toFixed(2)}</Typography>
-                </Card>
+              {/* Gráfico de torta para respuestas correctas/incorrectas */}
+              <Grid item xs={12} md={6}>
+                <Typography variant="h6" gutterBottom>{t('History.distributionGames')}</Typography>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: t('History.won'), value: stats.totalCorrect },
+                        { name: t('History.lost'), value: stats.totalWrong }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      <Cell key="correct" fill="#4caf50" />
+                      <Cell key="wrong" fill="#ff5722" />
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
               </Grid>
-              <Grid item>
-                <Card sx={{ backgroundColor: '#ff9800', color: 'white', p: 2 }}>
-                  <Typography>Tiempo Total</Typography>
-                  <Typography variant="h4">{stats.totalTime}s</Typography>
-                </Card>
+
+              {/* Estadísticas numéricas con diseño mejorado */}
+              <Grid item xs={12}>
+                <Grid container spacing={2} justifyContent="center">
+                  <Grid item>
+                    <Card sx={{ backgroundColor: '#6200ea', color: 'white', p: 2 }}>
+                      <Typography>{t('History.totalGames')}</Typography>
+                      <Typography variant="h4">{stats.totalGames}</Typography>
+                    </Card>
+                  </Grid>
+                  <Grid item>
+                    <Card sx={{ backgroundColor: '#4caf50', color: 'white', p: 2 }}>
+                      <Typography>{t('History.averageScore')}</Typography>
+                      <Typography variant="h4">{stats.averageScore.toFixed(2)}</Typography>
+                    </Card>
+                  </Grid>
+                  <Grid item>
+                    <Card sx={{ backgroundColor: '#ff9800', color: 'white', p: 2 }}>
+                      <Typography>{t('History.totalTime')}</Typography>
+                      <Typography variant="h4">{stats.totalTime}s</Typography>
+                    </Card>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  )}
+          </CardContent>
+        </Card>
+      )}
 
       {history.length > 0 && (
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center"><strong>Correctas</strong></TableCell>
-                <TableCell align="center"><strong>Incorrectas</strong></TableCell>
-                <TableCell align="center"><strong>Tiempo (s)</strong></TableCell>
-                <TableCell align="center"><strong>Puntos</strong></TableCell>
-                <TableCell align="center"><strong>Modo de Juego</strong></TableCell>
+                <TableCell align="center"><strong>{t('History.correctAnswers')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.incorrectAnswers')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.time')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.score')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.gameMode')}
+                </strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -226,28 +241,28 @@ export default function UserHistory() {
         </TableContainer>
       )}
 
-{leaderboard.length > 0 && (
-  <Box sx={{ mt: 3, height: { xs: 300, sm: 400, md: 500 } }}> {/* Dynamic height based on screen size */}
-    <Typography variant="h5" gutterBottom>Ranking Global</Typography>
-    <ResponsiveContainer width="100%" height="70%"> {/* Adjust height dynamically */}
-      <BarChart
-        data={leaderboard}
-        layout="vertical"
-        margin={{ left: 100 }}
-      >
-        <XAxis type="number" />
-        <YAxis type="category" dataKey="username" />
-        <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip />
-        <Bar dataKey="score" fill="#4caf50">
-          {leaderboard.map((entry, index) => (
-            <Cell key={index} fill={index < 3 ? '#2e7d32' : '#4caf50'} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
-  </Box>
-)}
+      {leaderboard.length > 0 && (
+        <Box sx={{ mt: 3, height: { xs: 300, sm: 400, md: 500 } }}> {/* Dynamic height based on screen size */}
+          <Typography variant="h5" gutterBottom>{t("History.globalRanking")}</Typography>
+          <ResponsiveContainer width="100%" height="70%"> {/* Adjust height dynamically */}
+            <BarChart
+              data={leaderboard}
+              layout="vertical"
+              margin={{ left: 100 }}
+            >
+              <XAxis type="number" />
+              <YAxis type="category" dataKey="username" />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip />
+              <Bar dataKey="score" fill="#4caf50">
+                {leaderboard.map((entry, index) => (
+                  <Cell key={index} fill={index < 3 ? '#2e7d32' : '#4caf50'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
+      )}
     </Container>
   );
 }

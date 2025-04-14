@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Stack, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 
 function GameType() {
     
@@ -11,6 +11,8 @@ function GameType() {
     { text: 'VS IA',  type: 'vs' , imageSrc: '/images/gameMode/vs-ia.jpg'}
   ];
 
+
+  const { t } = useTranslation(); 
 
   const navigate = useNavigate();
   
@@ -37,7 +39,7 @@ function GameType() {
           textAlign: 'center', 
         }}
       >
-        Elige un modo de juego
+        {t("GameType.chooseGame")}
       </Typography>
 
       {/* Stack for adding the buttons */}
