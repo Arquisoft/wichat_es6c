@@ -13,7 +13,7 @@ export default function UserHistory() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const historyServiceUrl = process.env.HISTORY_SERVICE_URL || 'http://localhost:8007';
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -23,11 +23,11 @@ export default function UserHistory() {
   const fetchHistory = async () => {
     if (!username) return;
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial anterior
-    setStats(null);       // 🔹 Limpiar estadísticas
-    setLeaderboard([]);   // 🔹 Limpiar ranking
+    setHistory([]);       
+    setStats(null);       
+    setLeaderboard([]);   
     try {
-      const response = await axios.get(`${historyServiceUrl}/getUserHistory`, { params: { username } });
+      const response = await axios.get(`${apiEndpoint}/getUserHistory`, { params: { username } });
       setHistory(response.data.history);
     } catch (error) {
       console.error("Error fetching history:", error);
@@ -39,11 +39,11 @@ export default function UserHistory() {
   const fetchStats = async () => {
     if (!username) return;
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial
-    setStats(null);       // 🔹 Limpiar estadísticas anteriores
-    setLeaderboard([]);   // 🔹 Limpiar ranking
+    setHistory([]);       
+    setStats(null);       
+    setLeaderboard([]);   
     try {
-      const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
+      const response = await axios.get(`${apiEndpoint}/getUserStats`, { params: { username } });
       setStats(response.data);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -54,11 +54,11 @@ export default function UserHistory() {
   
   const fetchLeaderboard = async () => {
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial
-    setStats(null);       // 🔹 Limpiar estadísticas
-    setLeaderboard([]);   // 🔹 Limpiar ranking anterior antes de cargar el nuevo
+    setHistory([]);       
+    setStats(null);       
+    setLeaderboard([]);   
     try {
-      const response = await axios.get(`${historyServiceUrl}/getLeaderboard`);
+      const response = await axios.get(`${apiEndpoint}/getLeaderboard`);
       setLeaderboard(response.data.topPlayers);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
