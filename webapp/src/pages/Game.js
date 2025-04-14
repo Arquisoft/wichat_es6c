@@ -8,7 +8,7 @@ import StarIcon from "@mui/icons-material/Star";
 import Chat from "../components/Chat";
 import { motion } from "framer-motion";
 import { useTranslation } from 'react-i18next';
-
+import i18n from "i18next";
 
 function Game() {
   const QUESTION_TIME = 60;
@@ -95,7 +95,8 @@ function Game() {
   const preloadNextQuestion = useCallback(async () => {
 
     try {
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      const lang = i18n.language; 
+      const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setNextQuestionData(response.data); // Guardar la pregunta precargada
     } catch (error) {
       console.error("Error preloading next question:", error);
@@ -107,7 +108,8 @@ function Game() {
     try {
       if (round > TOTAL_ROUNDS) return;
       setImageLoaded(false);
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      const lang = i18n.language; 
+      const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setQuestionData(response.data);
 
       // Iniciar la precarga de la siguiente pregunta
@@ -214,7 +216,7 @@ function Game() {
     if (gameMode && round === 1) {
       fetchQuestion();
     }
-  }, [gameMode, fetchQuestion]);
+  }, [gameMode, fetchQuestion,round]);
 
   useEffect(() => {
     if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;

@@ -9,10 +9,10 @@ mongoose.connect(mongoUri);
 
 
 module.exports = {
-    getNumberQuestionsByCategory: async function(category){
+    getNumberQuestionsByCategory: async function(language, category){
         try{
 
-            const numberQuestions = await Question.countDocuments({category: category});
+            const numberQuestions = await Question.countDocuments({category: category, language: language});
             return numberQuestions;
 
         }catch (error) {
@@ -51,10 +51,11 @@ module.exports = {
         }
     },
 
-    getRandomQuestionByCategory: async function(categoryParam) {
+    getRandomQuestionByCategory: async function(language, categoryParam) {
         try {
             const question = await Question.aggregate([
                 { $match: { category: categoryParam } },
+                { $match: { language: language } },
                 { $sample: { size: 1 } } // Select a random document
             ]);
     
