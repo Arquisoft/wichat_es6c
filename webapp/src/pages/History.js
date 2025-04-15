@@ -10,7 +10,10 @@ export default function UserHistory() {
   const [username, setUsername] = useState("");
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState(null);
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState({
+    topPlayers: [],
+    userPosition: null
+  });
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -44,12 +47,12 @@ export default function UserHistory() {
   const fetchHistory = async () => {
     if (!username) return;
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial anterior
-    setStats(null);       // 🔹 Limpiar estadísticas
-    setLeaderboard([]);   // 🔹 Limpiar ranking
+    setHistory([]);       
+    setStats(null);       
+    setLeaderboard({ topPlayers: [], userPosition: null });
     try {
       const response = await axios.get(`${gatewayService}/getUserHistory`, { params: { username } });
-      setHistory(response.data.history);
+      setHistory(response.data.history || []);
     } catch (error) {
       console.error("Error fetching history:", error);
     } finally {
@@ -62,7 +65,7 @@ export default function UserHistory() {
     setLoading(true);
     setHistory([]);       // Limpiar historial
     setStats(null);       // Limpiar estadísticas anteriores
-    setLeaderboard([]);   // Limpiar ranking
+    setLeaderboard({ topPlayers: [], userPosition: null });  
     try {
       console.log("Fetching stats for user:", username);
       const response = await axios.get(`${gatewayService}/getUserStats`, { params: { username } });
@@ -73,22 +76,27 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
-  
+
+
   const fetchLeaderboard = async (criteria = sortCriteria) => {
     setLoading(true);
-    setHistory([]); 
-    setStats(null); 
+    setHistory([]);       
+    setStats(null);
+    setLeaderboard({ topPlayers: [], userPosition: null });
     
     try {
       const response = await axios.get(`${gatewayService}/getLeaderboard`, {
-        params: { sortBy: criteria } // Usamos el parámetro recibido
+        params: { 
+          sortBy: criteria,
+          username: localStorage.getItem('username')
+        }
       });
   
-      if (response.data?.topPlayers) {
-        setLeaderboard(response.data.topPlayers);
-      } else {
-        setLeaderboard([]);
-      }
+      setLeaderboard({
+        topPlayers: response.data.topPlayers || [],
+        userPosition: response.data.userPosition || null
+      });
+      
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
       alert('Error al cargar el ranking');
@@ -346,7 +354,7 @@ export default function UserHistory() {
         )}
 
   
-      {history.length > 0 && (
+{history.length > 0 && (
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
             <TableHead>
@@ -372,63 +380,88 @@ export default function UserHistory() {
           </Table>
         </TableContainer>
       )}
+
+
   
-  {leaderboard.length > 0 && (
-    <Box sx={{ mt: 3 }}>
-      <Typography variant="h5" gutterBottom>Ranking Global</Typography>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Posición</TableCell>
-              <TableCell 
-                onClick={() => handleSort('_id')}
-                style={{ cursor: 'pointer' }}
-              >
-                Usuario
-              </TableCell>
-              <TableCell 
-                onClick={() => handleSort('totalScore')}
-                style={{ cursor: 'pointer' }}
-              >
-                Puntuación Total
-              </TableCell>
-              <TableCell 
-                onClick={() => handleSort('accuracy')}
-                style={{ cursor: 'pointer' }}
-              >
-                % Aciertos
-              </TableCell>
-              <TableCell 
-                onClick={() => handleSort('totalCorrect')}
-                style={{ cursor: 'pointer' }}
-              >
-                Correctas
-              </TableCell>
-              <TableCell 
-                onClick={() => handleSort('totalGames')}
-                style={{ cursor: 'pointer' }}
-              >
-                Partidas
-              </TableCell>
+  {leaderboard.topPlayers.length > 0 && (
+  <Box sx={{ mt: 3 }}>
+    <Typography variant="h5" gutterBottom>Ranking Global</Typography>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Posición</TableCell>
+            <TableCell 
+              onClick={() => handleSort('_id')}
+              style={{ cursor: 'pointer' }}
+            >
+              Usuario
+            </TableCell>
+            <TableCell 
+              onClick={() => handleSort('totalScore')}
+              style={{ cursor: 'pointer' }}
+            >
+              Puntuación Total
+            </TableCell>
+            <TableCell 
+              onClick={() => handleSort('accuracy')}
+              style={{ cursor: 'pointer' }}
+            >
+              % Aciertos
+            </TableCell>
+            <TableCell 
+              onClick={() => handleSort('totalCorrect')}
+              style={{ cursor: 'pointer' }}
+            >
+              Correctas
+            </TableCell>
+            <TableCell 
+              onClick={() => handleSort('totalGames')}
+              style={{ cursor: 'pointer' }}
+            >
+              Partidas
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {leaderboard.topPlayers.map((user, index) => (
+            <TableRow key={user._id}>
+              <TableCell>{user.globalRank}</TableCell>
+              <TableCell>{user._id}</TableCell>
+              <TableCell>{user.totalScore}</TableCell>
+              <TableCell>{user.accuracy?.toFixed(2)}%</TableCell>
+              <TableCell>{user.totalCorrect}</TableCell>
+              <TableCell>{user.totalGames}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {leaderboard.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{user._id}</TableCell>
-                <TableCell>{user.totalScore}</TableCell>
-                <TableCell>{user.accuracy?.toFixed(2) || 0}%</TableCell>
-                <TableCell>{user.totalCorrect}</TableCell>
-                <TableCell>{user.totalGames}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  )}
+          ))}
+          
+          {leaderboard.userPosition && (
+            <TableRow sx={{ 
+              backgroundColor: '#fff3e0',
+              position: 'relative',
+              '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '2px',
+                backgroundColor: '#ff9800'
+              }
+            }}>
+              <TableCell>{leaderboard.userPosition.globalRank}</TableCell>
+              <TableCell>{leaderboard.userPosition._id} (Tú)</TableCell>
+              <TableCell>{leaderboard.userPosition.totalScore}</TableCell>
+              <TableCell>{leaderboard.userPosition.accuracy?.toFixed(2)}%</TableCell>
+              <TableCell>{leaderboard.userPosition.totalCorrect}</TableCell>
+              <TableCell>{leaderboard.userPosition.totalGames}</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+)}
     </Container>
   );
   

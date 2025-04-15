@@ -93,9 +93,10 @@ app.get('/getUserStats', async (req, res) => {
 
 app.get('/getLeaderboard', async (req, res) => {
   try {
-    const sortBy = req.query.sortBy || 'totalScore'; // Valor por defecto
+    const { sortBy = 'totalScore', username } = req.query;
     
-    const aggregationPipeline = [
+    // Pipeline para todos los usuarios (sin limitar)
+    const fullPipeline = [
       {
         $group: {
           _id: "$username",
@@ -122,14 +123,48 @@ app.get('/getLeaderboard', async (req, res) => {
           }
         }
       },
-      { $sort: { [sortBy]: -1 } },
-      { $limit: 10 }
+      {
+        $setWindowFields: {
+          sortBy: { [sortBy]: -1 },
+          output: {
+            globalRank: { $rank: {} }
+          }
+        }
+      }
     ];
 
-    const topPlayers = await UserHistory.aggregate(aggregationPipeline);
-    res.json({ topPlayers });
+    // Obtener todos los usuarios con su ranking global
+    const allPlayers = await UserHistory.aggregate(fullPipeline);
+    
+    // Ordenar y limitar a top 10
+    const topPlayers = allPlayers
+      .sort((a, b) => b[sortBy] - a[sortBy])
+      .slice(0, 10);
+
+    // Buscar usuario específico
+    let userPosition = null;
+    if (username) {
+      userPosition = allPlayers.find(p => p._id === username);
+      
+      // Eliminar datos innecesarios si existe en el top 10
+      if(userPosition && topPlayers.some(p => p._id === username)) {
+        userPosition = null;
+      }
+    }
+
+    res.json({ 
+      topPlayers,
+      userPosition: userPosition 
+        ? { ...userPosition, globalRank: userPosition.globalRank } 
+        : null 
+    });
+    
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    console.error('Error en getLeaderboard:', error);
+    res.status(500).json({ 
+      error: "Error en el servidor",
+      details: error.message 
+    });
   }
 });
 

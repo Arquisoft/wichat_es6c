@@ -105,13 +105,20 @@ app.get('/getUserStats', async (req, res) => {
 // Obtener ranking global
 app.get('/getLeaderboard', async (req, res) => {
   try {
-    const { sortBy } = req.query;
+    const { sortBy, username } = req.query;
     const response = await axios.get(`${historyServiceUrl}/getLeaderboard`, {
-      params: { sortBy }
+      params: { 
+        sortBy,
+        username
+      }
     });
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener ranking" });
+    console.error('Error en gateway /getLeaderboard:', error.response?.data || error.message);
+    res.status(500).json({ 
+      error: "Error al obtener ranking",
+      details: error.response?.data?.error || error.message 
+    });
   }
 });
 
