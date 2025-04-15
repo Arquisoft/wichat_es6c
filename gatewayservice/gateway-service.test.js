@@ -137,7 +137,7 @@ describe('Gateway Service', () => {
     axios.get.mockRejectedValueOnce({
       response: {
         status: 500,
-        data: { error: 'Failed to fetch questions from the question service' }
+        data: { error: 'Internal Server Error' }
       }
     });
   
@@ -149,5 +149,94 @@ describe('Gateway Service', () => {
     // Check that the error message is returned properly
     expect(response.body).toHaveProperty('error', 'Internal Server Error');
   });
+
+  it('should forward the createUserHistory request to the history service', async () => {
+    // Mock the successful response from the history service
+    axios.post.mockResolvedValueOnce({
+      data: { success: true, message: 'User history created successfully' }
+    });
   
+    // Send a POST request to the /createUserHistory endpoint
+    const response = await request(app)
+      .post('/createUserHistory')
+      .send({
+        username: 'testuser',
+        game: 'country',
+        score: 100
+      });
+  
+    // Verify that the status code is 200 (OK)
+    expect(response.status).toBe(200);
+  
+    // Verify that the response contains the expected success data
+    expect(response.body.success).toBe(true);
+    expect(response.body.message).toBe('User history created successfully');
+  });
+  
+  it('should handle errors and respond with status 500 if the history service fails', async () => {
+    // Mock axios to simulate a failure response from the history service
+    axios.post.mockRejectedValueOnce(new Error('Failed to create user history'));
+
+    // Send a POST request to the /createUserHistory endpoint
+    const response = await request(app)
+      .post('/createUserHistory')
+      .send({
+        username: 'testuser',
+        game: 'country',
+        score: 100
+      });
+
+    // Check that the status code is 500 (Internal Server Error)
+    expect(response.status).toBe(500);
+
+    // Check that the error message is as expected
+    expect(response.body).toHaveProperty('error', 'Ha fallado algo en el servidor');
+    expect(response.body).toHaveProperty('details', 'Failed to create user history');
+  });
+
+  it('should forward the getUserHistory request to the history service', async () => {
+    // Mock the successful response from the history service
+    axios.get.mockResolvedValueOnce({
+      data: { history: [{ game: 'country', score: 100 }] }
+    });
+
+    // Send a GET request to the /getUserHistory endpoint with a username query parameter
+    const response = await request(app)
+      .get('/getUserHistory')
+      .query({ username: 'testuser' });
+
+    // Verify that the status code is 200 (OK)
+    expect(response.status).toBe(200);
+
+    // Verify that the response contains the expected data
+    expect(response.body.history).toEqual([{ game: 'country', score: 100 }]);
+  });
+
+  it('should return 400 if the username query parameter is missing in getUserHistory ', async () => {
+    // Send a GET request without a username query parameter
+    const response = await request(app)
+      .get('/getUserHistory');
+
+    // Verify that the status code is 400 (Bad Request)
+    expect(response.status).toBe(400);
+
+    // Verify that the error message is returned as expected
+    expect(response.body).toHaveProperty('error', 'Se requiere un username');
+  });
+
+  it('should return 500 if the getUserHistory service fails', async () => {
+    // Mock axios to simulate a failure response from the history service
+    axios.get.mockRejectedValueOnce(new Error('Failed to fetch user history'));
+
+    // Send a GET request with a username query parameter
+    const response = await request(app)
+      .get('/getUserHistory')
+      .query({ username: 'testuser' });
+
+    // Verify that the status code is 500 (Internal Server Error)
+    expect(response.status).toBe(500);
+
+    // Verify that the error message is returned as expected
+    expect(response.body).toHaveProperty('error', 'Error en el servidor del Gateway');
+  });
 });
