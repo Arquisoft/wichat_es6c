@@ -130,4 +130,58 @@ describe('User Service', () => {
     expect(response.body.error).toBe('The password must contain at least one numeric character');
   });
 
+  it('The password must contain at least one uppercase letter', async () => {
+    const newUser = {
+      username: 'testuser2',
+      password: 'shortttt1',  
+      name: 'Test',
+      surname: 'User'
+    };
+  
+    const response = await request(app).post('/user').send(newUser);
+  
+    // Check that the status code is 400 (error)
+    expect(response.status).toBe(400);
+  
+    // Check that the error message is returned in the "error" field
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error).toBe('The password must contain at least one uppercase letter');
+  });
+
+  it('The name cannot be empty or contain only spaces', async () => {
+    const newUser = {
+      username: 'testuser2',
+      password: 'Shortttt1',  
+      name: '',
+      surname: 'User'
+    };
+  
+    const response = await request(app).post('/user').send(newUser);
+  
+    // Check that the status code is 400 (error)
+    expect(response.status).toBe(400);
+  
+    // Check that the error message is returned in the "error" field
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error).toBe('The name cannot be empty or contain only spaces');
+  });
+
+  it('The surname cannot be empty or contain only spaces', async () => {
+    const newUser = {
+      username: 'testuser2',
+      password: 'Shortttt1',  
+      name: 'test',
+      surname: ''
+    };
+  
+    const response = await request(app).post('/user').send(newUser);
+  
+    // Check that the status code is 400 (error)
+    expect(response.status).toBe(400);
+  
+    // Check that the error message is returned in the "error" field
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error).toBe('The surname cannot be empty or contain only spaces');
+  });
+
 });
