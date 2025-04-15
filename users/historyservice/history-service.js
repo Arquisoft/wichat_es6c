@@ -93,24 +93,40 @@ app.get('/getUserStats', async (req, res) => {
 
 app.get('/getLeaderboard', async (req, res) => {
   try {
-    const topPlayers = await UserHistory.aggregate([
-      // Ordenar todos los registros por score de forma descendente
-      { $sort: { score: -1 } },
-      // Agrupar por username y tomar el primer documento (con el score más alto)
+    const sortBy = req.query.sortBy || 'totalScore'; // Valor por defecto
+    
+    const aggregationPipeline = [
       {
         $group: {
           _id: "$username",
-          doc: { $first: "$$ROOT" }
+          totalScore: { $sum: "$score" },
+          totalCorrect: { $sum: "$correctAnswers" },
+          totalWrong: { $sum: "$wrongAnswers" },
+          totalGames: { $sum: 1 },
+          avgTime: { $avg: "$time" }
         }
       },
-      // Reemplazar la raíz del documento por el contenido de 'doc'
-      { $replaceRoot: { newRoot: "$doc" } },
-      // Volver a ordenar los resultados (porque el group pierde el orden)
-      { $sort: { score: -1 } },
-      // Limitar a 10 resultados
+      {
+        $addFields: {
+          accuracy: {
+            $cond: [
+              { $eq: [{ $add: ["$totalCorrect", "$totalWrong"] }, 0] },
+              0,
+              { 
+                $multiply: [
+                  { $divide: ["$totalCorrect", { $add: ["$totalCorrect", "$totalWrong"] }] },
+                  100
+                ]
+              }
+            ]
+          }
+        }
+      },
+      { $sort: { [sortBy]: -1 } },
       { $limit: 10 }
-    ]);
+    ];
 
+    const topPlayers = await UserHistory.aggregate(aggregationPipeline);
     res.json({ topPlayers });
   } catch (error) {
     res.status(500).json({ error: "Error en el servidor" });

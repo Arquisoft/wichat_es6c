@@ -105,10 +105,13 @@ app.get('/getUserStats', async (req, res) => {
 // Obtener ranking global
 app.get('/getLeaderboard', async (req, res) => {
   try {
-    const response = await axios.get(`${historyServiceUrl}/getLeaderboard`);
+    const { sortBy } = req.query;
+    const response = await axios.get(`${historyServiceUrl}/getLeaderboard`, {
+      params: { sortBy }
+    });
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener ranking", details: error.message });
+    res.status(500).json({ error: "Error al obtener ranking" });
   }
 });
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {  Container, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid
+import {  Container, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
@@ -19,6 +19,8 @@ export default function UserHistory() {
   const [profilePicture, setProfilePicture] = useState('');
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
+  const [sortCriteria, setSortCriteria] = useState('totalScore');
+  
 
   const gatewayService = process.env.HISTORY_SERVICE_URL || 'http://localhost:8000';
 
@@ -56,12 +58,13 @@ export default function UserHistory() {
   };
   
   const fetchStats = async () => {
-    if (!username) return;
+    if (!username) console.error("No tiene nombre de usuario.");
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial
-    setStats(null);       // 🔹 Limpiar estadísticas anteriores
-    setLeaderboard([]);   // 🔹 Limpiar ranking
+    setHistory([]);       // Limpiar historial
+    setStats(null);       // Limpiar estadísticas anteriores
+    setLeaderboard([]);   // Limpiar ranking
     try {
+      console.log("Fetching stats for user:", username);
       const response = await axios.get(`${gatewayService}/getUserStats`, { params: { username } });
       setStats(response.data);
     } catch (error) {
@@ -73,17 +76,34 @@ export default function UserHistory() {
   
   const fetchLeaderboard = async () => {
     setLoading(true);
-    setHistory([]);       // 🔹 Limpiar historial
-    setStats(null);       // 🔹 Limpiar estadísticas
-    setLeaderboard([]);   // 🔹 Limpiar ranking anterior antes de cargar el nuevo
+    setHistory([]); 
+    setStats(null); 
+    
     try {
-      const response = await axios.get(`${gatewayService}/getLeaderboard`);
-      setLeaderboard(response.data.topPlayers);
+      const response = await axios.get(`${gatewayService}/getLeaderboard`, {
+        params: { sortBy: sortCriteria }
+      });
+  
+      // Asegúrate que la respuesta tenga el formato esperado
+      if (response.data?.topPlayers) {
+        setLeaderboard(response.data.topPlayers);
+      } else {
+        console.error('Formato de respuesta inesperado:', response.data);
+        setLeaderboard([]);
+      }
     } catch (error) {
-      console.error("Error fetching leaderboard:", error);
+      console.error('Error fetching leaderboard:', error);
+      // Muestra un mensaje al usuario
+      alert('Error al cargar el ranking. Por favor intenta nuevamente.');
     } finally {
       setLoading(false);
     }
+  };
+  
+  const handleSort = async (criteria) => {
+    // Usamos el valor actualizado inmediatamente en lugar de esperar al estado
+    await fetchLeaderboard(criteria); // Pasamos el criterio directamente
+    setSortCriteria(criteria); // Actualizamos el estado para futuras llamadas
   };
 
   const updateUserInfo = async (event) => {
@@ -173,43 +193,57 @@ export default function UserHistory() {
   
       {/* Formulario de edición de perfil */}
       {editMode && (
-        <Card sx={{ mb: 3, p: 2, backgroundColor: '#f9f9f9' }}>
-          <Typography variant="h6" gutterBottom>
+        <Card sx={{ mb: 3, p: 3, backgroundColor: '#f9f9f9', boxShadow: 3, borderRadius: 2 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
             Editar Perfil
           </Typography>
           <form onSubmit={updateUserInfo}>
-            <Box sx={{ mb: 2 }}>
-              <input
-                type="text"
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="Nombre"
+                variant="outlined"
+                fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Nombre"
-                style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
               />
-              <input
-                type="text"
+              <TextField
+                label="Apellido"
+                variant="outlined"
+                fullWidth
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
-                placeholder="Apellido"
-                style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
               />
-              <input
-                type="text"
+              <TextField
+                label="URL de la imagen"
+                variant="outlined"
+                fullWidth
                 value={profilePicture}
                 onChange={(e) => setProfilePicture(e.target.value)}
-                placeholder="URL de la imagen"
-                style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
               />
-              <textarea
+              <TextField
+                label="Descripción"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Descripción"
-                style={{ width: '100%', padding: '8px', marginBottom: '10px', height: '100px' }}
               />
             </Box>
-            <Button variant="contained" color="primary" type="submit" disabled={loading}>
-              {loading ? 'Actualizando...' : 'Actualizar Perfil'}
-            </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={loading}
+                sx={{
+                  backgroundColor: '#6200ea',
+                  '&:hover': { backgroundColor: '#5a00d6' },
+                }}
+              >
+                {loading ? 'Actualizando...' : 'Actualizar Perfil'}
+              </Button>
+            </Box>
           </form>
         </Card>
       )}
@@ -234,7 +268,9 @@ export default function UserHistory() {
         <Button
           variant="contained"
           sx={{ backgroundColor: "#4caf50", color: "#fff", "&:hover": { backgroundColor: "#43a047" } }}
-          onClick={fetchLeaderboard}
+          onClick={() => {
+            fetchLeaderboard(); // Siempre usa el sortCriteria actual
+          }}
           disabled={loading}
         >
           Ver Ranking
@@ -251,13 +287,67 @@ export default function UserHistory() {
       {loading && <CircularProgress sx={{ display: "block", margin: "auto", mt: 2 }} />}
   
       {stats && (
-        <Card sx={{ mt: 3, p: 2, backgroundColor: "#f3f3f3" }}>
-          <CardContent>
-            <Typography variant="h5" gutterBottom>Estadísticas Generales</Typography>
-            {/* Aquí van los gráficos y estadísticas que ya tienes */}
-          </CardContent>
-        </Card>
-      )}
+          <Card sx={{ mt: 3, p: { xs: 2, sm: 3 }, backgroundColor: "#f3f3f3" }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>Estadísticas Generales</Typography>
+              
+              <Grid container spacing={3} alignItems="stretch">
+                {/* Gráfico de torta a la izquierda */}
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h6" gutterBottom>Distribución de respuestas</Typography>
+                  <Box sx={{ width: '100%', height: { xs: 250, sm: 300 } }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Correctas', value: stats.totalCorrect },
+                            { name: 'Incorrectas', value: stats.totalWrong }
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius="40%"
+                          outerRadius="60%"
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          <Cell key="correct" fill="#4caf50" />
+                          <Cell key="wrong" fill="#ff5722" />
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </Box>
+                </Grid>
+
+                {/* Estadísticas a la derecha */}
+                <Grid item xs={12} md={6}>
+                  <Grid container spacing={2} direction="column" justifyContent="center">
+                    <Grid item>
+                      <Card sx={{ backgroundColor: '#6200ea', color: 'white', p: 2, textAlign: 'center' }}>
+                        <Typography variant="subtitle1">Total Partidas</Typography>
+                        <Typography variant="h4">{stats.totalGames}</Typography>
+                      </Card>
+                    </Grid>
+                    <Grid item>
+                      <Card sx={{ backgroundColor: '#4caf50', color: 'white', p: 2, textAlign: 'center' }}>
+                        <Typography variant="subtitle1">Promedio de puntos</Typography>
+                        <Typography variant="h4">{stats.averageScore.toFixed(2)}</Typography>
+                      </Card>
+                    </Grid>
+                    <Grid item>
+                      <Card sx={{ backgroundColor: '#ff9800', color: 'white', p: 2, textAlign: 'center' }}>
+                        <Typography variant="subtitle1">Tiempo Total</Typography>
+                        <Typography variant="h4">{stats.totalTime}s</Typography>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        )}
+
   
       {history.length > 0 && (
         <TableContainer component={Paper} sx={{ mt: 3 }}>
@@ -286,24 +376,62 @@ export default function UserHistory() {
         </TableContainer>
       )}
   
-      {leaderboard.length > 0 && (
-        <Box sx={{ mt: 3, height: { xs: 300, sm: 400, md: 500 } }}>
-          <Typography variant="h5" gutterBottom>Ranking Global</Typography>
-          <ResponsiveContainer width="100%" height="70%">
-            <BarChart data={leaderboard} layout="vertical" margin={{ left: 100 }}>
-              <XAxis type="number" />
-              <YAxis type="category" dataKey="username" />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Bar dataKey="score" fill="#4caf50">
-                {leaderboard.map((entry, index) => (
-                  <Cell key={index} fill={index < 3 ? '#2e7d32' : '#4caf50'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      )}
+  {leaderboard.length > 0 && (
+    <Box sx={{ mt: 3 }}>
+      <Typography variant="h5" gutterBottom>Ranking Global</Typography>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Posición</TableCell>
+              <TableCell 
+                onClick={() => handleSort('_id')}
+                style={{ cursor: 'pointer' }}
+              >
+                Usuario
+              </TableCell>
+              <TableCell 
+                onClick={() => handleSort('totalScore')}
+                style={{ cursor: 'pointer' }}
+              >
+                Puntuación Total
+              </TableCell>
+              <TableCell 
+                onClick={() => handleSort('accuracy')}
+                style={{ cursor: 'pointer' }}
+              >
+                % Aciertos
+              </TableCell>
+              <TableCell 
+                onClick={() => handleSort('totalCorrect')}
+                style={{ cursor: 'pointer' }}
+              >
+                Correctas
+              </TableCell>
+              <TableCell 
+                onClick={() => handleSort('totalGames')}
+                style={{ cursor: 'pointer' }}
+              >
+                Partidas
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {leaderboard.map((user, index) => (
+              <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{user._id}</TableCell>
+                <TableCell>{user.totalScore}</TableCell>
+                <TableCell>{user.accuracy?.toFixed(2) || 0}%</TableCell>
+                <TableCell>{user.totalCorrect}</TableCell>
+                <TableCell>{user.totalGames}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  )}
     </Container>
   );
   
