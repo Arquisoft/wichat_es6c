@@ -112,6 +112,32 @@ describe('Gateway Service', () => {
     expect(response.body.answer).toBe('llmanswer');
   });
 
+  
+  it('should return error response if the LLM service fails', async () => {
+    // Mock the failed response from the LLM service
+    axios.post.mockRejectedValueOnce({
+      response: {
+        status: 500,
+        data: { error: 'Internal server error' }
+      }
+    });
+
+    // Send a POST request to the /askllm endpoint
+    const response = await request(app)
+      .post('/askllm')
+      .send({
+        question: 'What is the capital of France?',
+        apiKey: 'some-api-key',
+        model: 'gemini'
+      });
+
+    // Verify that the status code is 500 (Internal Server Error)
+    expect(response.status).toBe(500);
+
+    // Verify that the error message is returned as expected
+    expect(response.body).toHaveProperty('error', 'Internal server error');
+  });
+
   it('should respond with status 200 for /questions/:category endpoint', async () => {
     // Mock the external service (question service) to return some data
     axios.get.mockResolvedValueOnce({
@@ -238,5 +264,83 @@ describe('Gateway Service', () => {
 
     // Verify that the error message is returned as expected
     expect(response.body).toHaveProperty('error', 'Error en el servidor del Gateway');
+  });
+
+  it('should forward the getUserStats request to the history service', async () => {
+    // Mock the successful response from the history service
+    axios.get.mockResolvedValueOnce({
+      data: { stats: { gamesPlayed: 10, highScore: 200 } }
+    });
+
+    // Send a GET request to the /getUserStats endpoint with a username query parameter
+    const response = await request(app)
+      .get('/getUserStats')
+      .query({ username: 'testuser' });
+
+    // Verify that the status code is 200 (OK)
+    expect(response.status).toBe(200);
+
+    // Verify that the response contains the expected data
+    expect(response.body.stats).toEqual({ gamesPlayed: 10, highScore: 200 });
+  });
+
+  it('should return 400 if the username query parameter is missing in getUserStats', async () => {
+    // Send a GET request without a username query parameter
+    const response = await request(app)
+      .get('/getUserStats');
+
+    // Verify that the status code is 400 (Bad Request)
+    expect(response.status).toBe(400);
+
+    // Verify that the error message is returned as expected
+    expect(response.body).toHaveProperty('error', 'Se requiere un username');
+  });
+
+  it('should return 500 if the history service fails', async () => {
+    // Mock axios to simulate a failure response from the history service
+    axios.get.mockRejectedValueOnce(new Error('Failed to fetch user stats'));
+
+    // Send a GET request with a username query parameter
+    const response = await request(app)
+      .get('/getUserStats')
+      .query({ username: 'testuser' });
+
+    // Verify that the status code is 500 (Internal Server Error)
+    expect(response.status).toBe(500);
+
+    // Verify that the error message is returned as expected
+    expect(response.body).toHaveProperty('error', 'Error al obtener estadísticas');
+  });
+
+  it('should forward the getLeaderboard request to the history service', async () => {
+    // Mock the successful response from the history service
+    axios.get.mockResolvedValueOnce({
+      data: { leaderboard: [{ username: 'testuser', score: 100 }] }
+    });
+
+    // Send a GET request to the /getLeaderboard endpoint
+    const response = await request(app)
+      .get('/getLeaderboard');
+
+    // Verify that the status code is 200 (OK)
+    expect(response.status).toBe(200);
+
+    // Verify that the response contains the expected data
+    expect(response.body.leaderboard).toEqual([{ username: 'testuser', score: 100 }]);
+  });
+
+  it('should return 500 if the history service fails', async () => {
+    // Mock axios to simulate a failure response from the history service
+    axios.get.mockRejectedValueOnce(new Error('Failed to fetch leaderboard'));
+
+    // Send a GET request to the /getLeaderboard endpoint
+    const response = await request(app)
+      .get('/getLeaderboard');
+
+    // Verify that the status code is 500 (Internal Server Error)
+    expect(response.status).toBe(500);
+
+    // Verify that the error message is returned as expected
+    expect(response.body).toHaveProperty('error', 'Error al obtener ranking');
   });
 });
