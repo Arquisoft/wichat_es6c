@@ -4,7 +4,12 @@ import {  Container, Typography, Button, Table, Box, TableBody, TableCell, Table
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
-
+import {
+  PersonIcon,
+  ScoreIcon,
+  CheckCircleIcon,
+  VideogameAssetIcon
+} from '@mui/icons-material';
 
 export default function UserHistory() {
   const [username, setUsername] = useState("");
@@ -103,6 +108,18 @@ export default function UserHistory() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Función para colores de ranking
+  const getRankColor = (rank) => {
+    const colors = {
+      1: { bg: 'rgba(255, 215, 0, 0.3)', border: '1px solid rgba(255, 215, 0, 0.6)' },
+      2: { bg: 'rgba(192, 192, 192, 0.3)', border: '1px solid rgba(192, 192, 192, 0.6)' },
+      3: { bg: 'rgba(205, 127, 50, 0.3)', border: '1px solid rgba(205, 127, 50, 0.6)' },
+      default: { bg: 'rgba(160, 204, 172, 0.3)', border: '1px solid rgba(160, 204, 172, 0.3)' }
+    };
+    
+    return colors[rank] || colors.default;
   };
   
   const handleSort = async (criteria) => {
@@ -389,43 +406,93 @@ export default function UserHistory() {
     <TableContainer>
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell>Posición</TableCell>
-            <TableCell 
-              onClick={() => handleSort('_id')}
-              style={{ cursor: 'pointer' }}
-            >
-              Usuario
-            </TableCell>
-            <TableCell 
-              onClick={() => handleSort('totalScore')}
-              style={{ cursor: 'pointer' }}
-            >
-              Puntuación Total
-            </TableCell>
-            <TableCell 
-              onClick={() => handleSort('accuracy')}
-              style={{ cursor: 'pointer' }}
-            >
-              % Aciertos
-            </TableCell>
-            <TableCell 
-              onClick={() => handleSort('totalCorrect')}
-              style={{ cursor: 'pointer' }}
-            >
-              Correctas
-            </TableCell>
-            <TableCell 
-              onClick={() => handleSort('totalGames')}
-              style={{ cursor: 'pointer' }}
-            >
-              Partidas
-            </TableCell>
-          </TableRow>
-        </TableHead>
+      <TableRow sx={{ 
+        backgroundColor: 'background.default',
+        '& th': {
+          fontWeight: 'fontWeightBold',
+          padding: { xs: '0.5rem', sm: '0.75rem', md: '1rem' },
+          fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' },
+          textAlign: 'left', // Alineación horizontal izquierda
+          verticalAlign: 'bottom', // Alineación vertical inferior
+          borderBottom: '2px solid',
+          borderColor: 'divider'
+        }
+      }}>
+        {/* Posición */}
+        <TableCell sx={{ 
+          width: { xs: '3em', md: '5em' },
+          pl: { xs: 1, md: 2 } // Padding izquierdo ajustado
+        }}>
+          Posición
+        </TableCell>
+        
+        {/* Usuario */}
+        <TableCell 
+          onClick={() => handleSort('_id')}
+          sx={{
+            cursor: 'pointer',
+            '&:hover': { backgroundColor: 'action.hover' }
+          }}
+        >
+          Usuario
+        </TableCell>
+        
+        {/* Puntuación Total */}
+        <TableCell 
+          onClick={() => handleSort('totalScore')}
+          sx={{
+            cursor: 'pointer',
+            '&:hover': { backgroundColor: 'action.hover' }
+          }}
+        >
+          Puntuación
+        </TableCell>
+        
+        {/* % Aciertos */}
+        <TableCell 
+          onClick={() => handleSort('accuracy')}
+          sx={{
+            cursor: 'pointer',
+            '&:hover': { backgroundColor: 'action.hover' }
+          }}
+        >
+          % Aciertos
+        </TableCell>
+        
+        {/* Correctas */}
+        <TableCell 
+          onClick={() => handleSort('totalCorrect')}
+          sx={{
+            cursor: 'pointer',
+            '&:hover': { backgroundColor: 'action.hover' }
+          }}
+        >
+          Correctas
+        </TableCell>
+        
+        {/* Partidas */}
+        <TableCell 
+          onClick={() => handleSort('totalGames')}
+          sx={{
+            cursor: 'pointer',
+            '&:hover': { backgroundColor: 'action.hover' }
+          }}
+        >
+          Partidas
+        </TableCell>
+      </TableRow>
+  </TableHead>
         <TableBody>
           {leaderboard.topPlayers.map((user, index) => (
-            <TableRow key={user._id}>
+            <TableRow key={user._id}
+            sx={{backgroundColor: getRankColor(user.globalRank).bg
+              , border: getRankColor(user.globalRank).border,
+              '&:hover': {
+                backgroundColor: getRankColor(user.globalRank).bg.replace('0.3', '0.5'),
+                transform: 'scale(1.03)'
+              },
+            }}
+            >
               <TableCell>{user.globalRank}</TableCell>
               <TableCell>{user._id}</TableCell>
               <TableCell>{user.totalScore}</TableCell>
@@ -437,7 +504,12 @@ export default function UserHistory() {
           
           {leaderboard.userPosition && (
             <TableRow sx={{ 
-              backgroundColor: '#fff3e0',
+              backgroundColor: getRankColor(leaderboard.userPosition.globalRank).bg,
+              border: getRankColor(leaderboard.userPosition.globalRank).border,
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.03)',
+                transform: 'scale(1.01)'
+              },
               position: 'relative',
               '&:after': {
                 content: '""',

@@ -123,7 +123,6 @@ app.get('/getLeaderboard', async (req, res) => {
 });
 
 //-----------------------------
-
 //-----User Service endpoint----
 app.get('/user/profile/:username', async (req, res) => {
   try {
