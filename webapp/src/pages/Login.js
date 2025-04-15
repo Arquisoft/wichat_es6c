@@ -10,7 +10,6 @@ import { SessionContext } from '../SessionContext';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [createdAt, setCreatedAt] = useState('');
@@ -66,7 +65,7 @@ const Login = () => {
       {loginSuccess ? (
         <div>
           <Typewriter
-            words={[message]} // Pass your message as an array of strings
+            words={[`¡Bienvenido ${username}!`]} // Pass your message as an array of strings
             cursor
             cursorStyle="|"
             typeSpeed={50} // Typing speed in ms

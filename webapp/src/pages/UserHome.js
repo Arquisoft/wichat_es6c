@@ -16,7 +16,7 @@ const HomePage = () => {
 
 
     const gameModes = async () => {
-      navigate('/game-mode');
+      navigate('/game-type');
       
     }
       return (

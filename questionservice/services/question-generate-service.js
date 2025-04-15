@@ -31,6 +31,18 @@ const wikidataCategoriesQueries = JSON.parse(json);
 
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, numImages) {
+    
+    if (!wikidataCategoriesQueries[category]) {
+        console.error(`Category ${category} not found in queries.`);
+        throw new Error("The given category does not exist: ", category);
+    }
+    if(!numImages || numImages <= 0 || isNaN(numImages)){
+        // Verifica si numImages es un número positivo{
+        console.error(`numImages must be a positive number`);
+        throw new Error("numImages must be a positive number");
+    }
+    
+    //const categoryQueries = wikidataCategoriesQueries[category];
 
     // Acceder directamente a la consulta correspondiente a la categoría dada
     const categoryQueries = wikidataCategoriesQueries[category]?.query;
@@ -55,6 +67,7 @@ async function getImagesFromWikidata(category, numImages) {
         });
 
         const data = response.data.results.bindings;
+        
         if (data.length > 0) {
             const { label, image, extra } = categoryData.fields;
 
@@ -69,6 +82,7 @@ async function getImagesFromWikidata(category, numImages) {
 
             return filteredImages;
         }
+        return []; // Retornar un array vacío si no hay datos
 
     } catch (error) {
         console.error(`Error retrieving images: ${error.message}`);
@@ -127,18 +141,31 @@ async function processQuestions(images,category) {
             category: category,
             imageUrl: image.imageUrl
         };
+        questions.push(newQuestion);
 
         await dataService.saveQuestion(newQuestion);
         console.log("Question saved:", newQuestion);
-    }
 
+    }
+    console.error("Images retrieved:", questions);
+    return questions;
 }
 
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
-    const images = await getImagesFromWikidata(category, numImages);
- 
-    processQuestions(images, category);
+    try{
+        const images = await getImagesFromWikidata(category, numImages);
+        if (images.length === 0) {
+            console.error(`No images found for category ${category}`);
+            return [];
+        }
+
+        processQuestions(images, category);
+    }catch (error) {
+        console.error("Error generating questions:", error.message);
+        throw new Error(error.message);
+    }
+    return [];
 }
 
 module.exports = {

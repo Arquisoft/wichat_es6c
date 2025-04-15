@@ -13,11 +13,16 @@
     "axios": "^1.7.9",
     "framer-motion": "^10.0.0",
     "react": "^18.2.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.0",
     "react-scripts": "5.0.1",
     "react-simple-typewriter": "^5.0.1",
-    "web-vitals": "^3.5.1"
+    "web-vitals": "^3.5.1",
+    "winston": "^3.8.2",
+    "mongoose": "^7.6.3",
+    "prop-types": "^15.8.1",
+    "recharts": "^2.8.0" 
   },
   "scripts": {
     "start": "react-scripts start",
@@ -55,5 +60,6 @@
     "puppeteer": "^21.7.0",
     "serve": "^14.2.4",
     "start-server-and-test": "^2.0.9"
+    
   }
 }
