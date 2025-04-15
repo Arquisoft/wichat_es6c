@@ -59,8 +59,8 @@ async function getImagesFromWikidata(category, numImages) {
             const { label, image, extra } = categoryData.fields;
 
             const filteredImages = data
-                .filter(item => item[label] && item[image])  // Filtrar solo los elementos con ciudad e imagen
-                .slice(0, numImages)  // Limitar la cantidad de imágenes a `numImages`
+                .filter(item => item[label] && item[image])  
+                .slice(0, numImages)  
                 .map(item => ({
                     label: item[label].value,
                     imageUrl: item[image].value,
