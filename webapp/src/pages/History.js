@@ -74,27 +74,24 @@ export default function UserHistory() {
     }
   };
   
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = async (criteria = sortCriteria) => {
     setLoading(true);
     setHistory([]); 
     setStats(null); 
     
     try {
       const response = await axios.get(`${gatewayService}/getLeaderboard`, {
-        params: { sortBy: sortCriteria }
+        params: { sortBy: criteria } // Usamos el parámetro recibido
       });
   
-      // Asegúrate que la respuesta tenga el formato esperado
       if (response.data?.topPlayers) {
         setLeaderboard(response.data.topPlayers);
       } else {
-        console.error('Formato de respuesta inesperado:', response.data);
         setLeaderboard([]);
       }
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
-      // Muestra un mensaje al usuario
-      alert('Error al cargar el ranking. Por favor intenta nuevamente.');
+      alert('Error al cargar el ranking');
     } finally {
       setLoading(false);
     }
