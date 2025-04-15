@@ -19,6 +19,7 @@ describe('Register component', () => {
     mockNavigate.mockReset();
   });
 
+
   it('should render register form', () => {
     render(
       <SessionContext.Provider value={{}}>
