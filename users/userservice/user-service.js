@@ -1,4 +1,3 @@
-// user-service.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -51,11 +50,7 @@ app.post('/user', async (req, res) => {
     try {
         const { username, password, name, surname } = req.body;
 
-        const usernameReq = req.body.username.toString();
-        const user = await User.findOne({ usernameReq });
-        if(user){
-            throw new Error(`El usuario "${req.body.username}" ya existe.`);
-        }
+        const user = await User.findOne({ username });
 
         registerValidators(user, username, password, name, surname);
 

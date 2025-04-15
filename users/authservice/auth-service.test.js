@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const bcrypt = require('bcrypt');
-const User = require('./auth-model');
+const User = require('./auth-model.js');
 
 let mongoServer;
 let app;
@@ -42,4 +42,19 @@ describe('Auth Service', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('username', 'testuser');
   });
+
+  /*
+  it('shouldn`t login a user because of the white username', async () => {
+
+    // We make the wrong login request
+    const response = await request(app).post('/login').send({
+      username: '   ',
+      password: 'testpassword'
+    });
+  
+    // We now need to check that the response is correct and it shows the error
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error.toLowerCase()).toContain('username');
+  });*/
 });
