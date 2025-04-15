@@ -72,7 +72,7 @@ beforeAll(async () => {
   const uri = mongoServer.getUri();
   // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
   process.env.MONGODB_URI = uri;
-  generateService = require('./question-generate-service');
+  generateService = require('../services/question-generate-service');
   
 });
 
@@ -104,7 +104,6 @@ afterEach(async () => {
     await collections[key].deleteMany({});
   }
 });
-
 
 jest.mock('axios');
 
@@ -188,5 +187,5 @@ describe('Question Generate Service', () => {
         expect(questions.length).toBe(0);
     });
 
-    
+
 });

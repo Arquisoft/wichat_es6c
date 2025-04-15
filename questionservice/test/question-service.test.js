@@ -124,7 +124,7 @@ beforeAll(async () => {
     const uri = mongoServer.getUri();
     // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
     process.env.MONGODB_URI = uri;
-    app = require('./question-service');
+    app = require('../services/question-service');
 
 });
 
