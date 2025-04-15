@@ -8,6 +8,9 @@ import Chat from "../components/Chat";
 import { motion } from "framer-motion";
 
 import { useTranslation } from "react-i18next";
+
+import i18n from "i18next";
+
 function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
@@ -25,7 +28,7 @@ function Game() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
@@ -73,7 +76,9 @@ function Game() {
   const preloadNextQuestion = useCallback(async () => {
 
     try {
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      const lang = i18n.language;
+
+      const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setNextQuestionData(response.data); // Guardar la pregunta precargada
     } catch (error) {
       console.error("Error preloading next question:", error);
@@ -86,7 +91,9 @@ function Game() {
     try {
       if (round > TOTAL_ROUNDS) return;
       setImageLoaded(false);
-      const response = await axios.get(`${apiEndpoint}/questions/${gameMode}`);
+      const lang = i18n.language;
+
+      const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setQuestionData(response.data);
 
       // Iniciar la precarga de la siguiente pregunta
@@ -367,7 +374,7 @@ function Game() {
             textAlign: "center",
           }}
         >
-         {t("Game-VS.totalScore")}: {score}
+          {t("Game-VS.totalScore")}: {score}
         </Typography>
       </Box>
     );
@@ -464,7 +471,7 @@ function Game() {
           </Typography>
         </Box>
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
-          {t("Game-VS.rounds",{round, TOTAL_ROUNDS})}
+          {t("Game-VS.rounds", { round, TOTAL_ROUNDS })}
         </Typography>
 
       </Box>
