@@ -12,17 +12,22 @@ const Question = require('../models/question-model');
             ?city wdt:P17 ?country.  # País de la ciudad
             OPTIONAL { ?city wdt:P18 ?image. }  # Imagen de la ciudad (opcional)
             SERVICE wikibase:label {
-                bd:serviceParam wikibase:language "[AUTO_LANGUAGE],es".
+                bd:serviceParam wikibase:language "[AUTO_LANGUAGE]".
             }
         }
         ORDER BY RAND()
         LIMIT ?limit
         `,
-    }   
+    }
 };
 
 const titlesQuestionsCategories = {
-    "country": "¿A qué país pertenece esta imagen?"
+    "es": {
+        "country": "¿A qué país pertenece esta imagen?"
+    },
+    "en": {
+        "country": "Which country does this image belong to?"
+    }
 };*/
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
@@ -37,7 +42,7 @@ async function init() {
 init();
 
 // Obtener imágenes de una categoría en Wikidata
-async function getImagesFromWikidata(category, numImages) {
+async function getImagesFromWikidata(category, language, numImages) {
  
     if(!numImages || numImages <= 0 || isNaN(numImages)){
         // Verifica si numImages es un número positivo{
@@ -55,7 +60,8 @@ async function getImagesFromWikidata(category, numImages) {
     }
 
     // Obtención de la consulta directamente de la categoría dada
-    const sparqlQuery = categoryQueries.replace('?limit', numImages);
+    const sparqlQuery = categoryQueries.replace('?limit', numImages).replace('[AUTO_LANGUAGE]', language);
+    
 
     try {
         const response = await axios.get(urlApiWikidata, {
@@ -70,7 +76,7 @@ async function getImagesFromWikidata(category, numImages) {
         });
 
         const data = response.data.results.bindings;
-        
+
         if (data.length > 0) {
             const fields = wikidataCategoriesQueries[category]?.fields;
             if (!fields) {
@@ -97,14 +103,14 @@ async function getImagesFromWikidata(category, numImages) {
     }
 }
 
-async function getIncorrectOptions(correctCountry) {
+async function getIncorrectOptions(correctCountry, lang) {
     const sparqlQuery = `
         SELECT DISTINCT ?countryLabel
         WHERE {
             ?country wdt:P31 wd:Q6256.  # Q6256 = país
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "es". }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "${lang}". }
         }
-        LIMIT 100
+        LIMIT 50
     `;
 
     try {
@@ -119,9 +125,10 @@ async function getIncorrectOptions(correctCountry) {
             }
         });
 
-        const data = response.data.results.bindings.map(item => item.countryLabel.value);
-        const incorrectOptions = data.filter(country => country !== correctCountry);
+        const data = response.data.results.bindings.map(item => item.countryLabel.value).filter(label => label && !/\d/.test(label)); 
         
+        const incorrectOptions = data.filter(country => country !== correctCountry);
+
         // Seleccionamos aleatoriamente 3 opciones incorrectas
         return incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
     } catch (error) {
@@ -133,7 +140,7 @@ async function getIncorrectOptions(correctCountry) {
 async function processQuestions(images,category) {
     let questions=[];
     for (const image of images) {
-        const incorrectAnswers = await getIncorrectOptions(image.country);
+        const incorrectAnswers = await getIncorrectOptions(image.country,language);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
 
         // Crear opciones y mezclarlas
@@ -142,11 +149,14 @@ async function processQuestions(images,category) {
         // Generar pregunta
         const questionText = wikidataCategoriesQueries[category]?.question;
         
+        //const questionText = titlesQuestionsCategories[language][category];
+
         const newQuestion = {
             question: questionText,
             options: options,
             correctAnswer: image.country,
             category: category,
+            language: language,
             imageUrl: image.imageUrl
         };
         console.log(newQuestion);
@@ -161,15 +171,15 @@ async function processQuestions(images,category) {
 }
 
 // Generate questions
-async function generateQuestionsByCategory(category, numImages) {
-    try{
-        const images = await getImagesFromWikidata(category, numImages);
+async function generateQuestionsByCategory(category, langauge, numImages) {
+    try {
+        const images = await getImagesFromWikidata(category, langauge, numImages);
         if (images.length === 0) {
             console.error(`No images found for category ${category}`);
             return [];
         }
 
-        processQuestions(images, category);
+        processQuestions(images, langauge, category);
     }catch (error) {
         console.error("Error generating questions:", error.message);
         throw new Error(error.message);

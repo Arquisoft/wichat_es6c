@@ -5,6 +5,9 @@ import MockAdapter from 'axios-mock-adapter';
 import Register from '../../pages/Register';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { SessionContext } from '../../SessionContext';
+
+import '../../localize/i18n';
+
 const mockAxios = new MockAdapter(axios);
 const mockNavigate = jest.fn();
 
@@ -28,22 +31,22 @@ describe('Register component', () => {
       </SessionContext.Provider>
     );
 
-    const usernameMessage = screen.getByLabelText('Usuario');
+    const usernameMessage = screen.getByLabelText('Username');
     expect(usernameMessage).toBeInTheDocument();
 
-    const passwordMessage = screen.getByLabelText('Contraseña');
+    const passwordMessage = screen.getByLabelText('Password');
     expect(passwordMessage).toBeInTheDocument();
 
-    const surnameMessage = screen.getByLabelText('Primer apellido');
+    const surnameMessage = screen.getByLabelText('Surname');
     expect(surnameMessage).toBeInTheDocument();
-    const nameMessage = screen.getByLabelText('Nombre');
+    const nameMessage = screen.getByLabelText('Name');
     expect(nameMessage).toBeInTheDocument();
 
-    const registerButton = screen.getByRole('button', { name: 'Registrarse'});
+    const registerButton = screen.getByRole('button', { name: 'Submit' });
     expect(registerButton).toBeInTheDocument();
 
     expect(
-      screen.getByRole('link', { name: 'Inicia sesión aquí' })
+      screen.getByRole('link', { name: 'Sign in here' })
     ).toBeInTheDocument();
   });
 
@@ -62,13 +65,13 @@ describe('Register component', () => {
       </SessionContext.Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Usuario'), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'testpassword' } });
-    fireEvent.change(screen.getByLabelText('Primer apellido'), { target: { value: 'testSurname'}});
-    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'testNombre'}});
+    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'testpassword' } });
+    fireEvent.change(screen.getByLabelText('Surname'), { target: { value: 'testSurname'}});
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'testNombre'}});
     
        
-    fireEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
      await waitFor(() => {
           expect(createSession).toHaveBeenCalledWith('testuser');
@@ -93,7 +96,7 @@ describe('Register component', () => {
     );
     
        
-    fireEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
      await waitFor(() => {
         expect(screen.getByText('Error: Usuario ya registrado')).toBeInTheDocument();

@@ -7,27 +7,32 @@ var generateService = "";
 let mongoServer;
 const questions = [
     {
-      question: "¿A qué país pertenece esta imagen?",
-      options: ["Singapur", "Guatemala", "Paraguay", "Polonia"],
-      correctAnswer: "Polonia",
-      category: "country",
-      imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Szczecin%20aerial%203a.jpg"
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Singapur", "Guatemala", "Paraguay", "Polonia"],
+        correctAnswer: "Polonia",
+        category: "country",
+        language: "es",
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Szczecin%20aerial%203a.jpg"
     },
     {
-      question: "¿A qué país pertenece esta imagen?",
-      options: ["Turquía", "Islandia", "Nauru", "Uzbekistán"],
-      correctAnswer: "Turquía",
-      category: "country",
-      imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Byzantine%20Constantinople-en.png"
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Turquía", "Islandia", "Nauru", "Uzbekistán"],
+        correctAnswer: "Turquía",
+        category: "country",
+        language: "es",
+
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Byzantine%20Constantinople-en.png"
     },
     {
-      question: "¿A qué país pertenece esta imagen?",
-      options: ["Australia", "Indonesia", "República Dominicana", "Finlandia"],
-      correctAnswer: "Australia",
-      category: "country",
-      imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
+        question: "¿A qué país pertenece esta imagen?",
+        options: ["Australia", "Indonesia", "República Dominicana", "Finlandia"],
+        correctAnswer: "Australia",
+        category: "country",
+        language: "es",
+
+        imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     }
-  ];
+];
 
 const testResponse = {
     data: {
@@ -53,13 +58,13 @@ const testOptions = {
         results: {
             bindings: [
                 {
-                    countryLabel: { value: "Rusia" }  
+                    countryLabel: { value: "Rusia" }
                 },
                 {
-                    countryLabel: { value: "Australia" }  
+                    countryLabel: { value: "Australia" }
                 },
                 {
-                    countryLabel: { value: "Turquía" }  
+                    countryLabel: { value: "Turquía" }
                 }
             ]
         }
@@ -67,42 +72,42 @@ const testOptions = {
 };
 
 beforeAll(async () => {
-  // Inicia MongoDB en memoria
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
-  process.env.MONGODB_URI = uri;
-  generateService = require('./question-generate-service');
-  
+    // Inicia MongoDB en memoria
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
+    process.env.MONGODB_URI = uri;
+    generateService = require('./question-generate-service');
+
 });
 
 beforeEach(async () => {
-  // Rellena la base de datos con tres preguntas (actualmente iguales, pero fácil de modificar)
-  for (const question of questions) {
-    let newQuestion = new Question(question); // Crea una nueva instancia de la pregunta
-    // Guarda la pregunta en la base de datos
-    await newQuestion.save();
-  }
+    // Rellena la base de datos con tres preguntas (actualmente iguales, pero fácil de modificar)
+    for (const question of questions) {
+        let newQuestion = new Question(question); // Crea una nueva instancia de la pregunta
+        // Guarda la pregunta en la base de datos
+        await newQuestion.save();
+    }
 });
 
 afterAll(async () => {
-  // Cierra la conexión y detén el servidor en memoria
-  await mongoose.connection.close(); // Asegura que todas las conexiones de Mongoose se cierren
-  await mongoServer.stop(); // Detiene el servidor MongoDB en memoria
-  await mongoose.disconnect();
+    // Cierra la conexión y detén el servidor en memoria
+    await mongoose.connection.close(); // Asegura que todas las conexiones de Mongoose se cierren
+    await mongoServer.stop(); // Detiene el servidor MongoDB en memoria
+    await mongoose.disconnect();
 
 });
 
 afterEach(async () => {
-  if (mongoose.connection.readyState === 0) { // Si la conexión está cerrada
-    const uri = mongoServer.getUri(); // Obtén la URI del servidor en memoria
-    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-  }
-  // Limpia todas las colecciones después de cada prueba
-  const collections = mongoose.connection.collections;
-  for (const key in collections) {
-    await collections[key].deleteMany({});
-  }
+    if (mongoose.connection.readyState === 0) { // Si la conexión está cerrada
+        const uri = mongoServer.getUri(); // Obtén la URI del servidor en memoria
+        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    }
+    // Limpia todas las colecciones después de cada prueba
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+        await collections[key].deleteMany({});
+    }
 });
 
 
@@ -111,7 +116,7 @@ jest.mock('axios');
 describe('Question Generate Service', () => {
     axios.get.mockImplementation((url, config) => {
         if (url.startsWith('https://query.wikidata')) {
-            if (config.params.query.includes('LIMIT 100')) {
+            if (config.params.query.includes('LIMIT 50')) {
                 // Mock response for getIncorrectCountries
                 return Promise.resolve(testOptions);
             } else if (config.params.query.includes('ORDER BY RAND()')) {
@@ -123,10 +128,10 @@ describe('Question Generate Service', () => {
     });
 
     it('should get images from Wikidata', async () => {
-      
+
         const category = 'country';
         const numImages = 2;
-        const questions = await generateService.generateQuestionsByCategory(category, numImages);
+        const questions = await generateService.generateQuestionsByCategory(category, 'es',numImages);
 
         // Verifica que el número de preguntas generadas sea correcto
         expect(questions.length).toBe(numImages);
@@ -148,45 +153,45 @@ describe('Question Generate Service', () => {
     it('should give error when category does not exist', async () => {
         const category = 'country';
         const numImages = 2;
-        
+
         // Verifica que el número de preguntas generadas sea correcto
-        await expect(generateService.generateQuestionsByCategory(" ", numImages))
-        .rejects
-        .toThrow("The given category does not exist: ");
+        await expect(generateService.generateQuestionsByCategory(" ", 'es',numImages))
+            .rejects
+            .toThrow("The given category does not exist: ");
     });
 
     it('should give error when invalid number of images', async () => {
         const category = 'country';
         const numImages = -2;
-        
+
         // Verifica que el número de preguntas generadas sea correcto
-        await expect(generateService.generateQuestionsByCategory(category, numImages))
-        .rejects
-        .toThrow("numImages must be a positive number");
+        await expect(generateService.generateQuestionsByCategory(category,'es', numImages))
+            .rejects
+            .toThrow("numImages must be a positive number");
     });
 
     it('should return an empty array when no images found', async () => {
-      axios.get.mockImplementation((url, config) => {
-                  if (url.startsWith('https://query.wikidata')) {
-                      if (config.params.query.includes('LIMIT 100')) {
-                          // Mock empty response for getIncorrectCountries
-                          return Promise.resolve({ data: { results: { bindings: [] } } });
-                      } else if (config.params.query.includes('ORDER BY RAND()')) {
-                          // Mock empty response for getImagesFromWikidata
-                          return Promise.resolve({ data: { results: { bindings: [] } } });
-                      }
-                  }
-                  return Promise.reject(new Error('Unexpected URL'));
-              });
+        axios.get.mockImplementation((url, config) => {
+            if (url.startsWith('https://query.wikidata')) {
+                if (config.params.query.includes('LIMIT 100')) {
+                    // Mock empty response for getIncorrectCountries
+                    return Promise.resolve({ data: { results: { bindings: [] } } });
+                } else if (config.params.query.includes('ORDER BY RAND()')) {
+                    // Mock empty response for getImagesFromWikidata
+                    return Promise.resolve({ data: { results: { bindings: [] } } });
+                }
+            }
+            return Promise.reject(new Error('Unexpected URL'));
+        });
         const category = 'country';
         const numImages = 2;
-        
+
         // Verifica que el número de preguntas generadas sea correcto
-        const questions = await generateService.generateQuestionsByCategory(category, numImages);
+        const questions = await generateService.generateQuestionsByCategory(category,'es', numImages);
 
         // Verifica que el número de preguntas generadas sea correcto
         expect(questions.length).toBe(0);
     });
 
-    
+
 });
