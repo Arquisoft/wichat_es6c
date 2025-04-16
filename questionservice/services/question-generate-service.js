@@ -20,15 +20,7 @@ const Question = require('../models/question-model');
         `,
     }
 };
-
-const titlesQuestionsCategories = {
-    "es": {
-        "country": "¿A qué país pertenece esta imagen?"
-    },
-    "en": {
-        "country": "Which country does this image belong to?"
-    }
-};*/
+*/
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
@@ -137,7 +129,7 @@ async function getIncorrectOptions(correctCountry, lang) {
     }
 }
 
-async function processQuestions(images,category) {
+async function processQuestions(images,category, language) {
     let questions=[];
     for (const image of images) {
         const incorrectAnswers = await getIncorrectOptions(image.country,language);
@@ -147,9 +139,10 @@ async function processQuestions(images,category) {
         const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
 
         // Generar pregunta
-        const questionText = wikidataCategoriesQueries[category]?.question;
+        //const questionText = wikidataCategoriesQueries[category]?.question;
         
-        //const questionText = titlesQuestionsCategories[language][category];
+        const questionText = wikidataCategoriesQueries[category]?.question?.[language]
+        || "Which country does this image belong to?";
 
         const newQuestion = {
             question: questionText,
@@ -171,15 +164,15 @@ async function processQuestions(images,category) {
 }
 
 // Generate questions
-async function generateQuestionsByCategory(category, langauge, numImages) {
+async function generateQuestionsByCategory(category, language, numImages) {
     try {
-        const images = await getImagesFromWikidata(category, langauge, numImages);
+        const images = await getImagesFromWikidata(category, language, numImages);
         if (images.length === 0) {
             console.error(`No images found for category ${category}`);
             return [];
         }
 
-        processQuestions(images, langauge, category);
+        processQuestions(images, category, language);
     }catch (error) {
         console.error("Error generating questions:", error.message);
         throw new Error(error.message);

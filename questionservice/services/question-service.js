@@ -20,7 +20,7 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     console.log(`Número de preguntas en la base de datos: ${numberQuestions} para la categoría: ${category} y el idioma ${language}`);
 
     if (numberQuestions < 10) {
-      generateService.generateQuestionsByCategory(category,language, questionsToGenerate - numberQuestions);
+      generateService.generateQuestionsByCategory(category, language, questionsToGenerate - numberQuestions);
 
       // Esperar hasta que haya al menos 10 preguntas en la base de datos
       const maxRetries = 100; // Máximo de intentos
