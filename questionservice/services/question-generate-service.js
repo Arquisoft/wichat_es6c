@@ -1,6 +1,7 @@
 const axios = require('axios');
 const dataService = require('./question-data-service');
 const utils = require('../utils/utils');
+const Question = require('../models/question-model');
 
 /*const wikidataCategoriesQueries = {   
     "country": {  // Eliminar el punto al final del nombre de la categoría
@@ -128,6 +129,7 @@ async function getIncorrectOptions(correctCountry) {
 }
 
 async function processQuestions(images,category) {
+    let questions=[];
     for (const image of images) {
         const incorrectAnswers = await getIncorrectOptions(image.country);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
@@ -136,7 +138,7 @@ async function processQuestions(images,category) {
         const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
 
         // Generar pregunta
-        const questionText = titlesQuestionsCategories[category]?.question; 
+        const questionText = wikidataCategoriesQueries[category]?.question;
         
         const newQuestion = {
             question: questionText,
@@ -145,6 +147,7 @@ async function processQuestions(images,category) {
             category: category,
             imageUrl: image.imageUrl
         };
+        console.log(newQuestion);
         questions.push(newQuestion);
 
         await dataService.saveQuestion(newQuestion);
