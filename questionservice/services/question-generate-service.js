@@ -34,6 +34,8 @@ async function init() {
     wikidataCategoriesQueries = JSON.parse(json);
 }
 
+init();
+
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, numImages) {
  
@@ -161,7 +163,6 @@ async function processQuestions(images,category) {
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
     try{
-        await init();
         const images = await getImagesFromWikidata(category, numImages);
         if (images.length === 0) {
             console.error(`No images found for category ${category}`);

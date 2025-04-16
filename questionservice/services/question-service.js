@@ -9,7 +9,6 @@ const port = 8004;
 // Middleware to parse JSON in request body
 app.use(express.json());
 
-
 app.get('/getQuestionsDb/:category', async (req, res) => {
   try {
     const category = req.params.category;
