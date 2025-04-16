@@ -1,5 +1,6 @@
 const axios = require('axios');
 const dataService = require('./question-data-service');
+const utils = require('../utils/utils');
 
 /*const wikidataCategoriesQueries = {   
     "country": {  // Eliminar el punto al final del nombre de la categoría
@@ -25,17 +26,16 @@ const titlesQuestionsCategories = {
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
-let json = await utils.readFromFile("../questions/utils/question.json");
-const wikidataCategoriesQueries = JSON.parse(json);
+let wikidataCategoriesQueries;
 
+async function init() {
+    const json = await utils.readFromFile("../utils/queryCategories.json");
+    wikidataCategoriesQueries = JSON.parse(json);
+}
 
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, numImages) {
-    
-    if (!wikidataCategoriesQueries[category]) {
-        console.error(`Category ${category} not found in queries.`);
-        throw new Error("The given category does not exist: ", category);
-    }
+ 
     if(!numImages || numImages <= 0 || isNaN(numImages)){
         // Verifica si numImages es un número positivo{
         console.error(`numImages must be a positive number`);
@@ -48,7 +48,7 @@ async function getImagesFromWikidata(category, numImages) {
     const categoryQueries = wikidataCategoriesQueries[category]?.query;
 
     if (!categoryQueries) {
-        throw new Error(`No se encontró una consulta para la categoría: ${category}`);
+        throw new Error(`The given category does not exist:  ${category}`);
     }
 
     // Obtención de la consulta directamente de la categoría dada
@@ -69,7 +69,11 @@ async function getImagesFromWikidata(category, numImages) {
         const data = response.data.results.bindings;
         
         if (data.length > 0) {
-            const { label, image, extra } = categoryData.fields;
+            const fields = wikidataCategoriesQueries[category]?.fields;
+            if (!fields) {
+                throw new Error(`Fields not defined for category: ${category}`);
+            }
+            const { label, image, extra } = fields;
 
             const filteredImages = data
                 .filter(item => item[label] && item[image])  
@@ -154,6 +158,7 @@ async function processQuestions(images,category) {
 // Generate questions
 async function generateQuestionsByCategory(category, numImages) {
     try{
+        await init();
         const images = await getImagesFromWikidata(category, numImages);
         if (images.length === 0) {
             console.error(`No images found for category ${category}`);
@@ -171,3 +176,4 @@ async function generateQuestionsByCategory(category, numImages) {
 module.exports = {
     generateQuestionsByCategory
 };
+ 
