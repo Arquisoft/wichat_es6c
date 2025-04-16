@@ -11,6 +11,7 @@ const questions = [
         options: ["Singapur", "Guatemala", "Paraguay", "Polonia"],
         correctAnswer: "Polonia",
         category: "country",
+        language: "es",
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Szczecin%20aerial%203a.jpg"
     },
     {
@@ -18,6 +19,7 @@ const questions = [
         options: ["Turquía", "Islandia", "Nauru", "Uzbekistán"],
         correctAnswer: "Turquía",
         category: "country",
+        language: "es",
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Byzantine%20Constantinople-en.png"
     },
     {
@@ -25,6 +27,7 @@ const questions = [
         options: ["Australia", "Indonesia", "República Dominicana", "Finlandia"],
         correctAnswer: "Australia",
         category: "country",
+        language: "es",
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     }
 ];
@@ -34,6 +37,7 @@ const fullQuestions = [
         options: ["Singapur", "Guatemala", "Paraguay", "Polonia"],
         correctAnswer: "Polonia",
         category: "country",
+        language: "es",
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Szczecin%20aerial%203a.jpg"
     },
     {
@@ -41,6 +45,7 @@ const fullQuestions = [
         options: ["Turquía", "Islandia", "Nauru", "Uzbekistán"],
         correctAnswer: "Turquía",
         category: "country",
+        language: "es",
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Byzantine%20Constantinople-en.png"
     },
     {
@@ -48,6 +53,8 @@ const fullQuestions = [
         options: ["Australia", "Indonesia", "República Dominicana", "Finlandia"],
         correctAnswer: "Australia",
         category: "country",
+        language: "es",
+
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     },
     {
@@ -55,6 +62,8 @@ const fullQuestions = [
         options: ["Italia", "Indonesia", "República Dominicana", "Finlandia"],
         correctAnswer: "Italia",
         category: "country",
+        language: "es",
+
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     },
     {
@@ -62,6 +71,8 @@ const fullQuestions = [
         options: ["Reino Unido", "Indonesia", "República Dominicana", "Finlandia"],
         correctAnswer: "Reino Unido",
         category: "country",
+        language: "es",
+
         imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     }
 ];
@@ -138,11 +149,9 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    // Cierra la conexión y detén el servidor en memoria
-    await mongoose.connection.close(); // Asegura que todas las conexiones de Mongoose se cierren
-    await mongoServer.stop(); // Detiene el servidor MongoDB en memoria
-    await mongoose.disconnect();
-    await app.close(); // Cierra el servidor Express
+  await mongoose.disconnect();
+  await mongoServer.stop();
+  await app.close();
 });
 
 afterEach(async () => {
@@ -163,7 +172,7 @@ jest.mock('axios');
 describe('Question Generate Service', () => {
     axios.get.mockImplementation((url, config) => {
         if (url.startsWith('https://query.wikidata')) {
-            if (config.params.query.includes('LIMIT 100')) {
+            if (config.params.query.includes('LIMIT 50')) {
                 // Mock response for getIncorrectCountries
                 return Promise.resolve(testOptions);
             } else if (config.params.query.includes('ORDER BY RAND()')) {
@@ -188,14 +197,14 @@ describe('Question Generate Service', () => {
 
         
         const response = await request(app)
-            .get('/getQuestionsDb/country')
+            .get('/getQuestionsDb/es/country')
             ;
 
         expect(response.statusCode).toBe(200);
         
         expect(countries).toContainEqual(response.body.correctAnswer);
         const questionCount = await Question.countDocuments();
-        expect(questionCount).toBe(4); 
+        expect(questionCount).toBe(7); 
     });
 
     it('should add questions from wikidata if the databse is empty, return a random question and then delete one', async () => {
@@ -207,7 +216,7 @@ describe('Question Generate Service', () => {
 
         
         const response = await request(app)
-            .get('/getQuestionsDb/country')
+            .get('/getQuestionsDb/es/country')
             ;
 
         expect(response.statusCode).toBe(200);
@@ -226,7 +235,7 @@ describe('Question Generate Service', () => {
 
         axios.get.mockImplementation((url, config) => {
             if (url.startsWith('https://query.wikidata')) {
-                if (config.params.query.includes('LIMIT 100')) {
+                if (config.params.query.includes('LIMIT 50')) {
                     // Mock empty response for getIncorrectCountries
                     return Promise.resolve({ data: { results: { bindings: [] } } });
                 } else if (config.params.query.includes('ORDER BY RAND()')) {
@@ -238,7 +247,7 @@ describe('Question Generate Service', () => {
         });
 
         const response = await request(app)
-            .get('/getQuestionsDb/country');
+            .get('/getQuestionsDb/es/country');
 
         expect(response.statusCode).toBe(404); // Expect a 400 Bad Request status
         expect(response.body.message).toBe("There are no more questions available."); // Verify the error message
