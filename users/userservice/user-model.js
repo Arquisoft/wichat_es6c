@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
       type: String,
-      default: 'https://avatars.githubusercontent.com/u/158502509?v=4', 
+      default: 'https://i.pinimg.com/originals/67/2c/d6/672cd616936e481ef2632306731a87cd.jpg', 
     },
     description: {
       type: String,

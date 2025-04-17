@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {  Container, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem
+import { Container,Alert, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
-import {
-  PersonIcon,
-  ScoreIcon,
-  CheckCircleIcon,
-  VideogameAssetIcon
-} from '@mui/icons-material';
+
 
 export default function UserHistory() {
   const [username, setUsername] = useState("");
@@ -28,8 +23,27 @@ export default function UserHistory() {
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
   const [sortCriteria, setSortCriteria] = useState('totalScore');
-  
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
+
   const gatewayService = process.env.HISTORY_SERVICE_URL || 'http://localhost:8000';
+
+  // Función de validación
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!name.trim()) newErrors.name = 'El nombre es requerido';
+    if (!surname.trim()) newErrors.surname = 'El apellido es requerido';
+    if (profilePicture && !/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(profilePicture)) {
+      newErrors.profilePicture = 'URL inválida';
+    }
+    if (description.length > 200) newErrors.description = 'Máximo 200 caracteres';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -37,12 +51,26 @@ export default function UserHistory() {
       setUsername(storedUsername);
       fetchUserProfile(storedUsername); // Llamar para cargar el perfil
     }
-  }, []);
+    if (editMode && userProfile) {
+      setName(userProfile.name || '');
+      setSurname(userProfile.surname || '');
+      setProfilePicture(userProfile.profilePicture || '');
+      setDescription(userProfile.description || '');
+    }
+  }, [editMode]);
 
   const fetchUserProfile = async (user) => {
     try {
       const response = await axios.get(`http://localhost:8000/user/profile/${user}`);
       setUserProfile(response.data);
+      
+      // Solo actualiza los campos si NO estamos en modo edición
+      if (!editMode) {
+        setName(response.data.name || '');
+        setSurname(response.data.surname || '');
+        setProfilePicture(response.data.profilePicture || '');
+        setDescription(response.data.description || '');
+      }
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
@@ -63,7 +91,7 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
-
+  
   const fetchStats = async () => {
     if (!username) console.error("No tiene nombre de usuario.");
     setLoading(true);
@@ -80,6 +108,7 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
+
 
   const fetchLeaderboard = async (criteria = sortCriteria) => {
     setLoading(true);
@@ -102,7 +131,6 @@ export default function UserHistory() {
       
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
-      alert('Error al cargar el ranking');
     } finally {
       setLoading(false);
     }
@@ -128,34 +156,64 @@ export default function UserHistory() {
 
   const updateUserInfo = async (event) => {
     event.preventDefault();
+    
+    if (!validateForm()) return;
+    
     setLoading(true);
-    const updatedUser = {
-      name: name,           
-      surname: surname,       
-      profilePicture: profilePicture, 
-      description: description,   
-    };
+    setErrors({});
   
     try {
-      // Llamamos al Gateway para actualizar el perfil
-      const result = await updateUserProfile(userProfile.username, updatedUser); 
-      setUserProfile(result.user); // Actualizar el perfil con los nuevos datos
-      alert('Perfil actualizado correctamente');
-      setEditMode(false); // Desactivar el modo de edición
-      navigate('/profile'); // Redirigir al perfil o donde lo desees
+      const updatedUser = {
+        name: name.trim(),
+        surname: surname.trim(),
+        profilePicture: profilePicture.trim(),
+        description: description.trim(),
+      };
+  
+      const result = await updateUserProfile(username, updatedUser);
+      
+      // Actualiza el perfil y cierra edición
+      setUserProfile(prev => ({
+        ...prev,
+        ...updatedUser
+      }));
+      
+      setSuccessMessage('¡Perfil actualizado correctamente!');
+      setTimeout(() => setEditMode(false), 1500);
+      
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
+      setErrors({
+        server: error.message.includes("Error al actualizar el perfil:") 
+          ? error.message.split(": ")[1] 
+          : "Error al actualizar el perfil"
+      });
     } finally {
       setLoading(false);
     }
   };
+  
   const updateUserProfile = async (username, updatedUser) => {
     try {
-      const response = await axios.put(`${gatewayService}/user/update/profile/${username}`, updatedUser);
-      console.log('Perfil actualizado:', response.data);
-      return response.data; // Devolver los datos del perfil actualizado
+      const response = await axios.put(
+        `${gatewayService}/user/update/profile/${username}`,
+        updatedUser,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          validateStatus: (status) => status < 500
+        }
+      );
+  
+      if (response.status === 200) {
+        return response.data;
+      }
+      
+      throw new Error(response.data.error || 'Error desconocido');
+  
     } catch (error) {
-      throw new Error('Error al actualizar el perfil: ' + error.response?.data?.error || error.message);
+      throw new Error(error.response?.data?.error || error.message);
     }
   };
 
@@ -164,14 +222,10 @@ export default function UserHistory() {
   return (
     <Container maxWidth="md" sx={{ textAlign: "center", mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        {t('History.title')}
+        Historial de Usuario
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        <Trans
-          i18nKey="History.usernameDisplay"
-          values={{ username }}
-          components={{ strong: <strong /> }}
-        />
+        Usuario: <strong>{username}</strong>
       </Typography>
   
       {userProfile && !editMode && (
@@ -221,29 +275,46 @@ export default function UserHistory() {
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
             Editar Perfil
           </Typography>
+          
+          {/* Mensaje de éxito/error general */}
+          {successMessage && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {successMessage}
+            </Alert>
+          )}
+          
           <form onSubmit={updateUserInfo}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
-                label="Nombre"
+                label="Nombre *"
                 variant="outlined"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                error={!!errors.name}
+                helperText={errors.name}
               />
+              
               <TextField
-                label="Apellido"
+                label="Apellido *"
                 variant="outlined"
                 fullWidth
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
+                error={!!errors.surname}
+                helperText={errors.surname}
               />
+              
               <TextField
                 label="URL de la imagen"
                 variant="outlined"
                 fullWidth
                 value={profilePicture}
                 onChange={(e) => setProfilePicture(e.target.value)}
+                error={!!errors.profilePicture}
+                helperText={errors.profilePicture || "Ej: https://ejemplo.com/imagen.jpg"}
               />
+              
               <TextField
                 label="Descripción"
                 variant="outlined"
@@ -252,20 +323,38 @@ export default function UserHistory() {
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                error={!!errors.description}
+                helperText={errors.description || `${description.length}/200`}
+                inputProps={{ maxLength: 200 }}
               />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => {
+                setEditMode(false);
+                setErrors({});
+                setSuccessMessage('');
+              }}
+            >
+              Cancelar
+            </Button>
+              
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
                 disabled={loading}
+                startIcon={loading && <CircularProgress size={20} />}
                 sx={{
                   backgroundColor: '#6200ea',
                   '&:hover': { backgroundColor: '#5a00d6' },
+                  minWidth: 150
                 }}
               >
-                {loading ? 'Actualizando...' : 'Actualizar Perfil'}
+                {loading ? 'Actualizando...' : 'Guardar Cambios'}
               </Button>
             </Box>
           </form>
@@ -279,8 +368,7 @@ export default function UserHistory() {
           onClick={fetchHistory}
           disabled={loading}
         >
-          {t('History.viewHistory')}
-
+          Ver Historial
         </Button>
         <Button
           variant="contained"
@@ -288,7 +376,7 @@ export default function UserHistory() {
           onClick={fetchStats}
           disabled={loading}
         >
-          {t('History.viewStats')}
+          Ver Estadísticas
         </Button>
         <Button
           variant="contained"
@@ -298,16 +386,14 @@ export default function UserHistory() {
           }}
           disabled={loading}
         >
-          {t('History.viewRanking')}
-
+          Ver Ranking
         </Button>
         <Button
           variant="contained"
           sx={{ backgroundColor: "#bdbdbd", color: "black", "&:hover": { backgroundColor: "#9e9e9e" } }}
           onClick={goToHomepage}
         >
-          {t('History.mainPage')}
-
+          Menú Principal
         </Button>
       </Box>
   
@@ -392,16 +478,11 @@ export default function UserHistory() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center"><strong>{t('History.correctAnswers')}
-                </strong></TableCell>
-                <TableCell align="center"><strong>{t('History.incorrectAnswers')}
-                </strong></TableCell>
-                <TableCell align="center"><strong>{t('History.time')}
-                </strong></TableCell>
-                <TableCell align="center"><strong>{t('History.score')}
-                </strong></TableCell>
-                <TableCell align="center"><strong>{t('History.gameMode')}
-                </strong></TableCell>
+                <TableCell align="center"><strong>Correctas</strong></TableCell>
+                <TableCell align="center"><strong>Incorrectas</strong></TableCell>
+                <TableCell align="center"><strong>Tiempo (s)</strong></TableCell>
+                <TableCell align="center"><strong>Puntos</strong></TableCell>
+                <TableCell align="center"><strong>Modo de Juego</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -417,7 +498,8 @@ export default function UserHistory() {
             </TableBody>
           </Table>
         </TableContainer>
-)}
+      )}
+
       {leaderboard.topPlayers.length === 0 && !loading && (
         <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
           No hay datos de ranking disponibles.
