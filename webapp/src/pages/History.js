@@ -309,10 +309,11 @@ export default function UserHistory() {
       {loading && <CircularProgress sx={{ display: "block", margin: "auto", mt: 2 }} />}
   
       {stats && (
-          <Card sx={{ mt: 3, p: { xs: 2, sm: 3 }, backgroundColor: "#f3f3f3" }}>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>Estadísticas Generales</Typography>
-              
+        <Card sx={{ mt: 3, p: { xs: 2, sm: 3 }, backgroundColor: "#f3f3f3" }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>Estadísticas Generales</Typography>
+            
+            {stats.totalGames > 0 ? (
               <Grid container spacing={3} alignItems="stretch">
                 {/* Gráfico de torta a la izquierda */}
                 <Grid item xs={12} md={6}>
@@ -322,8 +323,8 @@ export default function UserHistory() {
                       <PieChart>
                         <Pie
                           data={[
-                            { name: 'Correctas', value: stats.totalCorrect },
-                            { name: 'Incorrectas', value: stats.totalWrong }
+                            { name: 'Correctas', value: stats.totalCorrect || 0 },
+                            { name: 'Incorrectas', value: stats.totalWrong || 0 }
                           ]}
                           cx="50%"
                           cy="50%"
@@ -348,30 +349,40 @@ export default function UserHistory() {
                     <Grid item>
                       <Card sx={{ backgroundColor: '#6200ea', color: 'white', p: 2, textAlign: 'center' }}>
                         <Typography variant="subtitle1">Total Partidas</Typography>
-                        <Typography variant="h4">{stats.totalGames}</Typography>
+                        <Typography variant="h4">{stats.totalGames || 0}</Typography>
                       </Card>
                     </Grid>
                     <Grid item>
                       <Card sx={{ backgroundColor: '#4caf50', color: 'white', p: 2, textAlign: 'center' }}>
                         <Typography variant="subtitle1">Promedio de puntos</Typography>
-                        <Typography variant="h4">{stats.averageScore.toFixed(2)}</Typography>
+                        <Typography variant="h4">{stats?.averageScore?.toFixed(2) ?? '0.00'}</Typography>
                       </Card>
                     </Grid>
                     <Grid item>
                       <Card sx={{ backgroundColor: '#ff9800', color: 'white', p: 2, textAlign: 'center' }}>
                         <Typography variant="subtitle1">Tiempo Total</Typography>
-                        <Typography variant="h4">{stats.totalTime}s</Typography>
+                        <Typography variant="h4">{stats.totalTime || 0}s</Typography>
                       </Card>
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            </CardContent>
-          </Card>
-        )}
+            ) : (
+              <Typography variant="body1" color="text.secondary">
+                No hay estadísticas disponibles.
+              </Typography>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
+      {history.length === 0 && !loading && (
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
+          No hay partidas en el historial.
+        </Typography>
+      )}
   
-{history.length > 0 && (
+      {history.length > 0 && (
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
             <TableHead>
@@ -398,142 +409,146 @@ export default function UserHistory() {
         </TableContainer>
       )}
 
-
+      {leaderboard.topPlayers.length === 0 && !loading && (
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
+          No hay datos de ranking disponibles.
+        </Typography>
+      )}
   
-  {leaderboard.topPlayers.length > 0 && (
-  <Box sx={{ mt: 3 }}>
-    <Typography variant="h5" gutterBottom>Ranking Global</Typography>
-    <TableContainer>
-      <Table>
-        <TableHead>
-      <TableRow sx={{ 
-        backgroundColor: 'background.default',
-        '& th': {
-          fontWeight: 'fontWeightBold',
-          padding: { xs: '0.5rem', sm: '0.75rem', md: '1rem' },
-          fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' },
-          textAlign: 'left', // Alineación horizontal izquierda
-          verticalAlign: 'bottom', // Alineación vertical inferior
-          borderBottom: '2px solid',
-          borderColor: 'divider'
-        }
-      }}>
-        {/* Posición */}
-        <TableCell sx={{ 
-          width: { xs: '3em', md: '5em' },
-          pl: { xs: 1, md: 2 } // Padding izquierdo ajustado
-        }}>
-          Posición
-        </TableCell>
-        
-        {/* Usuario */}
-        <TableCell 
-          onClick={() => handleSort('_id')}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: 'action.hover' }
-          }}
-        >
-          Usuario
-        </TableCell>
-        
-        {/* Puntuación Total */}
-        <TableCell 
-          onClick={() => handleSort('totalScore')}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: 'action.hover' }
-          }}
-        >
-          Puntuación
-        </TableCell>
-        
-        {/* % Aciertos */}
-        <TableCell 
-          onClick={() => handleSort('accuracy')}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: 'action.hover' }
-          }}
-        >
-          % Aciertos
-        </TableCell>
-        
-        {/* Correctas */}
-        <TableCell 
-          onClick={() => handleSort('totalCorrect')}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: 'action.hover' }
-          }}
-        >
-          Correctas
-        </TableCell>
-        
-        {/* Partidas */}
-        <TableCell 
-          onClick={() => handleSort('totalGames')}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: 'action.hover' }
-          }}
-        >
-          Partidas
-        </TableCell>
-      </TableRow>
-  </TableHead>
-        <TableBody>
-          {leaderboard.topPlayers.map((user, index) => (
-            <TableRow key={user._id}
-            sx={{backgroundColor: getRankColor(user.globalRank).bg
-              , border: getRankColor(user.globalRank).border,
-              '&:hover': {
-                backgroundColor: getRankColor(user.globalRank).bg.replace('0.3', '0.5'),
-                transform: 'scale(1.03)'
-              },
-            }}
-            >
-              <TableCell>{user.globalRank}</TableCell>
-              <TableCell>{user._id}</TableCell>
-              <TableCell>{user.totalScore}</TableCell>
-              <TableCell>{user.accuracy?.toFixed(2)}%</TableCell>
-              <TableCell>{user.totalCorrect}</TableCell>
-              <TableCell>{user.totalGames}</TableCell>
-            </TableRow>
-          ))}
-          
-          {leaderboard.userPosition && (
-            <TableRow sx={{ 
-              backgroundColor: getRankColor(leaderboard.userPosition.globalRank).bg,
-              border: getRankColor(leaderboard.userPosition.globalRank).border,
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                transform: 'scale(1.01)'
-              },
-              position: 'relative',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '2px',
-                backgroundColor: '#ff9800'
-              }
-            }}>
-              <TableCell>{leaderboard.userPosition.globalRank}</TableCell>
-              <TableCell>{leaderboard.userPosition._id} (Tú)</TableCell>
-              <TableCell>{leaderboard.userPosition.totalScore}</TableCell>
-              <TableCell>{leaderboard.userPosition.accuracy?.toFixed(2)}%</TableCell>
-              <TableCell>{leaderboard.userPosition.totalCorrect}</TableCell>
-              <TableCell>{leaderboard.userPosition.totalGames}</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  </Box>
-)}
+      {leaderboard.topPlayers.length > 0 && (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h5" gutterBottom>Ranking Global</Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ 
+                  backgroundColor: 'background.default',
+                  '& th': {
+                    fontWeight: 'fontWeightBold',
+                    padding: { xs: '0.5rem', sm: '0.75rem', md: '1rem' },
+                    fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' },
+                    textAlign: 'left', // Alineación horizontal izquierda
+                    verticalAlign: 'bottom', // Alineación vertical inferior
+                    borderBottom: '2px solid',
+                    borderColor: 'divider'
+                  }
+                }}>
+                  {/* Posición */}
+                  <TableCell sx={{ 
+                    width: { xs: '3em', md: '5em' },
+                    pl: { xs: 1, md: 2 } // Padding izquierdo ajustado
+                  }}>
+                    Posición
+                  </TableCell>
+                  
+                  {/* Usuario */}
+                  <TableCell 
+                    onClick={() => handleSort('_id')}
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: 'action.hover' }
+                    }}
+                  >
+                    Usuario
+                  </TableCell>
+                  
+                  {/* Puntuación Total */}
+                  <TableCell 
+                    onClick={() => handleSort('totalScore')}
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: 'action.hover' }
+                    }}
+                  >
+                    Puntuación
+                  </TableCell>
+                  
+                  {/* % Aciertos */}
+                  <TableCell 
+                    onClick={() => handleSort('accuracy')}
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: 'action.hover' }
+                    }}
+                  >
+                    % Aciertos
+                  </TableCell>
+                  
+                  {/* Correctas */}
+                  <TableCell 
+                    onClick={() => handleSort('totalCorrect')}
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: 'action.hover' }
+                    }}
+                  >
+                    Correctas
+                  </TableCell>
+                  
+                  {/* Partidas */}
+                  <TableCell 
+                    onClick={() => handleSort('totalGames')}
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: 'action.hover' }
+                    }}
+                  >
+                    Partidas
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {leaderboard.topPlayers.map((user, index) => (
+                  <TableRow key={user._id}
+                  sx={{backgroundColor: getRankColor(user.globalRank).bg
+                    , border: getRankColor(user.globalRank).border,
+                    '&:hover': {
+                      backgroundColor: getRankColor(user.globalRank).bg.replace('0.3', '0.5'),
+                      transform: 'scale(1.03)'
+                    },
+                  }}
+                  >
+                    <TableCell>{user.globalRank}</TableCell>
+                    <TableCell>{user._id}</TableCell>
+                    <TableCell>{user.totalScore}</TableCell>
+                    <TableCell>{user.accuracy?.toFixed(2)}%</TableCell>
+                    <TableCell>{user.totalCorrect}</TableCell>
+                    <TableCell>{user.totalGames}</TableCell>
+                  </TableRow>
+                ))}
+                
+                {leaderboard.userPosition && (
+                  <TableRow sx={{ 
+                    backgroundColor: getRankColor(leaderboard.userPosition.globalRank).bg,
+                    border: getRankColor(leaderboard.userPosition.globalRank).border,
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.03)',
+                      transform: 'scale(1.01)'
+                    },
+                    position: 'relative',
+                    '&:after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      backgroundColor: '#ff9800'
+                    }
+                  }}>
+                    <TableCell>{leaderboard.userPosition.globalRank}</TableCell>
+                    <TableCell>{leaderboard.userPosition._id} (Tú)</TableCell>
+                    <TableCell>{leaderboard.userPosition.totalScore}</TableCell>
+                    <TableCell>{leaderboard.userPosition.accuracy?.toFixed(2) ?? '0.00'}%</TableCell>
+                    <TableCell>{leaderboard.userPosition.totalCorrect || 0}</TableCell>
+                    <TableCell>{leaderboard.userPosition.totalGames || 0}</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
     </Container>
   );
   
