@@ -1,0 +1,96 @@
+{
+    "UserHome": {
+        "welcome": "¡Bienvenido {{username}}!",
+        "play": "Jugar"
+    },
+    "NavBar": {
+        "nameApp": "WICHAT",
+        "profile": "Perfil",
+        "settings": "Ajustes",
+        "logout": "Cerrar sesión",
+        "changeLanguage": "Cambiar idioma",
+        "APIDocs": "API Docs",
+        "spanish": "Español",
+        "english": "Inglés"
+    },
+    "Register": {
+        "signUp": "Registrarse",
+        "user": "Usuario",
+        "password": "Contraseña",
+        "name": "Nombre",
+        "surname": "Apellidos",
+        "submit": "Enviar",
+        "textForm": "¿Ya tienes una cuenta?",
+        "textFormLink": "Inicia sesión aquí"
+    },
+    "Login": {
+        "sigIn": "Iniciar sesión en Wichat",
+        "user": "Usuario",
+        "sigInConfirm": "Iniciar sesión",
+        "password": "Contraseña",
+        "textForm": "Nuevo en Wichat?",
+        "textFormLink": "Crea una cuenta aquí"
+    },
+    "History": {
+        "title": "Historial del usuario",
+        "viewHistory": "Ver historial",
+        "viewStats": "Ver estadísticas",
+        "viewRanking": "Ver clasificación",
+        "mainPage": "Menú Principal",
+        "usernameDisplay": "Usuario: <strong>{{username}}</strong>",
+        "correctAnswers": "Respuestas correctas",
+        "incorrectAnswers": "Respuestas incorrectas",
+        "time": "Tiempo (segundos)",
+        "score": "Puntuación",
+        "gameMode": "Modo de juego",
+        "generalStats": "Estadísticas Generales",
+        "distributionAnswers": "Distribución de respuestas",
+        "distributionGames": "Resultados de partidas",
+        "won": "Ganadas",
+        "lost": "Perdidas",
+        "totalGames": "Total partidas",
+        "averageScore": "Promedio de puntos",
+        "totalTime": "Tiempo total",
+        "correct": "Correctas",
+        "incorrect": "Incorrectas",
+        "globalRanking": "Clasificación global"
+    },
+    "GameType": {
+        "chooseGame": "Elige un modo de juego"
+    },
+    "GameMode": {
+        "chooseTheme": "Elige una temática",
+        "countryName":"país"
+
+    },
+    "Game": {
+        "totalScore": "Puntuación total",
+        "loading": "Cargando ronda...",
+        "rounds": "{{round}} de {{TOTAL_ROUNDS}} rondas",
+        "loadingImage": "Cargando imagen...",
+        "loadingNextImage": "Cargando siguiente imagen..."
+    },
+    "ChatLLM": {
+        "noResponse": "No hay respuesta del servidor",
+        "chatTitle": "Chat con IA",
+        "typing": "Escribiendo...",
+        "sendMessage": "Enviar",
+        "typeMessage": "Escribe un mensaje..."
+    },
+    "Game-VS": {
+        "totalScore": "Puntuación total",
+        "loading": "Cargando ronda...",
+        "rounds": "{{round}} de {{TOTAL_ROUNDS}} rondas",
+        "describeMode-country": "Describe el siguiente país"       
+      
+    },
+
+    "GameFinished":{
+        "gameOver": "¡Juego terminado!",
+        "seconds": "segundos",
+        "playAgain": "Volver a jugar",
+        "viewHistory": "Consultar historial",
+        "socoreAchieved": "Puntuación obtenida",
+        "totalTime": "Tiempo total"
+    }
+}

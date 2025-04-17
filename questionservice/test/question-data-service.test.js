@@ -11,6 +11,7 @@ const questions = [
     options: ["Singapur", "Guatemala", "Paraguay", "Polonia"],
     correctAnswer: "Polonia",
     category: "country",
+    language: "es",
     imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Szczecin%20aerial%203a.jpg"
   },
   {
@@ -18,6 +19,7 @@ const questions = [
     options: ["Turquía", "Islandia", "Nauru", "Uzbekistán"],
     correctAnswer: "Turquía",
     category: "country",
+    language: "es",
     imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Byzantine%20Constantinople-en.png"
   },
   {
@@ -25,6 +27,7 @@ const questions = [
     options: ["Australia", "Indonesia", "República Dominicana", "Finlandia"],
     correctAnswer: "Australia",
     category: "country",
+    language: "es",
     imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
   }
 ];
@@ -73,7 +76,7 @@ afterEach(async () => {
 
 describe('Question Data Service', () => {
   it('should return the number of questions by category', async () => {
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('country');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','country');
     expect(numberQuestions).toBe(3);
   }
   );
@@ -84,10 +87,11 @@ describe('Question Data Service', () => {
       options: ["Polonia", "España", "Italia", "Finlandia"],
       correctAnswer: "Finlandia",
       category: "country",
+      language: "es",
       imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     };
     await dataService.saveQuestion(newQuestion);
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('country');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','country');
     expect(numberQuestions).toBe(4);
   }
   );
@@ -98,16 +102,17 @@ describe('Question Data Service', () => {
       options: ["Polonia", "España", "Italia", "Finlandia"],
       correctAnswer: "Finlandia",
       category: "test",
+      language: "es",
       imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     };
     await dataService.saveQuestion(newQuestion);
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('test');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','test');
     expect(numberQuestions).toBe(1);
   }
   );
 
   it('should return a random question of an existant category', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('country');
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es','country');
     
     const isQuestionValid = questions.some(
       (q) =>
@@ -123,15 +128,15 @@ describe('Question Data Service', () => {
   );
 
   it('should delete a question from its category', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('country');
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es','country');
     await dataService.deleteQuestionById(randomQuestion._id);
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('country');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','country');
     expect(numberQuestions).toBe(2);
   }
   );
 
   it('should return null from an empty category', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('prueba');
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es','prueba');
     // Verifica que no haya preguntas en la categoría "prueba"
     expect(randomQuestion).toBe(null);
   }
@@ -140,7 +145,7 @@ describe('Question Data Service', () => {
   it('should throw an error if the database connection fails when counting questions', async () => {
     await mongoose.disconnect();
 
-    await expect(dataService.getNumberQuestionsByCategory("country"))
+    await expect(dataService.getNumberQuestionsByCategory('es', 'country'))
         .rejects
         .toThrow('Client must be connected before running operations');
   }
@@ -153,6 +158,7 @@ describe('Question Data Service', () => {
       options: ["Polonia", "España", "Italia", "Finlandia"],
       correctAnswer: "Finlandia",
       category: "test",
+      language: "es",
       imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     };
     await expect(dataService.saveQuestion(newQuestion))
@@ -162,7 +168,7 @@ describe('Question Data Service', () => {
   );
 
   it('should throw an error if the database connection fails when saving a question', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('country');
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es', 'country');
     await mongoose.disconnect();
 
     await expect(dataService.deleteQuestionById(randomQuestion._id))
@@ -174,7 +180,7 @@ describe('Question Data Service', () => {
   it('should throw an error if the database connection fails when geting a question', async () => {
     await mongoose.disconnect();
 
-    await expect(dataService.getRandomQuestionByCategory('country'))
+    await expect(dataService.getRandomQuestionByCategory('es', 'country'))
         .rejects
         .toThrow('Client must be connected before running operations');
   }

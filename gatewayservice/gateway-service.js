@@ -40,10 +40,11 @@ app.get('/health', (req, res) => {
 
 //-----Questions WIKIDATA endpoint----
 
-app.get('/questions/:category', async (req, res) => {
+app.get('/questions/:lang/:category', async (req, res) => {
   try{
       const category = req.params.category;
-      const questionResponse = await axios.get(questionServiceUrl+`/getQuestionsDb/${category}`);
+      const lang = req.params.lang;
+      const questionResponse = await axios.get(questionServiceUrl+`/getQuestionsDb/${lang}/${category}`);
       res.json(questionResponse.data);
   }catch (error) {
     handleErrors(res, error);
