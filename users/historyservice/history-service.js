@@ -66,7 +66,7 @@ app.get("/getUserHistory", async (req, res) => {
     const history = await UserHistory.find({ username });
     res.json({ history });
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -77,7 +77,7 @@ app.get('/getUserStats', async (req, res) => {
     if (!username) return res.status(400).json({ error: "Se requiere un username" });
     
     const history = await UserHistory.find({ username });
-    if (!history.length) return res.json({ message: "No hay datos para este usuario" });
+    if (!history.length) return res.status(404).json({ error: "No hay datos para este usuario" });
     
     const totalGames = history.length;
     const totalCorrect = history.reduce((sum, game) => sum + game.correctAnswers, 0);
@@ -87,7 +87,7 @@ app.get('/getUserStats', async (req, res) => {
     
     res.json({ totalGames, totalCorrect, totalWrong, totalTime, averageScore });
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -97,6 +97,7 @@ app.get('/getLeaderboard', async (req, res) => {
     
     // Pipeline para todos los usuarios (sin limitar)
     const fullPipeline = [
+
       {
         $group: {
           _id: "$username",

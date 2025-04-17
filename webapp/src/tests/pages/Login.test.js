@@ -5,6 +5,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
 import Login from '../../pages/Login';
 import { SessionContext } from '../../SessionContext';
+import '../../localize/i18n';
 
 const mockAxios = new MockAdapter(axios);
 const mockNavigate = jest.fn();
@@ -38,11 +39,11 @@ describe('Login component', () => {
     const passwordMessage = screen.getByLabelText('Password');
     expect(passwordMessage).toBeInTheDocument();
 
-    const loginButton = screen.getByRole('button', { name: 'Login' });
+    const loginButton = screen.getByRole('button', { name: 'Sign In' });
     expect(loginButton).toBeInTheDocument();
 
     expect(
-      screen.getByRole('link', { name: 'Registro aquí' })
+      screen.getByRole('link', { name: 'Create an account here' })
     ).toBeInTheDocument();
   });
 
@@ -64,7 +65,7 @@ describe('Login component', () => {
 
 
    
-    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
  
 
     await waitFor(() => {
@@ -90,7 +91,7 @@ describe('Login component', () => {
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: ' ' } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
     });
 
     await waitFor(() => {

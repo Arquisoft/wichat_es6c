@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
+import { useTranslation } from "react-i18next";
 
 const GameFinished = () => {
   const location = useLocation();
@@ -13,12 +14,18 @@ const GameFinished = () => {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const [gameType, setGameType] = useState('normal');
+
+
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     if (location.state) {
       setScore(location.state.score);
       setTotalTime(location.state.totalTime);
       setMaxScore(location.state.maxScore);
+      setGameType(location.state.gameType);
     }
 
     // Handle the size of the window - confetti
@@ -32,11 +39,12 @@ const GameFinished = () => {
   }, [location]);
 
   const handleRestart = () => {
-    navigate('/game-Mode'); 
+    console.log(gameType);
+    navigate('/game-mode', { state: { type: gameType } });
   };
 
   const handleGoToHistorical = () => {
-    navigate('/history'); 
+    navigate('/history');
   };
 
   return (
@@ -44,19 +52,19 @@ const GameFinished = () => {
       alignItems="center"
       justifyContent="center"
       spacing={4}
-      sx={{ height: "100vh", textAlign: "center"}}
+      sx={{ height: "100vh", textAlign: "center" }}
     >
 
       {/* Confetti */}
       {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
-      <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative",  top: "-200px"}}>
-        ¡Juego Terminado!
+      <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative", top: "-7vw" }}>
+        {t("GameFinished.gameOver")}
       </Typography>
 
       {/* Final score */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, position: "relative",  top: "-100px"}}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, position: "relative", top: "-100px" }}>
         {/* Score */}
         <Box sx={{
           padding: 3,
@@ -67,7 +75,7 @@ const GameFinished = () => {
           boxShadow: 3,
           width: '200px'
         }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Puntuación Final</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{t("GameFinished.socoreAchieved")}</Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
             {score} / {maxScore}
           </Typography>
@@ -83,25 +91,25 @@ const GameFinished = () => {
           boxShadow: 3,
           width: '200px'
         }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tiempo Total</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{t("GameFinished.totalTime")}</Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
-            {totalTime} segundos
+            {totalTime} {t("GameFinished.seconds")}
           </Typography>
         </Box>
       </Box>
 
       {/* Buttons */}
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
-        <Button variant="contained" 
-          sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0'}}
+        <Button variant="contained"
+          sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0' }}
           onClick={handleRestart}>
-          Volver a jugar
+          {t("GameFinished.playAgain")}
         </Button>
-        <Button variant="contained" 
-          sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black'}}
+        <Button variant="contained"
+          sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black' }}
           onClick={handleGoToHistorical}>
-          Consultar historial
-        </Button>
+          {t("GameFinished.viewHistory")}        
+          </Button>
       </Stack>
     </Stack>
   );

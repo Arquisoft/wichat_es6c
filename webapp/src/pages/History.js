@@ -29,7 +29,6 @@ export default function UserHistory() {
   const navigate = useNavigate();
   const [sortCriteria, setSortCriteria] = useState('totalScore');
   
-
   const gatewayService = process.env.HISTORY_SERVICE_URL || 'http://localhost:8000';
 
   useEffect(() => {
@@ -64,7 +63,7 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
-  
+
   const fetchStats = async () => {
     if (!username) console.error("No tiene nombre de usuario.");
     setLoading(true);
@@ -81,7 +80,6 @@ export default function UserHistory() {
       setLoading(false);
     }
   };
-
 
   const fetchLeaderboard = async (criteria = sortCriteria) => {
     setLoading(true);
@@ -166,10 +164,14 @@ export default function UserHistory() {
   return (
     <Container maxWidth="md" sx={{ textAlign: "center", mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Historial de Usuario
+        {t('History.title')}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Usuario: <strong>{username}</strong>
+        <Trans
+          i18nKey="History.usernameDisplay"
+          values={{ username }}
+          components={{ strong: <strong /> }}
+        />
       </Typography>
   
       {userProfile && !editMode && (
@@ -277,7 +279,8 @@ export default function UserHistory() {
           onClick={fetchHistory}
           disabled={loading}
         >
-          Ver Historial
+          {t('History.viewHistory')}
+
         </Button>
         <Button
           variant="contained"
@@ -285,7 +288,7 @@ export default function UserHistory() {
           onClick={fetchStats}
           disabled={loading}
         >
-          Ver Estadísticas
+          {t('History.viewStats')}
         </Button>
         <Button
           variant="contained"
@@ -295,14 +298,16 @@ export default function UserHistory() {
           }}
           disabled={loading}
         >
-          Ver Ranking
+          {t('History.viewRanking')}
+
         </Button>
         <Button
           variant="contained"
           sx={{ backgroundColor: "#bdbdbd", color: "black", "&:hover": { backgroundColor: "#9e9e9e" } }}
           onClick={goToHomepage}
         >
-          Menú Principal
+          {t('History.mainPage')}
+
         </Button>
       </Box>
   
@@ -387,11 +392,16 @@ export default function UserHistory() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center"><strong>Correctas</strong></TableCell>
-                <TableCell align="center"><strong>Incorrectas</strong></TableCell>
-                <TableCell align="center"><strong>Tiempo (s)</strong></TableCell>
-                <TableCell align="center"><strong>Puntos</strong></TableCell>
-                <TableCell align="center"><strong>Modo de Juego</strong></TableCell>
+                <TableCell align="center"><strong>{t('History.correctAnswers')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.incorrectAnswers')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.time')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.score')}
+                </strong></TableCell>
+                <TableCell align="center"><strong>{t('History.gameMode')}
+                </strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -407,8 +417,7 @@ export default function UserHistory() {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
-
+)}
       {leaderboard.topPlayers.length === 0 && !loading && (
         <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
           No hay datos de ranking disponibles.

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const dataService = require('./question-data-service');
 
-const wikidataCategoriesQueries = {   
+const wikidataCategoriesQueries = {
     "country": {  // Eliminar el punto al final del nombre de la categoría
         query: `
         SELECT ?city ?cityLabel ?country ?countryLabel ?image
@@ -10,29 +10,34 @@ const wikidataCategoriesQueries = {
             ?city wdt:P17 ?country.  # País de la ciudad
             OPTIONAL { ?city wdt:P18 ?image. }  # Imagen de la ciudad (opcional)
             SERVICE wikibase:label {
-                bd:serviceParam wikibase:language "[AUTO_LANGUAGE],es".
+                bd:serviceParam wikibase:language "[AUTO_LANGUAGE]".
             }
         }
         ORDER BY RAND()
         LIMIT ?limit
         `,
-    }   
+    }
 };
 
 const titlesQuestionsCategories = {
-    "country": "¿A qué país pertenece esta imagen?"
+    "es": {
+        "country": "¿A qué país pertenece esta imagen?"
+    },
+    "en": {
+        "country": "Which country does this image belong to?"
+    }
 };
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
 // Obtener imágenes de una categoría en Wikidata
-async function getImagesFromWikidata(category, numImages) {
-    
+async function getImagesFromWikidata(category, language, numImages) {
+
     if (!wikidataCategoriesQueries[category]) {
         console.error(`Category ${category} not found in queries.`);
         throw new Error("The given category does not exist: ", category);
     }
-    if(!numImages || numImages <= 0 || isNaN(numImages)){
+    if (!numImages || numImages <= 0 || isNaN(numImages)) {
         // Verifica si numImages es un número positivo{
         console.error(`numImages must be a positive number`);
         throw new Error("numImages must be a positive number");
@@ -40,9 +45,10 @@ async function getImagesFromWikidata(category, numImages) {
     // Acceder directamente a la consulta correspondiente a la categoría dada
     const categoryQueries = wikidataCategoriesQueries[category];
 
-    
+
     // Obtención de la consulta directamente de la categoría dada
-    const sparqlQuery = categoryQueries.query.replace('?limit', numImages);
+    const sparqlQuery = categoryQueries.query.replace('?limit', numImages).replace('[AUTO_LANGUAGE]', language);
+
 
     try {
         const response = await axios.get(urlApiWikidata, {
@@ -57,6 +63,7 @@ async function getImagesFromWikidata(category, numImages) {
         });
 
         const data = response.data.results.bindings;
+
         if (data.length > 0) {
             const filteredImages = data
                 .filter(item => item.cityLabel && item.image)  // Filtrar solo los elementos con ciudad e imagen
@@ -69,6 +76,7 @@ async function getImagesFromWikidata(category, numImages) {
 
             return filteredImages;
         }
+        return []; // Retornar un array vacío si no hay datos
 
     } catch (error) {
         console.error(`Error retrieving images: ${error.message}`);
@@ -78,14 +86,14 @@ async function getImagesFromWikidata(category, numImages) {
 
 
 // Obtener 3 países incorrectos aleatorios
-async function getIncorrectCountries(correctCountry) {
+async function getIncorrectCountries(correctCountry, lang) {
     const sparqlQuery = `
         SELECT DISTINCT ?countryLabel
         WHERE {
             ?country wdt:P31 wd:Q6256.  # Q6256 = país
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "es". }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "${lang}". }
         }
-        LIMIT 100
+        LIMIT 50
     `;
 
     try {
@@ -100,9 +108,10 @@ async function getIncorrectCountries(correctCountry) {
             }
         });
 
-        const data = response.data.results.bindings.map(item => item.countryLabel.value);
-        const incorrectOptions = data.filter(country => country !== correctCountry);
+        const data = response.data.results.bindings.map(item => item.countryLabel.value).filter(label => label && !/\d/.test(label)); 
         
+        const incorrectOptions = data.filter(country => country !== correctCountry);
+
         // Seleccionamos aleatoriamente 3 opciones incorrectas
         return incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
     } catch (error) {
@@ -111,23 +120,24 @@ async function getIncorrectCountries(correctCountry) {
     }
 }
 
-async function processQuestionsCountry(images, category) {
-    let questions=[];
+async function processQuestionsCountry(images, language, category) {
+    let questions = [];
     for (const image of images) {
-        const incorrectAnswers = await getIncorrectCountries(image.country);
+        const incorrectAnswers = await getIncorrectCountries(image.country,language);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
 
         // Crear opciones y mezclarlas
         const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
 
         // Generar pregunta
-        const questionText = titlesQuestionsCategories[category]; 
-        
+        const questionText = titlesQuestionsCategories[language][category];
+
         const newQuestion = {
             question: questionText,
             options: options,
             correctAnswer: image.country,
             category: category,
+            language: language,
             imageUrl: image.imageUrl
         };
         questions.push(newQuestion);
@@ -141,14 +151,18 @@ async function processQuestionsCountry(images, category) {
 }
 
 // Generate questions
-async function generateQuestionsByCategory(category, numImages) {
-    try{
-        const images = await getImagesFromWikidata(category, numImages);
-    
-        if (category === 'country') {
-            return await processQuestionsCountry(images, category);
+async function generateQuestionsByCategory(category, langauge, numImages) {
+    try {
+        const images = await getImagesFromWikidata(category, langauge, numImages);
+        if (images.length === 0) {
+            console.error(`No images found for category ${category}`);
+            return [];
         }
-    }catch (error) {
+
+        if (category === 'country') {
+            return await processQuestionsCountry(images, langauge, category);
+        }
+    } catch (error) {
         console.error("Error generating questions:", error.message);
         throw new Error(error.message);
     }

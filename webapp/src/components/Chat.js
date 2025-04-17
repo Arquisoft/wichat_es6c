@@ -2,34 +2,39 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
-function Chat({ questionData }) {
+import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+
+
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  //const [model, setModel] = useState("empathy");
   const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
-  const API_KEY = process.env.REACT_APP_LLM_API_KEY; // Usa .env en producción
   const messagesEndRef = useRef(null); // Ref para hacer scroll al final
 
+  const { t } = useTranslation(); // Inicializa la traducción
+
   const sendMessage = async () => {
-    if (!input.trim()) return;
-    
-    
-    const userMessage = { role: "user", content: input  };
+    if (!input.trim()) return; // No enviar mensajes si ignoreChat es verdadero
+
+    const userMessage = { role: "user", content: input };
     console.log("Mensaje del usuario:", userMessage.content);
     setMessages((prev) => [...prev, userMessage]);
+    onUserMessage && onUserMessage(userMessage.content); // Llamar al callback con el mensaje del usuario
+
     setInput("");
+    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) return;
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
     try {
-     let petition="Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this whitout revealing the answer in a short phrase: "+input;
-     const response = await axios.post(
-        
+      let petition = header + input;
+      console.log("Petición al LLM:", petition);
+      const response = await axios.post(
         `${apiEndpoint}/askllm`,
         {
           question: petition,
-          apiKey: API_KEY,
           model: "empathy"
         },
         {
@@ -38,22 +43,23 @@ function Chat({ questionData }) {
           }
         }
       );
-      
+
       const data = response.data;
       const botMessage = { role: "assistant", content: "" };
 
       setMessages((prev) => [...prev, botMessage]);
 
       // Usamos Typewriter para escribir el mensaje lentamente
-      const text = data.answer || "No response";
+      const text = data.answer || t("ChatLLM.noResponse");
       setMessages((prev) => {
         const newMessages = [...prev];
         newMessages[newMessages.length - 1].content = text;
         return newMessages;
       });
 
+      onBotResponse && onBotResponse(text); // Llamar al callback con la respuesta del bot
       setIsTyping(false); // Terminar el estado de "escribiendo"
-      
+
     } catch (error) {
       console.error("Error:", error);
       setIsTyping(false);
@@ -70,7 +76,7 @@ function Chat({ questionData }) {
   return (
     <Container maxWidth="md" sx={{ height: "69vh", display: "flex", flexDirection: "column" }}>
       <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#9b33c0", color: "white", borderRadius: 2 }}>
-        Chat con IA
+        {t("ChatLLM.chatTitle")}
       </Typography>
 
       {/* Contenedor del chat */}
@@ -114,9 +120,9 @@ function Chat({ questionData }) {
         ))}
 
         {isTyping && (
-          <Box sx={{ alignSelf: "flex-start",  padding: 1.5, borderRadius: 2, maxWidth: "40%" }}>
+          <Box sx={{ alignSelf: "flex-start", padding: 1.5, borderRadius: 2, maxWidth: "40%" }}>
             <Typography variant="body1">
-              <CircularProgress size={14} sx={{ mr: 1 }} /> Escribiendo...
+              <CircularProgress size={14} sx={{ mr: 1 }} />{t("ChatLLM.typing")}
             </Typography>
           </Box>
         )}
@@ -137,21 +143,29 @@ function Chat({ questionData }) {
       >
         <TextField
           fullWidth
-          label="Escribe tu mensaje..."
+          label={t("ChatLLM.typeMessage")}
           variant="outlined"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <Button 
-          variant="contained" 
-          style={{ backgroundColor: '#9b33c0', color: 'white' }} 
+        <Button
+          variant="contained"
+          style={{ backgroundColor: '#9b33c0', color: 'white' }}
           onClick={sendMessage} >
-          Enviar
+          {t("ChatLLM.sendMessage")}
         </Button>
       </Box>
     </Container>
   );
 }
-
+Chat.propTypes = {
+  questionData: PropTypes.shape({
+    correctAnswer: PropTypes.string.isRequired
+  }).isRequired,
+  header: PropTypes.string.isRequired,
+  onUserMessage: PropTypes.func,
+  onBotResponse: PropTypes.func,
+  ignoreChat: PropTypes.bool
+};
 export default Chat;
