@@ -41,7 +41,7 @@ async function getImagesFromWikidata(category, language, numImages) {
         console.error(`numImages must be a positive number: ${numImages}`);
         throw new Error("numImages must be a positive number");
     }
-    
+    console.log(`Category: ${category}, Language: ${language}, Number of images: ${numImages}`);
     //const categoryQueries = wikidataCategoriesQueries[category];
 
     // Acceder directamente a la consulta correspondiente a la categoría dada
@@ -54,7 +54,7 @@ async function getImagesFromWikidata(category, language, numImages) {
 
     // Obtención de la consulta directamente de la categoría dada
     const sparqlQuery = categoryQueries.replace('?limit', numImages).replace('[AUTO_LANGUAGE]', language);
-    
+    console.log(`SPARQL Query: ${sparqlQuery}`);
 
     try {
         const response = await axios.get(urlApiWikidata, {
@@ -67,7 +67,7 @@ async function getImagesFromWikidata(category, language, numImages) {
                 'Accept': 'application/json'
             }
         });
-
+       
         const data = response.data.results.bindings;
 
         if (data.length > 0) {
