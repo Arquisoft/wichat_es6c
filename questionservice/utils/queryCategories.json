@@ -1,0 +1,14 @@
+{
+    "country": {  
+         "query": "SELECT ?city ?cityLabel ?country ?countryLabel ?image WHERE {    ?city wdt:P31 wd:Q515.    ?city wdt:P17 ?country.   OPTIONAL { ?city wdt:P18 ?image. } SERVICE wikibase:label {  bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\".   } }ORDER BY RAND() LIMIT ?limit",
+         "question": {
+            "es": "¿A qué país pertenece esta imagen?",
+            "en": "Which country does this image belong to?"
+         },
+         "fields": {
+            "label": "cityLabel",
+            "image": "image",
+            "extra": "countryLabel"
+         }
+    }
+}
