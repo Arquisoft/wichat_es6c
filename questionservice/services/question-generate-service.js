@@ -35,10 +35,10 @@ init();
 
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, language, numImages) {
- 
+    
     if(!numImages || numImages <= 0 || isNaN(numImages)){
         // Verifica si numImages es un número positivo{
-        console.error(`numImages must be a positive number`);
+        console.error(`numImages must be a positive number: ${numImages}`);
         throw new Error("numImages must be a positive number");
     }
     
@@ -48,6 +48,7 @@ async function getImagesFromWikidata(category, language, numImages) {
     const categoryQueries = wikidataCategoriesQueries[category]?.query;
 
     if (!categoryQueries) {
+       
         throw new Error(`The given category does not exist:  ${category}`);
     }
 
@@ -159,7 +160,6 @@ async function processQuestions(images,category, language) {
         console.log("Question saved:", newQuestion);
 
     }
-    console.error("Images retrieved:", questions);
     return questions;
 }
 
@@ -172,7 +172,8 @@ async function generateQuestionsByCategory(category, language, numImages) {
             return [];
         }
 
-        processQuestions(images, category, language);
+        const questions=await processQuestions(images, category, language);
+        return questions;
     }catch (error) {
         console.error("Error generating questions:", error.message);
         throw new Error(error.message);

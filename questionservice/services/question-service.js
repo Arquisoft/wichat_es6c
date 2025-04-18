@@ -19,7 +19,7 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     let numberQuestions = await dataService.getNumberQuestionsByCategory(language, category);
     console.log(`Número de preguntas en la base de datos: ${numberQuestions} para la categoría: ${category} y el idioma ${language}`);
 
-    if (numberQuestions < 10) {
+    if (numberQuestions < 5) {
       generateService.generateQuestionsByCategory(category, language, questionsToGenerate - numberQuestions);
 
       // Esperar hasta que haya al menos 10 preguntas en la base de datos
@@ -40,7 +40,7 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     if (!question) {
       return res.status(404).json({ message: "There are no more questions available." });
     }
-
+    
     await dataService.deleteQuestionById(question._id);
     res.json(question);
   } catch (error) {
