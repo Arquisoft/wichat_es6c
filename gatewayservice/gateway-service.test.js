@@ -138,43 +138,38 @@ describe('Gateway Service', () => {
     expect(response.body).toHaveProperty('error', 'Internal server error');
   });
 
-  it('should respond with status 200 for /questions/:category endpoint', async () => {
-    // Mock the external service (question service) to return some data
+  it('should respond with status 200 for /questions/:lang/:category endpoint', async () => {
+    // Mock the external service to return sample data
     axios.get.mockResolvedValueOnce({
       data: [
-        { question: '¿A que país pertenece esta imagen?', answer: 'Paris' },
+        { question: '¿A qué país pertenece esta imagen?', answer: 'Paris' },
       ]
     });
   
-    // Send a GET request to the /questions/:category endpoint with a mock category
-    const response = await request(app).get('/questions/country');
+    // Corrected endpoint with both lang and category
+    const response = await request(app).get('/questions/es/country');
   
-    // Check that the response status is 200
     expect(response.status).toBe(200);
-  
-    // Check that the response body contains the expected data
     expect(response.body).toEqual([
-      { question: '¿A que país pertenece esta imagen?', answer: 'Paris' },
+      { question: '¿A qué país pertenece esta imagen?', answer: 'Paris' },
     ]);
-  });
+  });  
   
-  it('should handle /questions/:category errors and respond with appropriate status and message', async () => {
-    // Mock the external service (question service) to return an error
-    axios.get.mockRejectedValueOnce({
-      response: {
-        status: 500,
-        data: { error: 'Internal Server Error' }
-      }
-    });
   
-    // Send a GET request to the /questions/:category endpoint with a mock category
-    const response = await request(app).get('/questions/country');
-
+  it('should handle /questions/:lang/:category errors and respond with appropriate status and message', async () => {
+    // Force axios to throw an error as if the microservice failed
+    axios.get.mockRejectedValueOnce(new Error('Something went wrong'));
+  
+    // Use the correct route: /questions/:lang/:category
+    const response = await request(app).get('/questions/es/country');
+  
+    // Expect a 500 status code
     expect(response.status).toBe(500);
   
-    // Check that the error message is returned properly
-    expect(response.body).toHaveProperty('error', 'Internal Server Error');
+    // Expect the error message to be properly returned
+    expect(response.body).toHaveProperty('error', 'Something went wrong');
   });
+  
 
   it('should forward the createUserHistory request to the history service', async () => {
     // Mock the successful response from the history service
