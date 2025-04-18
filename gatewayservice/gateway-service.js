@@ -38,7 +38,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-
 //-----Questions WIKIDATA endpoint----
 
 app.get('/questions/:lang/:category', async (req, res) => {
