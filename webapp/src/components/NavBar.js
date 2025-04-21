@@ -56,16 +56,16 @@ const NavMenu = () => {
           {sessionId && (
             <>
               <Button color="inherit" startIcon={<Person />} onClick={() => navigate('/history')}>
-              {t('NavBar.profile')}
+                {t('NavBar.profile')}
               </Button>
               <Button color="inherit" startIcon={<Logout />} onClick={logout}>
-              {t('NavBar.logout')}
+                {t('NavBar.logout')}
               </Button>
             </>
           )}
 
           {/* Menú de configuración */}
-          <IconButton color="inherit" onClick={handleMenuOpen}>
+          <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
             <MoreVert />
           </IconButton>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
@@ -100,7 +100,7 @@ const NavMenu = () => {
               </MenuItem>
             </Menu>
             <Divider />
-            <MenuItem component="a" href="http://localhost:8000/api-doc" target="_blank" rel="noopener noreferrer">
+            <MenuItem component="a" href="http://localhost:8000/api-doc" target="_blank" rel="noopener noreferrer" data-testid="api-doc-link">
               <Description sx={{ mr: 1 }} /> {t('NavBar.APIDocs')}
             </MenuItem>
           </Menu>

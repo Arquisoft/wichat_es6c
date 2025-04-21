@@ -8,7 +8,7 @@
         "profile": "Profile",
         "settings": "Settings",
         "logout": "Sign out",
-        "changeLanguage": "Change Language",
+        "changeLanguage": "Change language",
         "APIDocs": "API Docs",
         "spanish": "Spanish",
         "english": "English"
@@ -39,7 +39,7 @@
         "mainPage": "Main Page",
         "usernameDisplay": "User: <strong>{{username}}</strong>",
         "correctAnswers": "Correct Answers",
-        "incorrectAnswers": "Incorrect Answers",
+        "incorrectAnswers": "Wrong Answers",
         "time": "Time (seconds)",
         "score": "Score",
         "gameMode": "Game Mode",

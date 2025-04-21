@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect,useContext, useCallback } from "react";
 import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import { motion } from "framer-motion";
 import { useTranslation } from 'react-i18next';
 import i18n from "i18next";
-
+import { SessionContext } from "../SessionContext";
 function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
@@ -27,6 +27,7 @@ function Game() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { username } = useContext(SessionContext);
 
   const { t } = useTranslation();
 
@@ -53,19 +54,10 @@ function Game() {
 
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [username, setUsername] = useState(null);
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  useEffect(() => {
-    const storedSessionId = localStorage.getItem('sessionId');
-
-    if (storedSessionId) {
-      const storedUsername = localStorage.getItem('username');
-      setUsername(storedUsername);
-    }
-  }, []);
 
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;

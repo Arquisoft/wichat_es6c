@@ -3,7 +3,6 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Typewriter } from "react-simple-typewriter";
 import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 import { useTranslation } from 'react-i18next';

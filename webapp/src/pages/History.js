@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import {
   Container, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid
@@ -6,8 +6,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
 import { useTranslation, Trans } from 'react-i18next';
+import { SessionContext } from "../SessionContext";
+
 export default function UserHistory() {
-  const [username, setUsername] = useState("");
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -15,23 +16,18 @@ export default function UserHistory() {
   const navigate = useNavigate();
 
   const { t } = useTranslation();
- 
+  const { username } = useContext(SessionContext);
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) setUsername(storedUsername);
-  }, []);
 
   const fetchHistory = async () => {
     if (!username) return;
     setLoading(true);
 
-    setHistory([]);       
-    setStats(null);       
-    setLeaderboard([]);   
+    setHistory([]);
+    setStats(null);
+    setLeaderboard([]);
 
     try {
       const response = await axios.get(`${apiEndpoint}/getUserHistory`, { params: { username } });
@@ -47,9 +43,9 @@ export default function UserHistory() {
     if (!username) return;
     setLoading(true);
 
-    setHistory([]);       
-    setStats(null);       
-    setLeaderboard([]);   
+    setHistory([]);
+    setStats(null);
+    setLeaderboard([]);
 
     try {
       const response = await axios.get(`${apiEndpoint}/getUserStats`, { params: { username } });
