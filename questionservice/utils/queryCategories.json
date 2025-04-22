@@ -8,7 +8,19 @@
          "fields": {
             "label": "cityLabel",
             "image": "image",
-            "extra": "countryLabel"
+            "solution": "countryLabel"
          }
-    }
+    },
+   "famous_people": {
+      "query": "SELECT ?person ?personLabel ?image WHERE { ?person wdt:P31 wd:Q5. ?person wdt:P18 ?image. ?person wdt:P106 ?occupation. VALUES ?occupation { wd:Q33999 wd:Q937857 wd:Q82955 wd:Q36180 wd:Q188146 wd:Q49757 wd:Q3282637 wd:Q82913 wd:Q937 wd:Q901 } SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } } ORDER BY RAND() LIMIT ?limit",
+      "question": {
+         "es": "¿Quién es este famoso?",
+         "en": "Who is this famous person?"
+      },
+      "fields": {
+         "label": "personLabel",
+         "image": "image",
+         "solution": "personLabel"
+      }
+   }
 }
