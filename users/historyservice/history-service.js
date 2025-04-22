@@ -61,8 +61,6 @@ app.get("/getUserHistory", async (req, res) => {
     if (!username) {
       return res.status(400).json({ error: "Se requiere un username" });
     }
-    
-    // CAMBIA History por UserHistory
     const history = await UserHistory.find({ username });
     res.json({ history });
   } catch (error) {
@@ -78,13 +76,15 @@ app.get('/getUserStats', async (req, res) => {
     
     const history = await UserHistory.find({ username });
     if (!history.length) return res.status(404).json({ error: "No hay datos para este usuario" });
-    
+  
     const totalGames = history.length;
     const totalCorrect = history.reduce((sum, game) => sum + game.correctAnswers, 0);
     const totalWrong = history.reduce((sum, game) => sum + game.wrongAnswers, 0);
     const totalTime = history.reduce((sum, game) => sum + game.time, 0);
-    const averageScore = history.reduce((sum, game) => sum + game.score, 0) / totalGames;
-    
+    let averageScore =0;
+    if(totalGames != 0) {
+    averageScore = history.reduce((sum, game) => sum + game.score, 0) / totalGames;
+    }
     res.json({ totalGames, totalCorrect, totalWrong, totalTime, averageScore });
   } catch (error) {
     res.status(500).json({ error: error.message });
