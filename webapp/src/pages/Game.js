@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -87,7 +87,7 @@ function Game() {
   const preloadNextQuestion = useCallback(async () => {
 
     try {
-      const lang = i18n.language; 
+      const lang = i18n.language;
       const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setNextQuestionData(response.data); // Guardar la pregunta precargada
     } catch (error) {
@@ -100,7 +100,7 @@ function Game() {
     try {
       if (round > TOTAL_ROUNDS) return;
       setImageLoaded(false);
-      const lang = i18n.language; 
+      const lang = i18n.language;
       const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setQuestionData(response.data);
 
@@ -208,7 +208,7 @@ function Game() {
     if (gameMode && round === 1) {
       fetchQuestion();
     }
-  }, [gameMode, fetchQuestion,round]);
+  }, [gameMode, fetchQuestion, round]);
 
   useEffect(() => {
     if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;
@@ -575,14 +575,15 @@ function Game() {
 
 
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
-          {t("Game.rounds",{round, TOTAL_ROUNDS})}
+          {t("Game.rounds", { round, TOTAL_ROUNDS })}
 
         </Typography>
 
       </Box>
 
 
-      <IconButton onClick={() => setChatOpen(!chatOpen)} sx={{ position: "fixed", bottom: "5vh", right: "8vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
+      <IconButton onClick={() => setChatOpen(!chatOpen)} aria-label={chatOpen ? 'close chat' : 'open chat'}
+        sx={{ position: "fixed", bottom: "5vh", right: "8vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
         {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
       </IconButton>
 
