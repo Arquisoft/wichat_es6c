@@ -345,16 +345,17 @@ describe('History Service /GET Leaderboard', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.topPlayers.length).toBe(10);
-        expect(response.body.topPlayers[0].username).toBe('Ronaldo');
-        expect(response.body.topPlayers[1].username).toBe('Iniesta');
-        expect(response.body.topPlayers[2].username).toBe('Maradona');
-        expect(response.body.topPlayers[3].username).toBe('Pelé');
-        expect(response.body.topPlayers[4].username).toBe('Casillas');
-        expect(response.body.topPlayers[5].username).toBe('Rodri');
-        expect(response.body.topPlayers[6].username).toBe('Cucurella');
-        expect(response.body.topPlayers[7].username).toBe('Embape');
-        expect(response.body.topPlayers[8].username).toBe('Piqué');
-        expect(response.body.topPlayers[9].username).toBe('Messi');
+        
+        expect(response.body.topPlayers[0]._id).toBe('Ronaldo');
+        expect(response.body.topPlayers[1]._id).toBe('Iniesta');
+        expect(response.body.topPlayers[2]._id).toBe('Maradona');
+        expect(response.body.topPlayers[3]._id).toBe('Pelé');
+        expect(response.body.topPlayers[4]._id).toBe('Casillas');
+        expect(response.body.topPlayers[5]._id).toBe('Rodri');
+        expect(response.body.topPlayers[6]._id).toBe('Cucurella');
+        expect(response.body.topPlayers[7]._id).toBe('Embape');
+        expect(response.body.topPlayers[8]._id).toBe('Piqué');
+        expect(response.body.topPlayers[9]._id).toBe('Messi');
 
 
     });
@@ -432,15 +433,16 @@ describe('History Service /GET Leaderboard', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.topPlayers.length).toBe(9);
-        expect(response.body.topPlayers[0].username).toBe('Ronaldo');
-        expect(response.body.topPlayers[1].username).toBe('Iniesta');
-        expect(response.body.topPlayers[2].username).toBe('Maradona');
-        expect(response.body.topPlayers[3].username).toBe('Pelé');
-        expect(response.body.topPlayers[4].username).toBe('Casillas');
-        expect(response.body.topPlayers[5].username).toBe('Rodri');
-        expect(response.body.topPlayers[6].username).toBe('Cucurella');
-        expect(response.body.topPlayers[7].username).toBe('Embape');
-        expect(response.body.topPlayers[8].username).toBe('Piqué');
+        
+        expect(response.body.topPlayers[0]._id).toBe('Ronaldo');
+        expect(response.body.topPlayers[1]._id).toBe('Iniesta');
+        expect(response.body.topPlayers[2]._id).toBe('Maradona');
+        expect(response.body.topPlayers[3]._id).toBe('Pelé');
+        expect(response.body.topPlayers[4]._id).toBe('Casillas');
+        expect(response.body.topPlayers[5]._id).toBe('Rodri');
+        expect(response.body.topPlayers[6]._id).toBe('Cucurella');
+        expect(response.body.topPlayers[7]._id).toBe('Embape');
+        expect(response.body.topPlayers[8]._id).toBe('Piqué');
     });
     it('Should return error 500 if there is a connection error', async () => {
         const testHistories = [{
@@ -473,7 +475,8 @@ describe('History Service /GET Leaderboard', () => {
         const response = await request(app).get('/getLeaderboard');
 
         expect(response.status).toBe(500);
-        expect(response.body.error).toBe('Client must be connected before running operations');
+        expect(response.body.error).toBe('Error en el servidor');
+        expect(response.body.details).toBe('Client must be connected before running operations');
     });
     it('should return an empty array if there are no players', async () => {
         const response = await request(app).get('/getLeaderboard');
