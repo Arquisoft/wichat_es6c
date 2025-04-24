@@ -94,10 +94,15 @@ app.get('/getUserStats', async (req, res) => {
 app.get('/getLeaderboard', async (req, res) => {
   try {
     const { sortBy = 'totalScore', username } = req.query;
-    
-    // Pipeline para todos los usuarios (sin limitar)
-    const fullPipeline = [
 
+    // Validar sortBy
+    const validSortFields = ['totalScore', 'accuracy', 'avgTime', 'totalGames', 'totalCorrect','_id','username'];
+    if (!validSortFields.includes(sortBy)) {
+      return res.status(400).json({ error: `Campo sortBy inválido: ${sortBy}` });
+    }
+
+    // Pipeline de agregación
+    const fullPipeline = [
       {
         $group: {
           _id: "$username",
@@ -114,60 +119,72 @@ app.get('/getLeaderboard', async (req, res) => {
             $cond: [
               { $eq: [{ $add: ["$totalCorrect", "$totalWrong"] }, 0] },
               0,
-              { 
+              {
                 $multiply: [
-                  { $divide: ["$totalCorrect", { $add: ["$totalCorrect", "$totalWrong"] }] },
+                  {
+                    $divide: ["$totalCorrect", { $add: ["$totalCorrect", "$totalWrong"] }]
+                  },
                   100
                 ]
               }
             ]
           }
         }
-      },
-      {
-        $setWindowFields: {
-          sortBy: { [sortBy]: -1 },
-          output: {
-            globalRank: { $rank: {} }
-          }
-        }
       }
     ];
 
-    // Obtener todos los usuarios con su ranking global
     const allPlayers = await UserHistory.aggregate(fullPipeline);
-    
-    // Ordenar y limitar a top 10
-    const topPlayers = allPlayers
-      .sort((a, b) => b[sortBy] - a[sortBy])
-      .slice(0, 10);
 
-    // Buscar usuario específico
+    // Ordenar por múltiples criterios
+    allPlayers.sort((a, b) => {
+      if (b[sortBy] !== a[sortBy]) return b[sortBy] - a[sortBy]; // principal
+      if (a.avgTime !== b.avgTime) return a.avgTime - b.avgTime; // menor es mejor
+      if (b.totalGames !== a.totalGames) return b.totalGames - a.totalGames; // más mejor
+      return a._id.localeCompare(b._id); // alfabético
+    });
+
+    // Asignar ranking
+    let currentRank = 1;
+    let lastValue = null;
+    for (let i = 0; i < allPlayers.length; i++) {
+      const current = allPlayers[i];
+      const key = [current[sortBy], current.avgTime, current.totalGames, current._id].join('|');
+
+      if (key !== lastValue) {
+        currentRank = i + 1;
+        lastValue = key;
+      }
+      current.globalRank = currentRank;
+    }
+
+    // Obtener el top 10 ya con el ranking correcto
+    const topPlayers = allPlayers.slice(0, 10);
+
+    // Buscar usuario actual
     let userPosition = null;
     if (username) {
-      userPosition = allPlayers.find(p => p._id === username);
-      
-      // Eliminar datos innecesarios si existe en el top 10
-      if(userPosition && topPlayers.some(p => p._id === username)) {
-        userPosition = null;
+      const user = allPlayers.find(p => p._id === username);
+
+      // Si está fuera del top 10, lo devolvemos al final
+      if (user && !topPlayers.some(p => p._id === username)) {
+        userPosition = { ...user };
       }
     }
 
-    res.json({ 
+    res.json({
       topPlayers,
-      userPosition: userPosition 
-        ? { ...userPosition, globalRank: userPosition.globalRank } 
-        : null 
+      userPosition
     });
-    
+
   } catch (error) {
     console.error('Error en getLeaderboard:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error en el servidor",
-      details: error.message 
+      details: error.message
     });
   }
 });
+
 
 const server = app.listen(port, () => {
   console.log(`History Service listening at http://localhost:${port}`);
