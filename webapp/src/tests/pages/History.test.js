@@ -6,6 +6,7 @@ import UserHistory from '../../pages/History';
 import '../../localize/i18n';
 import { SessionContext } from '../../SessionContext';
 
+
 jest.mock('axios');
 
 const mockNavigate = jest.fn();
