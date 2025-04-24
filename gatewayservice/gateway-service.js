@@ -105,14 +105,57 @@ app.get('/getUserStats', async (req, res) => {
 // Obtener ranking global
 app.get('/getLeaderboard', async (req, res) => {
   try {
-    const response = await axios.get(`${historyServiceUrl}/getLeaderboard`);
+    const { sortBy, username } = req.query;
+    const response = await axios.get(`${historyServiceUrl}/getLeaderboard`, {
+      params: { 
+        sortBy,
+        username
+      }
+    });
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener ranking", details: error.message });
+    console.error('Error en gateway /getLeaderboard:', error.response?.data || error.message);
+    res.status(500).json({ 
+      error: "Error al obtener ranking",
+      details: error.response?.data?.error || error.message 
+    });
   }
 });
 
 //-----------------------------
+//-----User Service endpoint----
+app.get('/user/profile/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const response = await axios.get(`${userServiceUrl}/user/profile/${username}`);
+    res.json(response.data);
+  } catch (error) {
+    handleErrors(res, error);
+  }
+});
+//-----------------------------
+
+//-----User Service endpoint para actualizar el perfil del usuario---- 
+app.put('/user/update/profile/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { name, surname, profilePicture, description } = req.body;
+
+    const response = await axios.put(`${userServiceUrl}/user/update/profile/${username}`, {
+      name,
+      surname,
+      profilePicture,
+      description
+    });
+
+    res.json(response.data); // Devolver la respuesta del servicio de usuarios
+  } catch (error) {
+    handleErrors(res, error); // Manejar cualquier error que ocurra
+  }
+});
+
+//-----User Service endpoint----
 
 app.post('/login', async (req, res) => {
   try {
