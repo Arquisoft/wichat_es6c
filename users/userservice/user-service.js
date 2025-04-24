@@ -1,4 +1,3 @@
-// user-service.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -51,11 +50,7 @@ app.post('/user', async (req, res) => {
     try {
         const { username, password, name, surname } = req.body;
 
-        const usernameReq = req.body.username.toString();
-        const user = await User.findOne({ usernameReq });
-        if(user){
-            throw new Error(`El usuario "${req.body.username}" ya existe.`);
-        }
+        const user = await User.findOne({ username });
 
         registerValidators(user, username, password, name, surname);
 
@@ -74,6 +69,68 @@ app.post('/user', async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message }); 
 }});
+
+app.get('/user/profile/:username', async (req, res) => {
+    try {
+      const { username } = req.params;
+  
+      const user = await User.findOne({ username }).select('-password');
+  
+      if (!user) {
+        throw new Error(`No se encontró el usuario "${username}".`);
+      }
+  
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // Ruta para actualizar el perfil del usuario
+app.put('/user/update/profile/:username', async (req, res) => {
+    try {
+      const { username } = req.params;
+      const { name, surname, profilePicture, description } = req.body;
+  
+      // Buscar el usuario por el nombre de usuario
+      const user = await User.findOne({ username });
+  
+      if (!user) {
+        throw new Error(`No se encontró el usuario "${username}"`);
+      }
+  
+      // Validar los datos antes de hacer la actualización
+      validateUserProfileUpdate(name, surname, profilePicture, description);
+  
+      // Actualizar los campos que vienen en la solicitud
+      user.name = name || user.name;
+      user.surname = surname || user.surname;
+      user.profilePicture = profilePicture || user.profilePicture;
+      user.description = description || user.description;
+  
+      // Guardar los cambios en el usuario
+      await user.save();
+  
+      // Devolver el usuario actualizado sin la contraseña
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+// Validation helper function
+function validateUserProfileUpdate(name, surname, profilePicture, description) {
+    if (!name.trim()) {
+      throw new Error('El nombre no puede estar vacío');
+    }
+  
+    if (!surname.trim()) {
+      throw new Error('El apellido no puede estar vacío');
+    }
+    
+    // Opcionalmente podrías validar la URL de la imagen (profilePicture)
+    // y la descripción, si quieres asegurarte de que no estén vacíos o sean válidos.
+  }
 
 const server = app.listen(port, () => {
   console.log(`User Service listening at http://localhost:${port}`);

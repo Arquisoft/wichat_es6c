@@ -72,13 +72,13 @@ const testOptions = {
 };
 
 beforeAll(async () => {
-    // Inicia MongoDB en memoria
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
-    process.env.MONGODB_URI = uri;
-    generateService = require('./question-generate-service');
-
+  // Inicia MongoDB en memoria
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+  // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
+  process.env.MONGODB_URI = uri;
+  generateService = require('../services/question-generate-service');
+  
 });
 
 beforeEach(async () => {
@@ -109,7 +109,6 @@ afterEach(async () => {
         await collections[key].deleteMany({});
     }
 });
-
 
 jest.mock('axios');
 

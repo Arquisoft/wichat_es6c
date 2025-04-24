@@ -135,7 +135,7 @@ beforeAll(async () => {
     const uri = mongoServer.getUri();
     // Sobrescribe la variable de entorno MONGODB_URI para usar la base de datos en memoria
     process.env.MONGODB_URI = uri;
-    app = require('./question-service');
+    app = require('../services/question-service');
 
 });
 
@@ -204,7 +204,7 @@ describe('Question Generate Service', () => {
         
         expect(countries).toContainEqual(response.body.correctAnswer);
         const questionCount = await Question.countDocuments();
-        expect(questionCount).toBe(7); 
+        expect(questionCount).toBe(4); 
     });
 
     it('should add questions from wikidata if the databse is empty, return a random question and then delete one', async () => {

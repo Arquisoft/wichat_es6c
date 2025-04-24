@@ -594,7 +594,7 @@ function Game() {
             maxHeight: "100%",  // Asegura que el contenido no exceda la altura del contenedor
             overflowY: "auto"  // Permite scroll si el contenido es grande
           }}>
-            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this without revealing the answer in a short phrase:"} />
+            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} />
           </Box>
         )}
       </Box>

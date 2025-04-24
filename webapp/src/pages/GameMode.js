@@ -14,6 +14,7 @@ function GameMode() {
   // List of tuples. Saves the text, the path and the game mode of the buttons.
   const normalButtonList = useMemo(() => [
     { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
   ], []);
   const vsButtonList = useMemo(() => [
     { text: 'Países', path: '/game-vs', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },

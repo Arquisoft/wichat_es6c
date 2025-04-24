@@ -1,7 +1,9 @@
 const axios = require('axios');
 const dataService = require('./question-data-service');
+const utils = require('../utils/utils');
+const Question = require('../models/question-model');
 
-const wikidataCategoriesQueries = {
+/*const wikidataCategoriesQueries = {   
     "country": {  // Eliminar el punto al final del nombre de la categoría
         query: `
         SELECT ?city ?cityLabel ?country ?countryLabel ?image
@@ -18,37 +20,41 @@ const wikidataCategoriesQueries = {
         `,
     }
 };
-
-const titlesQuestionsCategories = {
-    "es": {
-        "country": "¿A qué país pertenece esta imagen?"
-    },
-    "en": {
-        "country": "Which country does this image belong to?"
-    }
-};
+*/
 
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
+let wikidataCategoriesQueries;
+
+async function init() {
+    const json = await utils.readFromFile("../utils/queryCategories.json");
+    wikidataCategoriesQueries = JSON.parse(json);
+}
+
+init();
+
 // Obtener imágenes de una categoría en Wikidata
 async function getImagesFromWikidata(category, language, numImages) {
-
-    if (!wikidataCategoriesQueries[category]) {
-        console.error(`Category ${category} not found in queries.`);
-        throw new Error("The given category does not exist: ", category);
-    }
-    if (!numImages || numImages <= 0 || isNaN(numImages)) {
+    
+    if(!numImages || numImages <= 0 || isNaN(numImages)){
         // Verifica si numImages es un número positivo{
-        console.error(`numImages must be a positive number`);
+        console.error(`numImages must be a positive number: ${numImages}`);
         throw new Error("numImages must be a positive number");
     }
-    // Acceder directamente a la consulta correspondiente a la categoría dada
-    const categoryQueries = wikidataCategoriesQueries[category];
+    console.log(`Category: ${category}, Language: ${language}, Number of images: ${numImages}`);
+    //const categoryQueries = wikidataCategoriesQueries[category];
 
+    // Acceder directamente a la consulta correspondiente a la categoría dada
+    const categoryQueries = wikidataCategoriesQueries[category]?.query;
+
+    if (!categoryQueries) {
+       
+        throw new Error(`The given category does not exist:  ${category}`);
+    }
 
     // Obtención de la consulta directamente de la categoría dada
-    const sparqlQuery = categoryQueries.query.replace('?limit', numImages).replace('[AUTO_LANGUAGE]', language);
-
+    const sparqlQuery = categoryQueries.replace('?limit', numImages).replace('[AUTO_LANGUAGE]', language);
+    console.log(`SPARQL Query: ${sparqlQuery}`);
 
     try {
         const response = await axios.get(urlApiWikidata, {
@@ -61,17 +67,23 @@ async function getImagesFromWikidata(category, language, numImages) {
                 'Accept': 'application/json'
             }
         });
-
+       
         const data = response.data.results.bindings;
 
         if (data.length > 0) {
+            const fields = wikidataCategoriesQueries[category]?.fields;
+            if (!fields) {
+                throw new Error(`Fields not defined for category: ${category}`);
+            }
+            const { label, image, extra } = fields;
+
             const filteredImages = data
-                .filter(item => item.cityLabel && item.image)  // Filtrar solo los elementos con ciudad e imagen
-                .slice(0, numImages)  // Limitar la cantidad de imágenes a `numImages`
+                .filter(item => item[label] && item[image])  
+                .slice(0, numImages)  
                 .map(item => ({
-                    label: item.cityLabel.value,
-                    imageUrl: item.image.value,
-                    country: item.countryLabel.value
+                    label: item[label].value,
+                    imageUrl: item[image].value,
+                    country: item[extra].value
                 }));
 
             return filteredImages;
@@ -84,9 +96,7 @@ async function getImagesFromWikidata(category, language, numImages) {
     }
 }
 
-
-// Obtener 3 países incorrectos aleatorios
-async function getIncorrectCountries(correctCountry, lang) {
+async function getIncorrectOptions(correctCountry, lang) {
     const sparqlQuery = `
         SELECT DISTINCT ?countryLabel
         WHERE {
@@ -120,17 +130,20 @@ async function getIncorrectCountries(correctCountry, lang) {
     }
 }
 
-async function processQuestionsCountry(images, language, category) {
-    let questions = [];
+async function processQuestions(images,category, language) {
+    let questions=[];
     for (const image of images) {
-        const incorrectAnswers = await getIncorrectCountries(image.country,language);
+        const incorrectAnswers = await getIncorrectOptions(image.country,language);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
 
         // Crear opciones y mezclarlas
         const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
 
         // Generar pregunta
-        const questionText = titlesQuestionsCategories[language][category];
+        //const questionText = wikidataCategoriesQueries[category]?.question;
+        
+        const questionText = wikidataCategoriesQueries[category]?.question?.[language]
+        || "Which country does this image belong to?";
 
         const newQuestion = {
             question: questionText,
@@ -140,29 +153,28 @@ async function processQuestionsCountry(images, language, category) {
             language: language,
             imageUrl: image.imageUrl
         };
+        console.log(newQuestion);
         questions.push(newQuestion);
 
         await dataService.saveQuestion(newQuestion);
         console.log("Question saved:", newQuestion);
 
     }
-    console.error("Images retrieved:", questions);
     return questions;
 }
 
 // Generate questions
-async function generateQuestionsByCategory(category, langauge, numImages) {
+async function generateQuestionsByCategory(category, language, numImages) {
     try {
-        const images = await getImagesFromWikidata(category, langauge, numImages);
+        const images = await getImagesFromWikidata(category, language, numImages);
         if (images.length === 0) {
             console.error(`No images found for category ${category}`);
             return [];
         }
 
-        if (category === 'country') {
-            return await processQuestionsCountry(images, langauge, category);
-        }
-    } catch (error) {
+        const questions=await processQuestions(images, category, language);
+        return questions;
+    }catch (error) {
         console.error("Error generating questions:", error.message);
         throw new Error(error.message);
     }
@@ -172,3 +184,4 @@ async function generateQuestionsByCategory(category, langauge, numImages) {
 module.exports = {
     generateQuestionsByCategory
 };
+ 

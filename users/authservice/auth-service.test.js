@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const bcrypt = require('bcrypt');
-const User = require('./auth-model');
+const User = require('./auth-model.js');
 
 let mongoServer;
 let app;
@@ -42,4 +42,7 @@ describe('Auth Service', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('username', 'testuser');
   });
+
+  
+
 });
