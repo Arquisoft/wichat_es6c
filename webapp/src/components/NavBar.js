@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Divider } from "@mui/material";
-import { Person, Settings, Logout, Description, MoreVert, Language } from "@mui/icons-material";
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import { Person, Settings, Logout, MoreVert, Language } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -99,10 +99,7 @@ const NavMenu = () => {
                 {t('NavBar.spanish')}
               </MenuItem>
             </Menu>
-            <Divider />
-            <MenuItem component="a" href="http://localhost:8000/api-doc" target="_blank" rel="noopener noreferrer" data-testid="api-doc-link">
-              <Description sx={{ mr: 1 }} /> {t('NavBar.APIDocs')}
-            </MenuItem>
+           
           </Menu>
         </Box>
       </Toolbar>

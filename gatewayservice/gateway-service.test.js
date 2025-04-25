@@ -81,7 +81,7 @@ describe('Gateway Service', () => {
         }
       })
     );
-  
+
     // Send the request to the gateway
     const response = await request(app).post('/user').send({
       username: 'testuser',
@@ -89,14 +89,14 @@ describe('Gateway Service', () => {
       name: 'Test',
       surname: 'User'
     });
-  
+
     // Expect the status code to be forwarded correctly
     expect(response.status).toBe(400);
-  
+
     // Expect the error message to be returned properly
     expect(response.body).toHaveProperty('error', 'Username already exists');
   });
-  
+
 
   // Test /askllm endpoint
   it('should forward askllm request to the LLM service', async () => {
@@ -112,7 +112,7 @@ describe('Gateway Service', () => {
     expect(response.body.answer).toBe('llmanswer');
   });
 
-  
+
   it('should return error response if the LLM service fails', async () => {
     // Mock the failed response from the LLM service
     axios.post.mockRejectedValueOnce({
@@ -145,38 +145,38 @@ describe('Gateway Service', () => {
         { question: '¿A qué país pertenece esta imagen?', answer: 'Paris' },
       ]
     });
-  
+
     // Corrected endpoint with both lang and category
     const response = await request(app).get('/questions/es/country');
-  
+
     expect(response.status).toBe(200);
     expect(response.body).toEqual([
       { question: '¿A qué país pertenece esta imagen?', answer: 'Paris' },
     ]);
-  });  
-  
-  
+  });
+
+
   it('should handle /questions/:lang/:category errors and respond with appropriate status and message', async () => {
     // Force axios to throw an error as if the microservice failed
     axios.get.mockRejectedValueOnce(new Error('Something went wrong'));
-  
+
     // Use the correct route: /questions/:lang/:category
     const response = await request(app).get('/questions/es/country');
-  
+
     // Expect a 500 status code
     expect(response.status).toBe(500);
-  
+
     // Expect the error message to be properly returned
     expect(response.body).toHaveProperty('error', 'Something went wrong');
   });
-  
+
 
   it('should forward the createUserHistory request to the history service', async () => {
     // Mock the successful response from the history service
     axios.post.mockResolvedValueOnce({
       data: { success: true, message: 'User history created successfully' }
     });
-  
+
     // Send a POST request to the /createUserHistory endpoint
     const response = await request(app)
       .post('/createUserHistory')
@@ -185,15 +185,15 @@ describe('Gateway Service', () => {
         game: 'country',
         score: 100
       });
-  
+
     // Verify that the status code is 200 (OK)
     expect(response.status).toBe(200);
-  
+
     // Verify that the response contains the expected success data
     expect(response.body.success).toBe(true);
     expect(response.body.message).toBe('User history created successfully');
   });
-  
+
   it('should handle errors and respond with status 500 if the history service fails', async () => {
     // Mock axios to simulate a failure response from the history service
     axios.post.mockRejectedValueOnce(new Error('Failed to create user history'));
@@ -337,5 +337,63 @@ describe('Gateway Service', () => {
 
     // Verify that the error message is returned as expected
     expect(response.body).toHaveProperty('error', 'Error al obtener ranking');
+  });
+
+  it('should fetch user profile from the user service', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { username: 'testuser', name: 'Test', surname: 'User' },
+    });
+
+    const response = await request(app).get('/user/profile/testuser');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ username: 'testuser', name: 'Test', surname: 'User' });
+
+    expect(axios.get).toHaveBeenCalledWith('http://localhost:8001/user/profile/testuser');
+  });
+
+  it('should handle errors from the user service', async () => {
+    axios.get.mockRejectedValueOnce(new Error('Error fetching user profile'));
+
+    const response = await request(app).get('/user/profile/testuser');
+
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty('error', 'Error fetching user profile');
+  });
+
+  it('should update user profile in the user service', async () => {
+    axios.put.mockResolvedValueOnce({
+      data: { username: 'testuser', name: 'UpdatedName', surname: 'UpdatedSurname' },
+    });
+
+    const updatedProfile = {
+      name: 'UpdatedName',
+      surname: 'UpdatedSurname',
+      profilePicture: 'http://new-picture.com',
+      description: 'Updated description',
+    };
+
+    const response = await request(app).put('/user/update/profile/testuser').send(updatedProfile);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ username: 'testuser', name: 'UpdatedName', surname: 'UpdatedSurname' });
+
+    expect(axios.put).toHaveBeenCalledWith('http://localhost:8001/user/update/profile/testuser', updatedProfile);
+  });
+
+  it('should handle errors when updating user profile', async () => {
+    axios.put.mockRejectedValueOnce(new Error('Error updating user profile'));
+
+    const updatedProfile = {
+      name: 'UpdatedName',
+      surname: 'UpdatedSurname',
+      profilePicture: 'http://new-picture.com',
+      description: 'Updated description',
+    };
+
+    const response = await request(app).put('/user/update/profile/testuser').send(updatedProfile);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty('error', 'Error updating user profile');
   });
 });

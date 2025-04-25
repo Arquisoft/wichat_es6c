@@ -150,18 +150,5 @@ describe('NavMenu Component', () => {
         expect(mockNavigate).toHaveBeenCalledWith('/settings');
     });
 
-    it('should open the API Documentation link in a new tab', () => {
-        render(
-            <BrowserRouter>
-                <SessionContext.Provider value={{ sessionId: '12345' }}>
-                    <NavMenu />
-                </SessionContext.Provider>
-            </BrowserRouter>
-        );
-
-        fireEvent.click(screen.getByTestId('more-button'));
-        const apiDocsLink = screen.getByTestId('api-doc-link');
-        expect(apiDocsLink).toHaveAttribute('href', 'http://localhost:8000/api-doc');
-        expect(apiDocsLink).toHaveAttribute('target', '_blank');
-    });
+    
 });
