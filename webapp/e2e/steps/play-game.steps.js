@@ -55,9 +55,9 @@ defineFeature(feature, test => {
             await expect(page).toClick('#root > div > div > div > button > img');
         });
         then('A new game starts', async () => {
-
+            await page.waitForSelector('h5', { timeout: 20000 });
+        
             await expect(page).toMatchElement("h5", { text: 'Which country does this image belong to?' });
-
         });
     })
 
