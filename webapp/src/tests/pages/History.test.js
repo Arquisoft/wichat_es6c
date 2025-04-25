@@ -17,35 +17,35 @@ jest.mock('react-router-dom', () => ({
 
 // Stub out ResizeObserver globally:
 global.ResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  };
-  
-  // Mock recharts to render data in a test‑friendly way:
-  jest.mock('recharts', () => {
+    observe() { }
+    unobserve() { }
+    disconnect() { }
+};
+
+// Mock recharts to render data in a test‑friendly way:
+jest.mock('recharts', () => {
     return {
-      ResponsiveContainer: ({ children }) => <div>{children}</div>,
-      BarChart: ({ data }) => (
-        <div data-testid="mock-barchart">
-          {data.map((entry, i) => (
-            <div key={i}>
-              <span>{entry.username}</span>
-              <span>{entry.score}</span>
+        ResponsiveContainer: ({ children }) => <div>{children}</div>,
+        BarChart: ({ data }) => (
+            <div data-testid="mock-barchart">
+                {data.map((entry, i) => (
+                    <div key={i}>
+                        <span>{entry.username}</span>
+                        <span>{entry.score}</span>
+                    </div>
+                ))}
             </div>
-          ))}
-        </div>
-      ),
-      XAxis: () => <div>X-Axis</div>,
-      YAxis: () => <div>Y-Axis</div>,
-      CartesianGrid: () => <div>Grid</div>,
-      Tooltip: () => <div>Tooltip</div>,
-      Legend: () => <div>Legend</div>,
-      Cell: () => <div>Cell</div>,
-      PieChart: ({ children }) => <div>{children}</div>,
-      Pie: ({ data }) => <div data-testid="mock-pie">{data.map(d => d.value).join(',')}</div>,
+        ),
+        XAxis: () => <div>X-Axis</div>,
+        YAxis: () => <div>Y-Axis</div>,
+        CartesianGrid: () => <div>Grid</div>,
+        Tooltip: () => <div>Tooltip</div>,
+        Legend: () => <div>Legend</div>,
+        Cell: () => <div>Cell</div>,
+        PieChart: ({ children }) => <div>{children}</div>,
+        Pie: ({ data }) => <div data-testid="mock-pie">{data.map(d => d.value).join(',')}</div>,
     };
-  });
+});
 
 describe('History Page', () => {
     const mockHistoryData = [
@@ -59,11 +59,20 @@ describe('History Page', () => {
         totalTime: 300,
     };
 
-    const mockLeaderboardData = [
-        { username: 'Player1', score: 200 },
-        { username: 'Player2', score: 150 },
-        { username: 'Player3', score: 100 },
-    ];
+    const mockLeaderboard = {
+        topPlayers: [
+            { _id: 'Player1', totalScore: 500, accuracy: 90.00, totalCorrect: 45, totalGames: 10, globalRank: 1 },
+            { _id: 'Player2', totalScore: 400, accuracy: 85.00, totalCorrect: 40, totalGames: 8, globalRank: 2 },
+        ],
+        userPosition: {
+            _id: 'testUser',
+            totalScore: 300,
+            accuracy: 80,
+            totalCorrect: 30,
+            totalGames: 6,
+            globalRank: 3,
+        },
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -132,7 +141,6 @@ describe('History Page', () => {
     });
 
     it('should fetch and display global ranking when "View Ranking" is clicked', async () => {
-        axios.get.mockResolvedValueOnce({ data: { topPlayers: mockLeaderboardData } });
 
         render(
             <BrowserRouter>
@@ -141,16 +149,23 @@ describe('History Page', () => {
                 </SessionContext.Provider>
             </BrowserRouter>
         );
+        axios.get.mockResolvedValueOnce({ data: mockLeaderboard });
 
         fireEvent.click(screen.getByText('View Ranking'));
-
         await waitFor(() => {
-            expect(screen.getByText((content) => content.includes('Player1'))).toBeInTheDocument();
-            expect(screen.getByText((content) => content.includes('200'))).toBeInTheDocument();
-            expect(screen.getByText((content) => content.includes('Player2'))).toBeInTheDocument();
-            expect(screen.getByText((content) => content.includes('150'))).toBeInTheDocument();
-            expect(screen.getByText((content) => content.includes('Player3'))).toBeInTheDocument();
-            expect(screen.getByText((content) => content.includes('100'))).toBeInTheDocument();
+            mockLeaderboard.topPlayers.forEach((player) => {
+                expect(screen.getByText(player._id)).toBeInTheDocument();
+                expect(screen.getByText(player.totalScore.toString())).toBeInTheDocument();
+                expect(screen.getByText(`${player.accuracy}.00%`)).toBeInTheDocument();
+                expect(screen.getByText(player.totalCorrect.toString())).toBeInTheDocument();
+                expect(screen.getByText(player.totalGames.toString())).toBeInTheDocument();
+            });
+    
+            expect(screen.getByText(`${mockLeaderboard.userPosition._id} (Tú)`)).toBeInTheDocument();
+            expect(screen.getByText(mockLeaderboard.userPosition.totalScore.toString())).toBeInTheDocument();
+            expect(screen.getByText(`${mockLeaderboard.userPosition.accuracy}.00%`)).toBeInTheDocument();
+            expect(screen.getByText(mockLeaderboard.userPosition.totalCorrect.toString())).toBeInTheDocument();
+            expect(screen.getByText(mockLeaderboard.userPosition.totalGames.toString())).toBeInTheDocument();            
         });
     });
 

@@ -29,19 +29,32 @@
         "sigInConfirm": "Sign In",
         "password": "Password",
         "textForm": "New to Wichat?",
-        "textFormLink": "Create an account here"
+        "textFormLink": "Create an account here",
+        "notValidUserOrPassword": "Not valid username or password",
+        "unknownError": "Unknown error in the server",
+        "nonRespnse": "No response from server",
+        "errorRequest": "Request error"
     },
     "History": {
+        "profileUpdate": "Profile updated successfully!",
         "title": "User History",
         "viewHistory": "View History",
         "viewStats": "View Stats",
         "viewRanking": "View Ranking",
         "mainPage": "Main Page",
+        "editProfile": "Edit Profile",
+        "cancel": "Cancel",
+        "updatingProfile": "Updating...",
+        "saveChanges": "Save changes",
         "usernameDisplay": "User: <strong>{{username}}</strong>",
         "correctAnswers": "Correct Answers",
         "incorrectAnswers": "Wrong Answers",
         "time": "Time (seconds)",
         "score": "Score",
+        "nonStatsAvailable": "No stats available",
+        "nonGames": "No games in history",
+        "position": "Position",
+        "nonRanking": "No data in ranking history",
         "gameMode": "Game Mode",
         "generalStats": "General Stats",
         "distributionAnswers": "Answers Distribution",
@@ -53,7 +66,19 @@
         "totalTime": "Total time",
         "correct": "Correct",
         "incorrect": "Incorrect",
-        "globalRanking": "Global ranking"
+        "globalRanking": "Global ranking",
+        "user": "User",
+        "percentageHits": "% Hits",
+        "games": "Games",
+        "nameRequired": "Name is required",
+        "maxCharacters": "Maximum 200 characters",
+        "surnameRequired": "Surname is required",
+        "urlNotValid": "URL not valid",
+        "name": "Name *",
+        "surname": "Surname *",
+        "urlImage": "URL image *",
+        "description": "Description *",
+        "ex": "Example:"
     },
     "GameType": {
         "chooseGame": "Choose a game mode"
@@ -89,7 +114,5 @@
         "viewHistory": "View history",
         "socoreAchieved": "Score achieved",
         "totalTime": "Total time"
-
-
     }
 }

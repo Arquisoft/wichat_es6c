@@ -19,12 +19,12 @@ const NavMenu = () => {
   const handleLanguageMenuClose = () => setLanguageMenuAnchorEl(null);
 
   const { t } = useTranslation();
-  const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
+  //const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
 
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    setLang(lng);
+    //setLang(lng);
     handleLanguageMenuClose();
   }
 
