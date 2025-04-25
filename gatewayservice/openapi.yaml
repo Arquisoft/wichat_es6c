@@ -2,11 +2,11 @@ openapi: 3.1.0
 info:
   title: API de Historial de Usuarios
   description: API para gestionar el historial de juegos de los usuarios.
-  version: 1.3.0
+  version: 2.0.0
 servers:
    - url: http://localhost:8000
      description: Development server
-   - url: http://SOMEIP:8000
+   - url: http://48.209.11.56:8000
      description: Production server
 
 paths:
@@ -199,15 +199,20 @@ paths:
                     type: string
                     example: "OK"
 
-  /questions/{category}:
+  /questions/{lang}/{category}:
     get:
       summary: Obtener preguntas por categoría
       description: Devuelve preguntas de una categoría específica desde Wikidata
       parameters:
+        - name: lang
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "es"
         - name: category
           in: path
           required: true
-          description: Categoría de las preguntas (ej. country)
           schema:
             type: string
             example: "country"
