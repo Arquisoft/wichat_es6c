@@ -13,7 +13,7 @@ export default function UserHistory() {
   const [stats, setStats] = useState(null);
   const [leaderboard, setLeaderboard] = useState({
     topPlayers: [],
-    userPosition: null
+    userPosition: null  
   });
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
