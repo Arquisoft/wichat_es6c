@@ -114,5 +114,11 @@
         "viewHistory": "View history",
         "socoreAchieved": "Score achieved",
         "totalTime": "Total time"
+    },
+    "Footer":{
+
+        "title": "Wichat",
+        "github": "GitHub",
+        "apiDocs": "API Docs"
     }
 }

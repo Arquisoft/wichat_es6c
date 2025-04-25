@@ -3,22 +3,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Chat from '../../components/Chat';
 import axios from 'axios';
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
+import '../../localize/i18n';
 
 jest.mock('axios');
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => {
-      const translations = {
-        'ChatLLM.chatTitle': 'Chat with LLM',
-        'ChatLLM.typeMessage': 'Type your message...',
-        'ChatLLM.sendMessage': 'Send',
-        'ChatLLM.typing': 'Typing...',
-        'ChatLLM.noResponse': 'No response available.',
-      };
-      return translations[key] || key;
-    },
-  }),
-}));
+
 
 describe('Chat Component', () => {
   const mockQuestionData = {
@@ -44,8 +32,8 @@ describe('Chat Component', () => {
       />
     );
 
-    expect(screen.getByText('Chat with LLM')).toBeInTheDocument();
-    expect(screen.getByLabelText('Type your message...')).toBeInTheDocument();
+    expect(screen.getByText('Chat with IA')).toBeInTheDocument();
+    expect(screen.getByLabelText('Type a message...')).toBeInTheDocument();
     expect(screen.getByText('Send')).toBeInTheDocument();
   });
 
@@ -60,7 +48,7 @@ describe('Chat Component', () => {
       />
     );
 
-    const inputField = screen.getByLabelText('Type your message...');
+    const inputField = screen.getByLabelText('Type a message...');
     const sendButton = screen.getByText('Send');
 
     fireEvent.change(inputField, { target: { value: 'Hello, bot!' } });
@@ -85,7 +73,7 @@ describe('Chat Component', () => {
       />
     );
 
-    const inputField = screen.getByLabelText('Type your message...');
+    const inputField = screen.getByLabelText('Type a message...');
     const sendButton = screen.getByText('Send');
 
     fireEvent.change(inputField, { target: { value: 'Hello, bot!' } });
@@ -113,7 +101,7 @@ describe('Chat Component', () => {
       />
     );
 
-    const inputField = screen.getByLabelText('Type your message...');
+    const inputField = screen.getByLabelText('Type a message...');
     const sendButton = screen.getByText('Send');
 
     fireEvent.change(inputField, { target: { value: 'Hello, bot!' } });
@@ -139,7 +127,7 @@ describe('Chat Component', () => {
       />
     );
 
-    const inputField = screen.getByLabelText('Type your message...');
+    const inputField = screen.getByLabelText('Type a message...');
     const sendButton = screen.getByText('Send');
 
     fireEvent.change(inputField, { target: { value: 'Hello, bot!' } });
