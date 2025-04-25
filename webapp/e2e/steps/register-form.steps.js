@@ -3,6 +3,7 @@ const { defineFeature, loadFeature }=require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
 const feature = loadFeature('./features/register-form.feature');
 
+
 let page;
 let browser;
 
@@ -44,11 +45,11 @@ defineFeature(feature, test => {
       await expect(page).toFill('input[name="password"]', password);
       await expect(page).toFill('input[name="name"]', name);
       await expect(page).toFill('input[name="surname"]', surname);
-      await expect(page).toClick('button', { text: 'Registrarse' })
+      await expect(page).toClick('button', { text: 'Submit' })
     });
 
     then('I should be redirect to the homepage', async () => {
-        await expect(page).toMatchElement('button', { text: "Jugar" });
+        await expect(page).toMatchElement('button', { text: "Play" });
 
       });
   })

@@ -61,12 +61,10 @@ app.get("/getUserHistory", async (req, res) => {
     if (!username) {
       return res.status(400).json({ error: "Se requiere un username" });
     }
-    
-    // CAMBIA History por UserHistory
     const history = await UserHistory.find({ username });
     res.json({ history });
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -77,45 +75,116 @@ app.get('/getUserStats', async (req, res) => {
     if (!username) return res.status(400).json({ error: "Se requiere un username" });
     
     const history = await UserHistory.find({ username });
-    if (!history.length) return res.json({ message: "No hay datos para este usuario" });
-    
+    if (!history.length) return res.status(404).json({ error: "No hay datos para este usuario" });
+  
     const totalGames = history.length;
     const totalCorrect = history.reduce((sum, game) => sum + game.correctAnswers, 0);
     const totalWrong = history.reduce((sum, game) => sum + game.wrongAnswers, 0);
     const totalTime = history.reduce((sum, game) => sum + game.time, 0);
-    const averageScore = history.reduce((sum, game) => sum + game.score, 0) / totalGames;
-    
+    let averageScore =0;
+    if(totalGames != 0) {
+    averageScore = history.reduce((sum, game) => sum + game.score, 0) / totalGames;
+    }
     res.json({ totalGames, totalCorrect, totalWrong, totalTime, averageScore });
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/getLeaderboard', async (req, res) => {
   try {
-    const topPlayers = await UserHistory.aggregate([
-      // Ordenar todos los registros por score de forma descendente
-      { $sort: { score: -1 } },
-      // Agrupar por username y tomar el primer documento (con el score más alto)
+    const { sortBy = 'totalScore', username } = req.query;
+
+    // Validar sortBy
+    const validSortFields = ['totalScore', 'accuracy', 'avgTime', 'totalGames', 'totalCorrect','_id','username'];
+    if (!validSortFields.includes(sortBy)) {
+      return res.status(400).json({ error: `Campo sortBy inválido: ${sortBy}` });
+    }
+
+    // Pipeline de agregación
+    const fullPipeline = [
       {
         $group: {
           _id: "$username",
-          doc: { $first: "$$ROOT" }
+          totalScore: { $sum: "$score" },
+          totalCorrect: { $sum: "$correctAnswers" },
+          totalWrong: { $sum: "$wrongAnswers" },
+          totalGames: { $sum: 1 },
+          avgTime: { $avg: "$time" }
         }
       },
-      // Reemplazar la raíz del documento por el contenido de 'doc'
-      { $replaceRoot: { newRoot: "$doc" } },
-      // Volver a ordenar los resultados (porque el group pierde el orden)
-      { $sort: { score: -1 } },
-      // Limitar a 10 resultados
-      { $limit: 10 }
-    ]);
+      {
+        $addFields: {
+          accuracy: {
+            $cond: [
+              { $eq: [{ $add: ["$totalCorrect", "$totalWrong"] }, 0] },
+              0,
+              {
+                $multiply: [
+                  {
+                    $divide: ["$totalCorrect", { $add: ["$totalCorrect", "$totalWrong"] }]
+                  },
+                  100
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ];
 
-    res.json({ topPlayers });
+    const allPlayers = await UserHistory.aggregate(fullPipeline);
+
+    // Ordenar por múltiples criterios
+    allPlayers.sort((a, b) => {
+      if (b[sortBy] !== a[sortBy]) return b[sortBy] - a[sortBy]; // principal
+      if (a.avgTime !== b.avgTime) return a.avgTime - b.avgTime; // menor es mejor
+      if (b.totalGames !== a.totalGames) return b.totalGames - a.totalGames; // más mejor
+      return a._id.localeCompare(b._id); // alfabético
+    });
+
+    // Asignar ranking
+    let currentRank = 1;
+    let lastValue = null;
+    for (let i = 0; i < allPlayers.length; i++) {
+      const current = allPlayers[i];
+      const key = [current[sortBy], current.avgTime, current.totalGames, current._id].join('|');
+
+      if (key !== lastValue) {
+        currentRank = i + 1;
+        lastValue = key;
+      }
+      current.globalRank = currentRank;
+    }
+
+    // Obtener el top 10 ya con el ranking correcto
+    const topPlayers = allPlayers.slice(0, 10);
+
+    // Buscar usuario actual
+    let userPosition = null;
+    if (username) {
+      const user = allPlayers.find(p => p._id === username);
+
+      // Si está fuera del top 10, lo devolvemos al final
+      if (user && !topPlayers.some(p => p._id === username)) {
+        userPosition = { ...user };
+      }
+    }
+
+    res.json({
+      topPlayers,
+      userPosition
+    });
+
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    console.error('Error en getLeaderboard:', error);
+    res.status(500).json({
+      error: "Error en el servidor",
+      details: error.message
+    });
   }
 });
+
 
 const server = app.listen(port, () => {
   console.log(`History Service listening at http://localhost:${port}`);

@@ -1,29 +1,31 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button, Snackbar } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
+import { useTranslation } from 'react-i18next';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
 const AddUser = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState(''); 
+  const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const {createSession} = useContext(SessionContext);
+  const { createSession } = useContext(SessionContext);
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const addUser = async () => {
     try {
       await axios.post(`${apiEndpoint}/user`, {
         username,
         password,
-        name, 
+        name,
         surname
       });
 
@@ -41,10 +43,10 @@ const AddUser = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 4 }}>
+    <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: '0.8rem'  }}>
       <Box sx={{ padding: '2rem', borderRadius: '8px', boxShadow: 3, backgroundColor: '#fff', width: '100%' }}>
         <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: 2, fontWeight: 'bold' }}>
-          Registro
+          {t('Register.signUp')}
         </Typography>
 
         {/* Form Fields */}
@@ -52,7 +54,7 @@ const AddUser = () => {
           name="username"
           margin="normal"
           fullWidth
-          label="Usuario"
+          label={t('Register.user')}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           sx={{ marginBottom: 2 }}
@@ -61,7 +63,7 @@ const AddUser = () => {
           name="password"
           margin="normal"
           fullWidth
-          label="Contraseña"
+          label={t('Register.password')}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -71,7 +73,8 @@ const AddUser = () => {
           name="name"
           margin="normal"
           fullWidth
-          label="Nombre"
+          label={t('Register.name')}
+
           value={name}
           onChange={(e) => setName(e.target.value)}
           sx={{ marginBottom: 2 }}
@@ -80,7 +83,7 @@ const AddUser = () => {
           name="surname"
           margin="normal"
           fullWidth
-          label="Primer apellido"
+          label={t('Register.surname')}
           value={surname}
           onChange={(e) => setSurname(e.target.value)}
           sx={{ marginBottom: 2 }}
@@ -101,7 +104,8 @@ const AddUser = () => {
             '&:hover': { backgroundColor: '#1565c0' },
           }}
         >
-          Registrarse
+          {t('Register.submit')}
+
         </Button>
 
         {/* Snackbar Messages */}
@@ -114,9 +118,10 @@ const AddUser = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 3 }}>
           <Divider sx={{ width: '100%', marginBottom: 1 }} />
           <Typography variant="body2">
-            ¿Ya tienes una cuenta?{' '}
+            {t('Register.textForm')}{' '}
+
             <Link to="/login" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
-              Inicia sesión aquí
+            {t('Register.textFormLink')}
             </Link>
           </Typography>
         </Box>

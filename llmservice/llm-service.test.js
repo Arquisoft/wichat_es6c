@@ -49,16 +49,6 @@ describe('LLM Service', () => {
     expect(response.body.error).toBe('Missing required field: model');
   });
 
-  it('should return error for missing apikey', async () => {
-    const response = await request(app)
-      .post('/ask')
-      .send({ question: 'a question', model: 'empathy' });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBe('Missing required field: apiKey');
-  });
-
-
   it('the llm should not reply with unsupported model', async () => {
     const response = await request(app)
       .post('/ask')
@@ -67,8 +57,19 @@ describe('LLM Service', () => {
     expect(response.body.answer).toBe(null);
   });
 
-
-
+  it('should return error if API key is missing', async () => {
+    const originalApiKey = process.env.LLM_API_KEY;
+    delete process.env.LLM_API_KEY; 
+  
+    const response = await request(app)
+      .post('/ask')
+      .send({ question: 'test question', model: 'empathy' });
+  
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe('API key is missing.');
+  
+    process.env.LLM_API_KEY = originalApiKey;
+  });
   
 
 });
