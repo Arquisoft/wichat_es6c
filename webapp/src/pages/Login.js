@@ -2,8 +2,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 import { useTranslation } from 'react-i18next';
 
@@ -12,9 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { createSession } = useContext(SessionContext);
-
   const { t } = useTranslation();
-
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const navigate = useNavigate();
 
@@ -30,8 +27,7 @@ const Login = () => {
       }
 
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
-      if(response)
-        createSession(username);
+      if (response) createSession(username);
       navigate('/homepage');
     } catch (error) {
       if (error.response) {
@@ -45,55 +41,69 @@ const Login = () => {
       } else if (error.request) {
         setError({ field: 'general', message: t('Login.nonRespnse') });
       } else {
-        setError({ field: 'general', message: t('Login.errorRequest')});
+        setError({ field: 'general', message: t('Login.errorRequest') });
       }
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ marginTop: '0.8rem' }}>
-
-      <Box sx={{ padding: '2rem', borderRadius: '8px', boxShadow: 3, backgroundColor: '#fff', width: '100%' }}>
-        <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        mt: 2,
+        mb: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        px: { xs: 2, sm: 4 }, // padding horizontal adaptativo
+      }}
+    >
+      <Box
+        sx={{
+          p: { xs: 2, sm: 4 },
+          borderRadius: 2,
+          boxShadow: 3,
+          backgroundColor: '#fff',
+          width: '100%',
+        }}
+      >
+        <Typography component="h1" variant="h5" align="center" sx={{ mb: 2, fontWeight: 'bold' }}>
           {t('Login.sigIn')}
-
         </Typography>
 
         {error && error.field === 'general' && (
-          <Typography variant="body2" color="error" sx={{ marginBottom: '0.5rem' }}>
+          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
             {error.message}
           </Typography>
         )}
 
         <TextField
           name="username"
-          margin="normal"
           fullWidth
           label={t('Login.user')}
-
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          sx={{ marginBottom: '0.5rem' }}
+          sx={{ mb: 2 }}
         />
         {error && error.field === 'username' && (
-          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
             {error.message}
           </Typography>
         )}
 
         <TextField
           name="password"
-          margin="normal"
           fullWidth
           label={t('Login.password')}
-
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ marginBottom: '0.5rem' }}
+          sx={{ mb: 2 }}
         />
         {error && error.field === 'password' && (
-          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
             {error.message}
           </Typography>
         )}
@@ -104,32 +114,27 @@ const Login = () => {
           fullWidth
           onClick={loginUser}
           sx={{
-            marginTop: '0.5rem',
-            padding: '0.75rem',
+            mt: 1,
+            py: 1.2,
             fontWeight: 'bold',
-            borderRadius: '0.5rem',
+            borderRadius: 2,
             backgroundColor: '#9b33c0',
-            '&:hover': { backgroundColor: '#1565c0' },
+            '&:hover': { backgroundColor: '#7e2a9c' },
           }}
         >
           {t('Login.sigInConfirm')}
-
         </Button>
-        {/* Divider and Login Link */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 3 }}>
-          <Divider sx={{ width: '100%', marginBottom: 1 }} />
-          <Typography variant="body2">
-            {t('Login.textForm')}
-            {' '}
-            <Link to="/register" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
-              {t('Login.textFormLink')}
 
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
+          <Divider sx={{ width: '100%', mb: 1 }} />
+          <Typography variant="body2">
+            {t('Login.textForm')}{' '}
+            <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
+              {t('Login.textFormLink')}
             </Link>
           </Typography>
         </Box>
-
       </Box>
-
     </Container>
   );
 };
