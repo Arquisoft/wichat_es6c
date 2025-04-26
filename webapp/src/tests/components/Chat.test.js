@@ -13,6 +13,22 @@ describe('Chat Component', () => {
     correctAnswer: 'TestAnswer'
   };
 
+  const mockQuestionData2 = {
+    correctAnswer: 'TestAnswer',
+    enAnswer: 'TestAnswer2',
+  };
+
+  const mockQuestionData3 = {
+    correctAnswer: 'TestAnswer',
+    esAnswer: 'TestAnswer3',
+  };
+
+  const mockQuestionData4= {
+    correctAnswer: 'TestAnswer',
+    enAnswer: 'TestAnswer2',
+    esAnswer: 'TestAnswer3'
+  };
+
   const mockHeader = 'Header: ';
   const mockOnUserMessage = jest.fn();
   const mockOnBotResponse = jest.fn();
@@ -155,5 +171,62 @@ describe('Chat Component', () => {
     fireEvent.click(sendButton);
 
     expect(mockOnUserMessage).not.toHaveBeenCalled();
+  });
+
+  it('should not return a message if the mode is vs and the input contains the answer', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    fireEvent.change(inputField, { target: { value: mockQuestionData.correctAnswer } });
+    fireEvent.click(sendButton);
+
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+
+  it('should not return a message if the mode is vs and the input contains the answer in english', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData2}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    fireEvent.change(inputField, { target: { value: mockQuestionData2.enAnswer } });
+    fireEvent.click(sendButton);
+
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+
+  it('should not return a message if the mode is vs and the input contains the answer in spanish', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData3}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    fireEvent.change(inputField, { target: { value: mockQuestionData3.esAnswer } });
+    fireEvent.click(sendButton);
+
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
   });
 });

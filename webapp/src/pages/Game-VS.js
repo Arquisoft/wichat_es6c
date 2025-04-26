@@ -526,6 +526,7 @@ function Game() {
               ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
               userMessages.join(", ")
             }
+            mode="vs"
           />
         </Box>
       </Box>
