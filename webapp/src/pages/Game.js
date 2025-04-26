@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback,useRef } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -63,7 +63,7 @@ function Game() {
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-
+  const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
 
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
@@ -165,7 +165,7 @@ function Game() {
     setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
     setHurryMode(false);
     if (hurryAudioRef.current) hurryAudioRef.current.pause();
-    
+
   }, [nextQuestionData, fetchQuestion, preloadNextQuestion]);
 
   const handleTimeUp = useCallback(() => {
@@ -173,6 +173,7 @@ function Game() {
 
     if (failAudioRef.current) {
       failAudioRef.current.currentTime = 0;
+      failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
       failAudioRef.current.play();
     }
 
@@ -213,29 +214,26 @@ function Game() {
   }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
 
   useEffect(() => {
+    console.log("volumen:", volumeLevel);
     if (!audioRef.current) return; // Asegurarse de que la referencia del audio esté disponible
     const audio = audioRef.current;
-    if(hurryMode  || starAnimation || showFeedback || showTransition){
-      audio.volume = 0.1;
-    }else{
-      audio.volume = 1;
+    if (hurryMode || starAnimation || showFeedback || showTransition) {
+      audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
+    } else {
+      audio.volume = volumeLevel; // Ajustar volumen normal
+      console.log("volumen audio:", audio.volume);
     }
-  
-    const handleEnded = () => {
-      audio.currentTime = 0;
-      audio.play();
-    };
-  
-    audio.addEventListener("ended", handleEnded);
+
+
     audio.play().catch((error) => {
       console.error("Error reproduciendo el sonido de fondo:", error);
     });
-  
+
     return () => {
-      audio.removeEventListener("ended", handleEnded);
+
       audio.pause();
     };
-  }, [audioRef,hurryMode,starAnimation,showFeedback,showTransition]); // Agregar dependencias aquí
+  }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
 
   useEffect(() => {
     if (location.state?.mode) {
@@ -266,7 +264,7 @@ function Game() {
         }
         return prevTime - 1;
       });
-     
+
       setTotalTime((t) => t + 1);
     }, 1000);
 
@@ -277,16 +275,17 @@ function Game() {
   useEffect(() => {
     if (timeLeft === 12 && !hurryMode) {
       setHurryMode(true);
-      
+
       if (hurryAudioRef.current) {
         hurryAudioRef.current.currentTime = 0;
+        hurryAudioRef.current.volume = volumeLevel ; // Ajustar volumen reducido
         hurryAudioRef.current.play();
       }
       if (audioRef.current) {
         //audioRef.current.pause();
       }
     }
-  }, [timeLeft, hurryMode]);
+  }, [timeLeft, hurryMode,volumeLevel]);
 
   useEffect(() => {
     if (animationComplete && imageLoaded) {
@@ -297,8 +296,8 @@ function Game() {
 
   const handleAnswer = (isCorrect, selectedOption) => {
     if (chooseAudioRef.current) {
-        chooseAudioRef.current.currentTime = 0;
-        chooseAudioRef.current.play();
+      chooseAudioRef.current.currentTime = 0;
+      chooseAudioRef.current.play();
     }
 
     setSelectedAnswer(selectedOption);
@@ -314,9 +313,9 @@ function Game() {
       setTempScore(pointsEarned);
       thisScore = score + pointsEarned;
       setScore(thisScore);
-      
+
     } else {
-      
+
       setTempScore(0);
     }
 
@@ -328,15 +327,16 @@ function Game() {
       if (!starAnimation) {
         if (isCorrect && correctAudioRef.current) {
           correctAudioRef.current.currentTime = 0;
+          correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
           correctAudioRef.current.play();
-        }else{
+        } else {
           if (failAudioRef.current) {
             failAudioRef.current.currentTime = 0;
             failAudioRef.current.play();
           }
         }
         setStarAnimation(true);
-        
+
       }
 
       // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
@@ -375,7 +375,7 @@ function Game() {
   // Pantalla de transición
   const TransitionScreen = ({ score, tempScore, starAnimation }) => {
     return (
-      
+
       <Box
         sx={{
           position: "absolute",
@@ -459,7 +459,7 @@ function Game() {
 
 
       {/* Sonido de fondo */}
-      <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay/>
+      <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
       <audio ref={hurryAudioRef} src="sound/hurry_sound.mp3" />
       {/* Sonido de fallo */}
       <audio ref={failAudioRef} src="sound/fail.wav" />
