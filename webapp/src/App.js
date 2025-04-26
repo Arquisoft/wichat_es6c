@@ -19,7 +19,7 @@ function App() {
 
   return (
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
           { <NavBar />}
           <Routes>
             <Route path="/" element={<Home />} />

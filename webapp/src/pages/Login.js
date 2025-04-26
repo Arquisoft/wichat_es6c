@@ -51,30 +51,32 @@ const Login = () => {
       component="main"
       maxWidth="xs"
       sx={{
-        mt: 2,
-        mb: 4,
+        mt: '2vh',
+        mb: '4vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        px: { xs: 2, sm: 4 }, // padding horizontal adaptativo
+        width: { xs: '90%', sm: '90%' , md: "35%"  }, // 90% en pantallas pequeñas, 30% en pantallas más grandes
+        height: { xs: 'auto'}, // Ajusta el alto automáticamente en móviles, 80% en pantallas más grandes
       }}
     >
       <Box
         sx={{
-          p: { xs: 2, sm: 4 },
-          borderRadius: 2,
+          p: { xs: '5%', sm: '10%' },
+          borderRadius: '1rem',
           boxShadow: 3,
           backgroundColor: '#fff',
           width: '100%',
+          height: '100%', // Asegura que el Box ocupe todo el alto del contenedor
         }}
       >
-        <Typography component="h1" variant="h5" align="center" sx={{ mb: 2, fontWeight: 'bold' }}>
+        <Typography component="h1" variant="h5" align="center" sx={{ mb: '2vh', fontWeight: 'bold' }}>
           {t('Login.sigIn')}
         </Typography>
 
         {error && error.field === 'general' && (
-          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: '2vh' }}>
             {error.message}
           </Typography>
         )}
@@ -85,10 +87,10 @@ const Login = () => {
           label={t('Login.user')}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{ mb: '2vh' }}
         />
         {error && error.field === 'username' && (
-          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: '2vh' }}>
             {error.message}
           </Typography>
         )}
@@ -100,10 +102,10 @@ const Login = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{ mb: '2vh' }}
         />
         {error && error.field === 'password' && (
-          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: '2vh' }}>
             {error.message}
           </Typography>
         )}
@@ -114,10 +116,10 @@ const Login = () => {
           fullWidth
           onClick={loginUser}
           sx={{
-            mt: 1,
-            py: 1.2,
+            mt: '1vh',
+            py: '1.5vh',
             fontWeight: 'bold',
-            borderRadius: 2,
+            borderRadius: '1rem',
             backgroundColor: '#9b33c0',
             '&:hover': { backgroundColor: '#7e2a9c' },
           }}
@@ -125,8 +127,8 @@ const Login = () => {
           {t('Login.sigInConfirm')}
         </Button>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
-          <Divider sx={{ width: '100%', mb: 1 }} />
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '3vh' }}>
+          <Divider sx={{ width: '100%', mb: '1vh' }} />
           <Typography variant="body2">
             {t('Login.textForm')}{' '}
             <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
