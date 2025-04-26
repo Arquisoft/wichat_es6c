@@ -77,9 +77,9 @@ async function getImagesFromWikidata(category, language, numImages) {
     }
 }
 
-function buildSparqlQuery(type, lang) {
-    if (type === 'country') {
-        `
+function buildSparqlQuery(category, lang) {
+    if ((category === 'country') || (category === 'flag')) {
+        return `
         SELECT DISTINCT ?label WHERE {
             ?country wdt:P31 wd:Q6256.  # Q6256 = país
             ?country rdfs:label ?label.
@@ -89,29 +89,24 @@ function buildSparqlQuery(type, lang) {
     `;
     }
 
-    if (type === 'famous_people') {
+    if (category === 'famous_people') {
         return `
             SELECT DISTINCT ?label WHERE {
                 ?person wdt:P31 wd:Q5;
-                        wdt:P106 ?occupation;
                         rdfs:label ?label.
                 FILTER (LANG(?label) = "${lang}")
-                VALUES ?occupation {
-                    wd:Q33999 wd:Q937857 wd:Q82955 wd:Q36180
-                    wd:Q188146 wd:Q49757 wd:Q3282637 wd:Q82913 wd:Q937 wd:Q901
-                }
             }
             LIMIT 50
         `;
-    }
+    }    
 
-    console.warn(`Unsupported type: ${type}`);
+    console.warn(`Unsupported type: ${category}`);
     return '';
 }
 
 
-async function getIncorrectOptions(correctCountry, lang) {
-    const sparqlQuery = buildSparqlQuery(type, lang);
+async function getIncorrectOptions(correctAnswer, category, lang) {
+    const sparqlQuery = buildSparqlQuery(category, lang);
     if (!sparqlQuery) return [];
     
     try {
@@ -142,7 +137,7 @@ async function getIncorrectOptions(correctCountry, lang) {
 async function processQuestions(images,category, language) {
     let questions=[];
     for (const image of images) {
-        const incorrectAnswers = await getIncorrectOptions(image.country,language);
+        const incorrectAnswers = await getIncorrectOptions(image.correctAnswer, category,language);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
 
         // Crear opciones y mezclarlas

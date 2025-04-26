@@ -22,7 +22,7 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     if (numberQuestions < 5) {
       generateService.generateQuestionsByCategory(category, language, questionsToGenerate - numberQuestions);
 
-      // Esperar hasta que haya al menos 10 preguntas en la base de datos
+      // Esperar hasta que haya al menos 5 preguntas en la base de datos
       const maxRetries = 100; // Máximo de intentos
       const retryDelay = 1000; // 1 segundo entre intentos
       let retries = 0;
