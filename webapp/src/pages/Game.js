@@ -665,7 +665,7 @@ function Game() {
           {chatOpen && (
             <Box sx={{
               flexShrink: 0,
-              maxHeight: "90%",
+              height: "100%",
               overflowY: "auto"
             }}>
               <Chat questionData={questionData} 
