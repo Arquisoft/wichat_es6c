@@ -229,4 +229,90 @@ describe('Chat Component', () => {
 
     expect(mockOnBotResponse).not.toHaveBeenCalled();
   });
+
+  it('should not return a message if the mode is vs and the input matches any of correctAnswer, enAnswer, or esAnswer', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData4}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    
+    // Test correctAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.correctAnswer } });
+    fireEvent.click(sendButton);
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+    
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test enAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.enAnswer } });
+    fireEvent.click(sendButton);
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+    
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test esAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.esAnswer } });
+    fireEvent.click(sendButton);
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+  it('should return a message if the mode is not vs and the input matches any of correctAnswer, enAnswer, or esAnswer', async () => {
+    axios.post.mockResolvedValue({ data: { answer: 'This is a mock response' } });
+  
+    render(
+      <Chat
+        questionData={mockQuestionData4}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="not-vs"
+      />
+    );
+    
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    
+    // Test correctAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.correctAnswer } });
+    fireEvent.click(sendButton);
+    
+    await waitFor(() => {
+      expect(mockOnBotResponse).toHaveBeenCalled();
+    });
+  
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test enAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.enAnswer } });
+    fireEvent.click(sendButton);
+    
+    await waitFor(() => {
+      expect(mockOnBotResponse).toHaveBeenCalled();
+    });
+  
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test esAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.esAnswer } });
+    fireEvent.click(sendButton);
+  
+    await waitFor(() => {
+      expect(mockOnBotResponse).toHaveBeenCalledTimes(3);
+    });
+  });
+  
 });
+
