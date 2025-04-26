@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Container, Typography, TextField, Button, CircularProgress, useMediaQuery } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -8,21 +8,22 @@ import { useTranslation } from "react-i18next";
 function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, isMobile }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
-  const messagesEndRef = useRef(null); // Ref para hacer scroll al final
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const { t } = useTranslation(); // Inicializa la traducción
+  const { t } = useTranslation();
+  const isSmallScreen = useMediaQuery("(max-width:600px)"); // Detecta pantallas pequeñas
 
   const sendMessage = async () => {
-    if (!input.trim()) return; // No enviar mensajes si ignoreChat es verdadero
+    if (!input.trim()) return;
 
     const userMessage = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
-    onUserMessage && onUserMessage(userMessage.content); // Llamar al callback con el mensaje del usuario
+    onUserMessage && onUserMessage(userMessage.content);
 
     setInput("");
     if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) return;
-    setIsTyping(true); // Activar indicador de que el bot está escribiendo
+    setIsTyping(true);
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -51,34 +52,45 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
   }, [messages]);
 
   return (
-    <Container maxWidth="md" sx={{
-      height: isMobile ? "70vh" : "69vh",
-      display: "flex",
-      flexDirection: "column",
-      p: isMobile ? 0 : 1,
-      ...(isMobile && { width: "100%", maxWidth: "none" })
-    }}>
-      <Typography variant="h4" align="center" gutterBottom sx={{
-        py: 2,
-        bgcolor: "#9b33c0",
-        color: "white",
-        borderRadius: 2,
-        fontSize: isMobile ? "1.5rem" : "2rem"
-      }}>
+    <Container
+      maxWidth="md"
+      sx={{
+        height: isSmallScreen ? "85vh" : "70vh",
+        display: "flex",
+        flexDirection: "column",
+        p: isSmallScreen ? 0 : 1,
+        width: "100%",
+        ...(isSmallScreen && { maxWidth: "none" }),
+      }}
+    >
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        sx={{
+          py: 2,
+          bgcolor: "#9b33c0",
+          color: "white",
+          borderRadius: 2,
+          fontSize: isSmallScreen ? "1.2rem" : "2rem",
+        }}
+      >
         {t("ChatLLM.chatTitle")}
       </Typography>
 
-      <Box sx={{
-        flexGrow: 1,
-        borderRadius: 2,
-        p: 2,
-        overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "white",
-        boxShadow: 3,
-        ...(isMobile && { borderRadius: 0, boxShadow: "none" })
-      }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          borderRadius: 2,
+          p: 2,
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          bgcolor: "white",
+          boxShadow: 3,
+          ...(isSmallScreen && { borderRadius: 0, boxShadow: "none" }),
+        }}
+      >
         {messages.map((msg, index) => (
           <Box
             key={index}
@@ -90,15 +102,16 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
               padding: 1.5,
               borderRadius: 2,
               mb: 1,
-              ...(isMobile && { maxWidth: "85%" })
+              fontSize: isSmallScreen ? "0.9rem" : "1rem",
+              ...(isSmallScreen && { maxWidth: "85%" }),
             }}
           >
             {msg.role === "assistant" ? (
               <Typewriter
-                words={[msg.content]} // Aquí le pasamos el contenido del mensaje
+                words={[msg.content]}
                 cursor
                 cursorStyle="|"
-                typeSpeed={15} // Velocidad de escritura
+                typeSpeed={15}
               />
             ) : (
               <Typography variant="body1">{msg.content}</Typography>
@@ -118,7 +131,15 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
         <div ref={messagesEndRef} />
       </Box>
 
-      <Box sx={{ p: 2, display: "flex", gap: 1, bgcolor: "background.paper" }}>
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          gap: 1,
+          bgcolor: "background.paper",
+          flexDirection: isSmallScreen ? "column" : "row",
+        }}
+      >
         <TextField
           fullWidth
           label={t("ChatLLM.typeMessage")}
@@ -126,13 +147,18 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          size={isMobile ? "small" : "medium"}
+          size={isSmallScreen ? "small" : "medium"}
         />
         <Button
           variant="contained"
-          sx={{ bgcolor: "#9b33c0", color: "white", "&:hover": { bgcolor: "#7a2a8e" } }}
+          sx={{
+            bgcolor: "#9b33c0",
+            color: "white",
+            "&:hover": { bgcolor: "#7a2a8e" },
+            width: isSmallScreen ? "100%" : "auto",
+          }}
           onClick={sendMessage}
-          size={isMobile ? "small" : "medium"}
+          size={isSmallScreen ? "small" : "medium"}
         >
           {t("ChatLLM.sendMessage")}
         </Button>
@@ -143,13 +169,13 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
 
 Chat.propTypes = {
   questionData: PropTypes.shape({
-    correctAnswer: PropTypes.string.isRequired
+    correctAnswer: PropTypes.string.isRequired,
   }).isRequired,
   header: PropTypes.string.isRequired,
   onUserMessage: PropTypes.func,
   onBotResponse: PropTypes.func,
   ignoreChat: PropTypes.bool,
-  isMobile: PropTypes.bool
+  isMobile: PropTypes.bool,
 };
 
 export default Chat;
