@@ -296,7 +296,7 @@ function Game() {
 
   if (!questionData) {
     return (
-      <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+      <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
         <Typography variant="h4" sx={{ marginTop: 2 }}>{t("Game.loading")}</Typography>
         <CircularProgress />
 
@@ -382,7 +382,7 @@ function Game() {
   return (
     <Stack alignItems="center" justifyContent="center"
       sx={{
-        height: "93.5vh",
+        height: "75%",
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center"
@@ -399,8 +399,8 @@ function Game() {
       {/* Contenedor principal con transparencia */}
       <Box
         sx={{
-          width: "50vw",
-          minHeight: "60vh",
+          width: "50%",
+          height: "85%",
           backgroundColor: "rgb(255, 255, 255)",
           backdropFilter: "blur(10px)",
           borderRadius: "10px",
@@ -414,15 +414,23 @@ function Game() {
         }}
       >
         {/* Pregunta */}
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
+        <Typography 
+          variant="h5" 
+          fontWeight="bold" 
+          sx={{ 
+            mb: 2, 
+            fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' }, // Tamaño de fuente adaptable
+            textAlign: { xs: 'center', sm: 'left' } // Alineación adaptable
+          }}
+        >
           {questionData.question}
         </Typography>
 
         {/* Imagen */}
         <Box
           sx={{
-            width: "80%",
-            height: "32vh",
+            width: "80%", 
+            height: "60%", 
             overflow: "hidden",
             borderRadius: "10px",
             position: "relative",
@@ -471,40 +479,55 @@ function Game() {
 
         {/* Tiempo restante */}
         <Box
-        sx={{
-          position: "absolute",
-          top: { xs: "50px", md: "35%" },      // Móvil: cerca del borde superior | Desktop: centrado
-          left: { xs: "-60px", md: "-25%" },     // Móvil: esquina izquierda | Desktop: posición original
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: { xs: "12vh", md: "15vh" },    // Tamaño reducido en móvil
-          height: { xs: "12vh", md: "15vh" },   // Tamaño reducido en móvil
-          borderRadius: "50%",
-          backgroundColor: "orange",
-          boxShadow: 3,
-          zIndex: 1000,
-          // Efecto 
-          animation: "pulse 1.5s infinite",
-          "@keyframes pulse": {
-            "0%": { transform: "scale(1)" },
-            "50%": { transform: "scale(1.05)" },
-            "100%": { transform: "scale(1)" }
-          }
-        }}
-      >
-        <Typography 
-          variant="h6" 
-          fontWeight="bold" 
-          color="white" 
-          fontSize={{ xs: "1.5rem", md: "2rem" }} // Texto más pequeño en móvil
+          sx={{
+            position: "absolute",
+            top: { xs: "5%", sm: "18%", md: "20%" }, 
+            left: { xs: "-20%", sm: "-25%", md: "-30%" }, 
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: { xs: "3rem", sm: "5rem", md: "8rem" }, // Tamaño adaptable
+            height: { xs: "3rem", sm: "5rem", md: "8rem" }, // Tamaño adaptable
+            borderRadius: "50%",
+            backgroundColor: "orange",
+            boxShadow: 3,
+            zIndex: 1000,
+            animation: "pulse 1.5s infinite",
+            "@keyframes pulse": {
+              "0%": { transform: "scale(1)" },
+              "50%": { transform: "scale(1.05)" },
+              "100%": { transform: "scale(1)" }
+            },
+            // Ajustes adicionales para pantallas pequeñas
+            "@media (max-width: 600px)": {
+              top: "5%", // Más cerca del borde superior en pantallas muy pequeñas
+              left: "-20%", // Más centrado horizontalmente
+            }
+          }}
         >
-          {timeLeft}
-        </Typography>
-      </Box>
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            color="white"
+            fontSize={{ xs: "1.5rem", sm: "2rem", md: "3rem" }} // Texto adaptable
+          >
+            {timeLeft}
+          </Typography>
+        </Box>
 
         {/* Opciones de respuesta */}
-        <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden" }}>
+        <Stack 
+          direction="column" 
+          spacing={2} 
+          sx={{ 
+            width: "100%", 
+            height: "40%", // Ahora ocupa el 40% del espacio
+            marginTop: "1.5rem", 
+            visibility: imageLoaded ? "visible" : "hidden", 
+            alignItems: "center", // Centrar horizontalmente
+            justifyContent: "center" // Centrar verticalmente
+          }}
+        >
           {questionData.options?.map((option, index) => {
             const isSelected = selectedAnswer === option;
             const isCorrect = option === questionData.correctAnswer;
@@ -512,13 +535,13 @@ function Game() {
             const backgroundColor = "#6A0DAD";
             const hoverColor = "#8F6BAF";
 
-
             return (
               <Button
                 key={index}
                 variant="contained"
                 sx={{
-                  width: "100%",
+                  width: "80%",
+                  height: "2rem",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -585,7 +608,6 @@ function Game() {
           })}
         </Stack>
 
-
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
           {t("Game.rounds", { round, TOTAL_ROUNDS })}
 
@@ -599,8 +621,8 @@ function Game() {
         aria-label={chatOpen ? 'close chat' : 'open chat'}
         sx={{ 
           position: "fixed", 
-          bottom: "5vh", 
-          right: "8vw", 
+          bottom: "5%", 
+          right: "8%", 
           backgroundColor: "white", 
           borderRadius: "50%", 
           boxShadow: 3, 
@@ -618,12 +640,12 @@ function Game() {
 
       <Box sx={{ 
         position: "fixed", 
-        bottom: "12vh", 
-          right: chatOpen ? "5vw" : "-30vw", 
-          width: "24vw", 
-          height: "70vh", 
+        bottom: "12%", 
+          right: chatOpen ? "5%" : "-30%", 
+          width: "24%", 
+          height: "70%", 
           backgroundColor: "white", 
-          borderRadius: "1vw", 
+          borderRadius: "1%", 
           boxShadow: 3, 
           transition: "right 0.3s ease-in-out", 
           overflow: "hidden", 
@@ -633,7 +655,7 @@ function Game() {
           // Responsive
           '@media (max-width: 1065px)': {
             width: "90vw",
-            right: chatOpen ? "5vw" : "-100vw",
+            right: chatOpen ? "5%" : "-100%",
             bottom: "auto",
             top: "50%",
             transform: "translateY(-50%)",
@@ -643,7 +665,7 @@ function Game() {
           {chatOpen && (
             <Box sx={{
               flexShrink: 0,
-              maxHeight: "100%",
+              maxHeight: "90%",
               overflowY: "auto"
             }}>
               <Chat questionData={questionData} 

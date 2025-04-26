@@ -48,7 +48,7 @@ function GameMode() {
       sx={{
         width: "100%",
         justifyContent: "center",
-        minHeight: "100vh",
+        height: "100%",
         px: 2,
         py: 4,
         boxSizing: 'border-box',
@@ -80,7 +80,7 @@ function GameMode() {
             variant="contained"
             onClick={() => handleGameMode(item)}
             sx={{
-              width: { xs: '80vw', sm: '300px' },
+              width: { xs: '80%', sm: '300px' },
               height: { xs: '200px', sm: '350px' },
               fontSize: '16px',
               textTransform: 'none',

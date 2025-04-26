@@ -376,26 +376,25 @@ function Game() {
 
 
   return (
-    <Stack alignItems="center" justifyContent="center"
+    <Stack
+      alignItems="center"
+      justifyContent="center"
       sx={{
         height: "93.5vh",
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center"
-      }}>
-
-
-
+        backgroundPosition: "center",        padding: "1rem", // Agregar padding para evitar que los elementos toquen los bordes
+      }}
+    >
       {/* Pantalla de transición */}
       {showTransition && (
         <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
       )}
 
-
       {/* Contenedor principal con transparencia */}
       <Box
         sx={{
-          width: "23vw",
+          width: { xs: "90%", sm: "70%", md: "50%", lg: "30%" }, // Ancho responsivo
           minHeight: "10vh",
           backgroundColor: "rgb(255, 255, 255)",
           backdropFilter: "blur(10px)",
@@ -410,24 +409,30 @@ function Game() {
         }}
       >
         {/* Pregunta */}
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{
+            mb: 2,
+            fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Tamaño de fuente responsivo
+          }}
+        >
           {t("Game-VS.describeMode-" + gameModeName)}
         </Typography>
 
         {/* Respuesta correcta */}
         <Box
           sx={{
-            width: "60%", // Reducir el ancho de la caja
-            minHeight: "10vh", // Altura mínima de la caja
-            maxHeight: "auto", // Permitir que crezca si es necesario
-            overflow: "hidden",
+            width: "100%", // Usar todo el ancho disponible
+            maxWidth: "500px", // Limitar el ancho máximo
+            minHeight: "10vh",
             borderRadius: "10px",
             position: "relative",
-            backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD", // Change to red if time runs out
+            backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "1rem", // Agregar padding para evitar que el texto toque los bordes
+            padding: "1rem",
           }}
         >
           <Typography
@@ -435,8 +440,9 @@ function Game() {
             fontWeight="bold"
             sx={{
               color: "white",
-              textAlign: "center", // Centrar el texto
-              wordWrap: "break-word", // Permitir que el texto se ajuste si es muy largo
+              textAlign: "center",
+              wordWrap: "break-word",
+              fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Tamaño de fuente responsivo
             }}
           >
             {questionData.correctAnswer}
@@ -447,37 +453,50 @@ function Game() {
         <Box
           sx={{
             position: "absolute",
-            top: "20%", // Increased separation from the answer box
-            left: "-100%", // Adjusted position for better visibility
+            top: "10%", // Ajustar posición para pantallas pequeñas
+            left: "5%", // Ajustar posición para pantallas pequeñas
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "15vh",
-            height: "15vh",
+            width: { xs: "10vh", sm: "12vh", md: "15vh" }, // Tamaño responsivo
+            height: { xs: "10vh", sm: "12vh", md: "15vh" }, // Tamaño responsivo
             borderRadius: "50%",
             backgroundColor: "orange",
             boxShadow: 3,
             zIndex: 1000,
           }}
         >
-          <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            color="white"
+            sx={{
+              fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Tamaño de fuente responsivo
+            }}
+          >
             {timeLeft}
           </Typography>
         </Box>
-        <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 2,
+            color: "#666",
+            fontSize: { xs: "0.8rem", sm: "1rem" }, // Tamaño de fuente responsivo
+          }}
+        >
           {t("Game-VS.rounds", { round, TOTAL_ROUNDS })}
         </Typography>
-
       </Box>
 
-
+      {/* Chat */}
       <Box
         sx={{
           position: "fixed",
-          bottom: "12vh",
+          bottom: "5vh",
           right: "5vw",
-          width: "24vw",
-          height: "70vh",
+          width: { xs: "90%", sm: "70%", md: "50%", lg: "30%" }, // Ancho responsivo
+          height: { xs: "50vh", sm: "60vh", md: "70vh" }, // Altura responsiva
           backgroundColor: "white",
           borderRadius: "1vw",
           boxShadow: 3,
