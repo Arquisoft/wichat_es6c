@@ -471,27 +471,37 @@ function Game() {
 
         {/* Tiempo restante */}
         <Box
-          sx={{
-            position: "absolute",
-            top: "35%",
-            left: "-25%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "15vh",
-            height: "15vh",
-            borderRadius: "50%",
-            backgroundColor: "orange",
-
-            boxShadow: 3,
-            zIndex: 1000,
-          }}
+        sx={{
+          position: "absolute",
+          top: { xs: "50px", md: "35%" },      // Móvil: cerca del borde superior | Desktop: centrado
+          left: { xs: "-60px", md: "-25%" },     // Móvil: esquina izquierda | Desktop: posición original
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: { xs: "12vh", md: "15vh" },    // Tamaño reducido en móvil
+          height: { xs: "12vh", md: "15vh" },   // Tamaño reducido en móvil
+          borderRadius: "50%",
+          backgroundColor: "orange",
+          boxShadow: 3,
+          zIndex: 1000,
+          // Efecto 
+          animation: "pulse 1.5s infinite",
+          "@keyframes pulse": {
+            "0%": { transform: "scale(1)" },
+            "50%": { transform: "scale(1.05)" },
+            "100%": { transform: "scale(1)" }
+          }
+        }}
+      >
+        <Typography 
+          variant="h6" 
+          fontWeight="bold" 
+          color="white" 
+          fontSize={{ xs: "1.5rem", md: "2rem" }} // Texto más pequeño en móvil
         >
-          <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
-            {timeLeft}
-          </Typography>
-        </Box>
-
+          {timeLeft}
+        </Typography>
+      </Box>
 
         {/* Opciones de respuesta */}
         <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden" }}>
