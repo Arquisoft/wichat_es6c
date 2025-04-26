@@ -15,6 +15,7 @@ function GameMode() {
   const normalButtonList = useMemo(() => [
     { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
     { text: 'Famosos', path: '/game', mode: 'famous_people', name: "famous_people", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
   ], []);
   const vsButtonList = useMemo(() => [
     { text: 'Países', path: '/game-vs', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },

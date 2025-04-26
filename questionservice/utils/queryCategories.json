@@ -22,5 +22,19 @@
          "image": "image",
          "solution": "personLabel"
       }
+   },
+    "flag": {  
+    "query": "SELECT ?country ?countryLabel ?image WHERE { ?country wdt:P31 wd:Q6256; wdt:P41 ?image.  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". } }ORDER BY RAND() LIMIT ?limit",
+    
+      "question": {
+         "es": "¿Qué país es este?",
+         "en": "Which country is this?"
+      },
+      "fields": {
+         "label": "countryLabel",
+         "image": "image",
+         "extra": "countryLabel"
+      }
    }
-}
+}    
+

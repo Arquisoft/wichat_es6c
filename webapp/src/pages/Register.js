@@ -43,7 +43,7 @@ const AddUser = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 4 }}>
+    <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: '0.8rem'  }}>
       <Box sx={{ padding: '2rem', borderRadius: '8px', boxShadow: 3, backgroundColor: '#fff', width: '100%' }}>
         <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: 2, fontWeight: 'bold' }}>
           {t('Register.signUp')}

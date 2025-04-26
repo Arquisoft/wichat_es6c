@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Divider } from "@mui/material";
-import { Person, Settings, Logout, Description, MoreVert, Language } from "@mui/icons-material";
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import { Person, Settings, Logout, MoreVert, Language } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -19,12 +19,12 @@ const NavMenu = () => {
   const handleLanguageMenuClose = () => setLanguageMenuAnchorEl(null);
 
   const { t } = useTranslation();
-  const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
+  //const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
 
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    setLang(lng);
+    //setLang(lng);
     handleLanguageMenuClose();
   }
 
@@ -56,16 +56,16 @@ const NavMenu = () => {
           {sessionId && (
             <>
               <Button color="inherit" startIcon={<Person />} onClick={() => navigate('/history')}>
-              {t('NavBar.profile')}
+                {t('NavBar.profile')}
               </Button>
               <Button color="inherit" startIcon={<Logout />} onClick={logout}>
-              {t('NavBar.logout')}
+                {t('NavBar.logout')}
               </Button>
             </>
           )}
 
           {/* Menú de configuración */}
-          <IconButton color="inherit" onClick={handleMenuOpen}>
+          <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
             <MoreVert />
           </IconButton>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
@@ -99,10 +99,7 @@ const NavMenu = () => {
                 {t('NavBar.spanish')}
               </MenuItem>
             </Menu>
-            <Divider />
-            <MenuItem component="a" href="http://localhost:8000/api-doc" target="_blank" rel="noopener noreferrer">
-              <Description sx={{ mr: 1 }} /> {t('NavBar.APIDocs')}
-            </MenuItem>
+           
           </Menu>
         </Box>
       </Toolbar>

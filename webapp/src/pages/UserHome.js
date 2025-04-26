@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { SessionContext } from "../SessionContext";
 
 const HomePage = () => {
 
   const { t } = useTranslation();
-  const [username, setUsername] = useState(null);
   const navigate = useNavigate();
-  useEffect(() => {
-    const storedSessionId = localStorage.getItem('sessionId');
-
-    if (storedSessionId) {
-      const storedUsername = localStorage.getItem('username');
-      setUsername(storedUsername);
-    }
-  }, []);
+  const { username } = useContext(SessionContext);
 
 
   const gameModes = async () => {
@@ -28,7 +21,7 @@ const HomePage = () => {
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
         {username && (
           <Typography variant="h4" sx={{ marginBottom: 2 }}>
-            {t('UserHome.welcome', { username })} 
+            {t('UserHome.welcome', { username })}
           </Typography>
         )}
 

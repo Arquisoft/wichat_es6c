@@ -14,7 +14,7 @@ import Game from './pages/Game';
 import VS from './pages/Game-VS';
 import GameFinished from './pages/GameFinished';
 import History from './pages/History'; 
-
+import Footer from './components/Footer';
 function App() {
 
   return (
@@ -34,7 +34,7 @@ function App() {
             <Route path="/history" element={<PrivateRoute element={History} />} />
           </Routes>
           
-          {/* <Footer /> */}
+          {<Footer/>}
       </Box>
    
   );

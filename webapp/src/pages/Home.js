@@ -16,6 +16,8 @@ const Home = () => {
   useEffect(() => {
     if (sessionId) {
       navigate('/homepage');
+    }else{
+      navigate('/login')
     }
   }, [sessionId, navigate]);
 
@@ -37,14 +39,13 @@ const Home = () => {
 
   return (
     <>
-      <Container component="main" maxWidth="xs">
+      <Container component="main">
         {showLogin ? <Login /> : <AddUser />}
         
         {/*  Button to toggle between Login and Register */}
         <Button 
           fullWidth
           onClick={toggleView}
-          sx={{ mt: 2 }}
         >
         </Button>
       </Container>
