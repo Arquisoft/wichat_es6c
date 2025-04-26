@@ -275,17 +275,38 @@ function Game() {
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
     console.log(questionData);
-    setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
-    if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) ||(questionData.enAnswer && message.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || (questionData.enAnswer && message.toLowerCase().includes(questionData.esAnswer.toLowerCase()))) {
-      console.log("El usuario eligió la opción incorrecta según la respuesta del chat.");
+    setUserMessages((prevMessages) => [...prevMessages, message]);
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const messageLower = message.toLowerCase();
+    
+    if (
+      messageLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && messageLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && messageLower.includes(esAnswer.toLowerCase()))
+    ) {
+      console.log("El usuario acertó la respuesta.");
       setTimeLeft(0);
     }
   };
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-
-    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || (questionData.enAnswer &&response.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || (questionData.enAnswer && response.toLowerCase().includes(questionData.esAnswer.toLowerCase()))) {
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const responseLower = response.toLowerCase();
+    
+    if (
+      responseLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && responseLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && responseLower.includes(esAnswer.toLowerCase()))
+    ) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
     }

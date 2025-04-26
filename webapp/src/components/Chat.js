@@ -24,7 +24,11 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
 
     setInput("");
     console.log(questionData);
-    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())|| (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase()))) return;
+    if (
+      userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || 
+      (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || 
+      (questionData.esAnswer && userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase()))
+    ) return;
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
@@ -162,7 +166,9 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
 }
 Chat.propTypes = {
   questionData: PropTypes.shape({
-    correctAnswer: PropTypes.string.isRequired
+    correctAnswer: PropTypes.string.isRequired,
+    enAnswer: PropTypes.string,  // Propiedad opcional
+    esAnswer: PropTypes.string   // Propiedad opcional
   }).isRequired,
   header: PropTypes.string.isRequired,
   onUserMessage: PropTypes.func,
