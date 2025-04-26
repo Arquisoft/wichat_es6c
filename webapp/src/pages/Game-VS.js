@@ -274,8 +274,9 @@ function Game() {
 
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
+    console.log(questionData);
     setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
-    if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
+    if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || message.toLowerCase().includes(questionData.enAnswer.toLowerCase()) || message.toLowerCase().includes(questionData.esAnswer.toLowerCase())) {
       console.log("El usuario eligió la opción incorrecta según la respuesta del chat.");
       setTimeLeft(0);
     }
@@ -284,7 +285,7 @@ function Game() {
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
 
-    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
+    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || response.toLowerCase().includes(questionData.enAnswer.toLowerCase()) || response.toLowerCase().includes(questionData.esAnswer.toLowerCase())) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
     }
@@ -500,7 +501,7 @@ function Game() {
             onBotResponse={handleBotResponse}
             header={
               "Tienes que adivinar un " +
-              questionData.category +
+              gameModeName +
               ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
               userMessages.join(", ")
             }
