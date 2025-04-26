@@ -63,8 +63,8 @@ function Game() {
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-  const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
-
+  //const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
+  const volumeLevel = 0.3; // Ajusta el nivel de volumen entre 0.0 y 1.0
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
     if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
@@ -211,7 +211,7 @@ function Game() {
         }
       }, TRANSITION_ROUND_TIME); // Duración fija para la animación
     }, FEEDBACK_QUESTIONS_TIME);
-  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
+  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode,volumeLevel]);
 
   useEffect(() => {
     console.log("volumen:", volumeLevel);
@@ -220,7 +220,7 @@ function Game() {
     if (hurryMode || starAnimation || showFeedback || showTransition) {
       audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
     } else {
-      audio.volume = volumeLevel; // Ajustar volumen normal
+      audio.volume = 1; // Ajustar volumen normal
       console.log("volumen audio:", audio.volume);
     }
 
@@ -297,6 +297,7 @@ function Game() {
   const handleAnswer = (isCorrect, selectedOption) => {
     if (chooseAudioRef.current) {
       chooseAudioRef.current.currentTime = 0;
+      chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
       chooseAudioRef.current.play();
     }
 
@@ -332,6 +333,7 @@ function Game() {
         } else {
           if (failAudioRef.current) {
             failAudioRef.current.currentTime = 0;
+            failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
             failAudioRef.current.play();
           }
         }

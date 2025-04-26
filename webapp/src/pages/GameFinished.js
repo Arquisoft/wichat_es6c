@@ -60,7 +60,7 @@ const GameFinished = () => {
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={4} sx={{ height: "100vh", textAlign: "center" }}>
-      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= maxScore/2 && <Confetti width={windowWidth} height={windowHeight} />}
 
       <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative", top: "-7vw" }}>
         {t("GameFinished.gameOver")}
