@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
+import { IconButton, Button, Stack, Typography, Box, CircularProgress, useMediaQuery  } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat";
@@ -54,6 +54,8 @@ function Game() {
 
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
+
+  const isMobile = useMediaQuery('(max-width:1065px)');
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
@@ -582,24 +584,65 @@ function Game() {
       </Box>
 
 
-      <IconButton onClick={() => setChatOpen(!chatOpen)} aria-label={chatOpen ? 'close chat' : 'open chat'}
-        sx={{ position: "fixed", bottom: "5vh", right: "8vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
+      <IconButton 
+        onClick={() => setChatOpen(!chatOpen)} 
+        aria-label={chatOpen ? 'close chat' : 'open chat'}
+        sx={{ 
+          position: "fixed", 
+          bottom: "5vh", 
+          right: "8vw", 
+          backgroundColor: "white", 
+          borderRadius: "50%", 
+          boxShadow: 3, 
+          width: "60px", 
+          height: "60px", 
+          zIndex: 10000,
+          // Responsive
+          '@media (max-width: 1065px)': {
+            right: "20px",
+            bottom: "20px"
+          }
+        }}>
         {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
       </IconButton>
 
-      <Box sx={{ position: "fixed", bottom: "12vh", right: chatOpen ? "5vw" : "-30vw", width: "24vw", height: "70vh", backgroundColor: "white", borderRadius: "1vw", boxShadow: 3, transition: "right 0.3s ease-in-out", overflow: "hidden", display: "flex", flexDirection: "column", zIndex: 999 }}>
-        {chatOpen && (
-          <Box sx={{
-            flexShrink: 0,  // Evita que crezca
-            maxHeight: "100%",  // Asegura que el contenido no exceda la altura del contenedor
-            overflowY: "auto"  // Permite scroll si el contenido es grande
-          }}>
-            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} />
+      <Box sx={{ 
+        position: "fixed", 
+        bottom: "12vh", 
+          right: chatOpen ? "5vw" : "-30vw", 
+          width: "24vw", 
+          height: "70vh", 
+          backgroundColor: "white", 
+          borderRadius: "1vw", 
+          boxShadow: 3, 
+          transition: "right 0.3s ease-in-out", 
+          overflow: "hidden", 
+          display: "flex", 
+          flexDirection: "column", 
+          zIndex: 999,
+          // Responsive
+          '@media (max-width: 1065px)': {
+            width: "90vw",
+            right: chatOpen ? "5vw" : "-100vw",
+            bottom: "auto",
+            top: "50%",
+            transform: "translateY(-50%)",
+            height: "70%"
+          }
+        }}>
+          {chatOpen && (
+            <Box sx={{
+              flexShrink: 0,
+              maxHeight: "100%",
+              overflowY: "auto"
+            }}>
+              <Chat questionData={questionData} 
+                    header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} 
+                    isMobile={isMobile}
+              />
+            </Box>
+          )}
           </Box>
-        )}
-      </Box>
-
-
     </Stack>
   );
 }
