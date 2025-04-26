@@ -505,6 +505,7 @@ function Game() {
               <Button
                 key={index}
                 variant="contained"
+                data-testid={`option-${index}`}
                 sx={{
                   width: "100%",
                   display: "flex",

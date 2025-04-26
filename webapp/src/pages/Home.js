@@ -16,8 +16,6 @@ const Home = () => {
   useEffect(() => {
     if (sessionId) {
       navigate('/homepage');
-    }else{
-      navigate('/login')
     }
   }, [sessionId, navigate]);
 
