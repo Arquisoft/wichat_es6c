@@ -11,6 +11,8 @@ jest.mock('axios');
 describe('Chat Component', () => {
   const mockQuestionData = {
     correctAnswer: 'TestAnswer',
+    enAnswer: 'TestAnswer',
+    esAnswer: 'TestAnswer',
   };
 
   const mockHeader = 'Header: ';
