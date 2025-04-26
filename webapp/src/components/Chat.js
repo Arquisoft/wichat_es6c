@@ -24,7 +24,7 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
 
     setInput("");
     console.log(questionData);
-    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())|| userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase()) || userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase())) return;
+    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())|| (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase()))) return;
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
