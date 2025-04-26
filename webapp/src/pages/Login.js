@@ -57,7 +57,8 @@ const Login = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        px: { xs: '5%', sm: '10%' }, // padding horizontal adaptativo
+        width: { xs: '90%', sm: '90%' , md: "35%"  }, // 90% en pantallas pequeñas, 30% en pantallas más grandes
+        height: { xs: 'auto'}, // Ajusta el alto automáticamente en móviles, 80% en pantallas más grandes
       }}
     >
       <Box
@@ -67,6 +68,7 @@ const Login = () => {
           boxShadow: 3,
           backgroundColor: '#fff',
           width: '100%',
+          height: '100%', // Asegura que el Box ocupe todo el alto del contenedor
         }}
       >
         <Typography component="h1" variant="h5" align="center" sx={{ mb: '2vh', fontWeight: 'bold' }}>
