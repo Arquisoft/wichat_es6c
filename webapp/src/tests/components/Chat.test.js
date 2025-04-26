@@ -314,5 +314,92 @@ describe('Chat Component', () => {
     });
   });
   
+  it('should return a message if the mode is vs and the input does not match enAnswer', async () => {
+    axios.post.mockResolvedValueOnce({ data: { answer: 'Respuesta' } });
+  
+    const mockQuestionDataEn = {
+      correctAnswer: 'Correcto',
+      enAnswer: 'Ingles'
+    };
+  
+    render(
+      <Chat
+        questionData={mockQuestionDataEn}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+  
+    const input = screen.getByLabelText('Type a message...');
+    const button = screen.getByText('Send');
+  
+    fireEvent.change(input, { target: { value: 'Otro mensaje' } });
+    fireEvent.click(button);
+  
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockOnBotResponse).toHaveBeenCalledWith('Respuesta');
+    });
+  });
+  
+  it('should return a message if the mode is vs and the input does not match esAnswer', async () => {
+    axios.post.mockResolvedValueOnce({ data: { answer: 'Respuesta' } });
+  
+    const mockQuestionDataEs = {
+      correctAnswer: 'Correcto',
+      esAnswer: 'Español'
+    };
+  
+    render(
+      <Chat
+        questionData={mockQuestionDataEs}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+  
+    const input = screen.getByLabelText('Type a message...');
+    const button = screen.getByText('Send');
+  
+    fireEvent.change(input, { target: { value: 'Otro mensaje' } });
+    fireEvent.click(button);
+  
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockOnBotResponse).toHaveBeenCalledWith('Respuesta');
+    });
+  });
+  
+  it('should return a message if the mode is vs and the input does not match with any', async () => {
+    axios.post.mockResolvedValueOnce({ data: { answer: 'Respuesta' } });
+  
+    render(
+      <Chat
+        questionData={mockQuestionData4}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+  
+    const input = screen.getByLabelText('Type a message...');
+    const button = screen.getByText('Send');
+  
+    fireEvent.change(input, { target: { value: 'Mensaje diferente' } });
+    fireEvent.click(button);
+  
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockOnBotResponse).toHaveBeenCalledWith('Respuesta');
+    });
+  });
 });
 
