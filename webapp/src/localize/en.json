@@ -120,5 +120,9 @@
         "title": "Wichat",
         "github": "GitHub",
         "apiDocs": "API Docs"
+    },
+    "NotFound":{
+        "title": "Page not found",
+        "button_msg": "Home page"
     }
 }

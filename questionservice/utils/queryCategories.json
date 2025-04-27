@@ -8,7 +8,9 @@
          "fields": {
             "label": "cityLabel",
             "image": "image",
-            "solution": "countryLabel"
+            "solution": "countryLabel",
+            "es_label": "countryLabel",
+            "en_label": "countryLabel"
          }
     },
    "famous_people": {
@@ -20,11 +22,13 @@
       "fields": {
          "label": "actorLabel",
          "image": "image",
-         "solution": "actorLabel"
+         "solution": "actorLabel",
+         "es_label": "actorLabel_es",
+         "en_label": "actorLabel_en"
       }
    },
     "flag": {  
-    "query": "SELECT ?country ?countryLabel ?image WHERE { ?country wdt:P31 wd:Q6256; wdt:P41 ?image.  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". } }ORDER BY RAND() LIMIT ?limit",
+    "query": "SELECT ?country ?countryLabel ?image ?countryLabel_es ?countryLabel_en WHERE { ?country wdt:P31 wd:Q6256; wdt:P41 ?image; rdfs:label ?countryLabel_es; rdfs:label ?countryLabel_en. FILTER (lang(?countryLabel_es) = \"es\") FILTER (lang(?countryLabel_en) = \"en\") SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". } } ORDER BY RAND() LIMIT ?limit",
     
       "question": {
          "es": "¿Qué país es este?",
@@ -33,7 +37,9 @@
       "fields": {
          "label": "countryLabel",
          "image": "image",
-         "solution": "countryLabel"
+         "solution": "countryLabel",
+         "es_label": "countryLabel_es",
+         "en_label": "countryLabel_en"
       }
    }
 }    

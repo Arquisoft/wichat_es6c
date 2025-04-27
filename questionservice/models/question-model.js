@@ -6,7 +6,9 @@ const questionsSchema = new mongoose.Schema({
     correctAnswer: String,
     category: String,
     language: String,
-    imageUrl: {type: String}
+    imageUrl: {type: String},
+    enAnswer: {type: String},
+    esAnswer: {type: String}
 });
 
 
