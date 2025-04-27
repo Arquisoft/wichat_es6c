@@ -39,7 +39,7 @@ const GameFinished = () => {
 
   // Efecto para reproducir sonido si hay confeti
   useEffect(() => {
-    if (score >= 5) {
+    if (score >= maxScore / 2) {
 
 
       const winningAudio = winningSoundRef.current;
