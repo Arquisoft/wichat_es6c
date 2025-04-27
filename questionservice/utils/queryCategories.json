@@ -23,8 +23,8 @@
          "label": "actorLabel",
          "image": "image",
          "solution": "actorLabel",
-         "es_label": "actorLabel_es",
-         "en_label": "actorLabel_en"
+         "es_label": "actorLabel",
+         "en_label": "actorLabel"
       }
    },
     "flag": {  

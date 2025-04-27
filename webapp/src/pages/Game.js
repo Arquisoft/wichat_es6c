@@ -40,6 +40,7 @@ function Game() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
+  const [gameModeName, setGameModeName] = useState(''); // Estado para el tipo de juego
   const [round, setRound] = useState(1);
   const [totalTime, setTotalTime] = useState(0);
 
@@ -244,6 +245,7 @@ function Game() {
   useEffect(() => {
     if (location.state?.mode) {
       setGameMode(location.state.mode);
+      setGameModeName(location.state.name); // Guardar el nombre del modo de juego
     }
   }, [location.state]);
 
@@ -681,7 +683,7 @@ function Game() {
             maxHeight: "100%",  // Asegura que el contenido no exceda la altura del contenedor
             overflowY: "auto"  // Permite scroll si el contenido es grande
           }}>
-            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} />
+            <Chat questionData={questionData} header={"Knowing that there is a picture of the " + gameModeName +" "+ questionData.correctAnswer + " and the user thinks that may be one of these " + questionData.options + ", answer vaguely to this WITHOUT EVER revealing the answer, in a short phrase:"} />
           </Box>
         )}
       </Box>
