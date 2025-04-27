@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
 
-function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }) {
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat,mode }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
@@ -23,7 +23,14 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
     onUserMessage && onUserMessage(userMessage.content); // Llamar al callback con el mensaje del usuario
 
     setInput("");
-    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) return;
+    console.log(questionData);
+    if(mode && mode==="vs"){
+    if (
+      userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || 
+      (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || 
+      (questionData.esAnswer && userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase()))
+    ) return;
+  }
     setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
@@ -161,11 +168,14 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat }
 }
 Chat.propTypes = {
   questionData: PropTypes.shape({
-    correctAnswer: PropTypes.string.isRequired
+    correctAnswer: PropTypes.string.isRequired,
+    enAnswer: PropTypes.string,  // Propiedad opcional
+    esAnswer: PropTypes.string   // Propiedad opcional
   }).isRequired,
   header: PropTypes.string.isRequired,
   onUserMessage: PropTypes.func,
   onBotResponse: PropTypes.func,
-  ignoreChat: PropTypes.bool
+  ignoreChat: PropTypes.bool,
+  mode: PropTypes.string
 };
 export default Chat;

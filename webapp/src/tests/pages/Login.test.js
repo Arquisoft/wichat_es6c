@@ -95,7 +95,7 @@ describe('Login component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Usuario o contraseña incorrectos')).toBeInTheDocument();
+      expect(screen.getByText('Not valid username or password')).toBeInTheDocument();
     });
   });
 });

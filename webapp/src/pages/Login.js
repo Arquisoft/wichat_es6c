@@ -3,7 +3,6 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Typewriter } from "react-simple-typewriter";
 import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 import { useTranslation } from 'react-i18next';
@@ -31,22 +30,22 @@ const Login = () => {
       }
 
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
-
-      createSession(username);
+      if(response)
+        createSession(username);
       navigate('/homepage');
     } catch (error) {
       if (error.response) {
         if (error.response.status === 400) {
           setError({ field: 'general', message: error.response.data.error });
         } else if (error.response.status === 401) {
-          setError({ field: 'general', message: 'Usuario o contraseña incorrectos' });
+          setError({ field: 'general', message: t('Login.notValidUserOrPassword') });
         } else {
-          setError({ field: 'general', message: 'Error desconocido del servidor' });
+          setError({ field: 'general', message: t('Login.unknownError') });
         }
       } else if (error.request) {
-        setError({ field: 'general', message: 'No se recibió respuesta del servidor' });
+        setError({ field: 'general', message: t('Login.nonRespnse') });
       } else {
-        setError({ field: 'general', message: 'Error al enviar la solicitud' });
+        setError({ field: 'general', message: t('Login.errorRequest')});
       }
     }
   };

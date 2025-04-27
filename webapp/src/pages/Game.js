@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import { motion } from "framer-motion";
 import { useTranslation } from 'react-i18next';
 import i18n from "i18next";
-
+import { SessionContext } from "../SessionContext";
 function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
@@ -27,6 +27,7 @@ function Game() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { username } = useContext(SessionContext);
 
   const { t } = useTranslation();
 
@@ -53,19 +54,10 @@ function Game() {
 
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [username, setUsername] = useState(null);
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  useEffect(() => {
-    const storedSessionId = localStorage.getItem('sessionId');
-
-    if (storedSessionId) {
-      const storedUsername = localStorage.getItem('username');
-      setUsername(storedUsername);
-    }
-  }, []);
 
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
@@ -95,7 +87,7 @@ function Game() {
   const preloadNextQuestion = useCallback(async () => {
 
     try {
-      const lang = i18n.language; 
+      const lang = i18n.language;
       const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setNextQuestionData(response.data); // Guardar la pregunta precargada
     } catch (error) {
@@ -108,7 +100,7 @@ function Game() {
     try {
       if (round > TOTAL_ROUNDS) return;
       setImageLoaded(false);
-      const lang = i18n.language; 
+      const lang = i18n.language;
       const response = await axios.get(`${apiEndpoint}/questions/${lang}/${gameMode}`);
       setQuestionData(response.data);
 
@@ -196,7 +188,7 @@ function Game() {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try {
             createUserHistory(score, totalTime, round, gameMode);
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore } });
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType: "normal" } });
           } catch (error) {
             console.error(error);
           }
@@ -216,7 +208,7 @@ function Game() {
     if (gameMode && round === 1) {
       fetchQuestion();
     }
-  }, [gameMode, fetchQuestion,round]);
+  }, [gameMode, fetchQuestion, round]);
 
   useEffect(() => {
     if (!questionData || !imageLoaded || starAnimation || showFeedback || showTransition) return;
@@ -290,7 +282,7 @@ function Game() {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try {
             createUserHistory(thisScore, totalTime, correct, gameMode);
-            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore: maxScore } });
+            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore: maxScore, gameType: "normal" } });
           } catch (error) {
             console.error(error);
           }
@@ -583,14 +575,15 @@ function Game() {
 
 
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
-          {t("Game.rounds",{round, TOTAL_ROUNDS})}
+          {t("Game.rounds", { round, TOTAL_ROUNDS })}
 
         </Typography>
 
       </Box>
 
 
-      <IconButton onClick={() => setChatOpen(!chatOpen)} sx={{ position: "fixed", bottom: "5vh", right: "8vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
+      <IconButton onClick={() => setChatOpen(!chatOpen)} aria-label={chatOpen ? 'close chat' : 'open chat'}
+        sx={{ position: "fixed", bottom: "5vh", right: "8vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
         {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
       </IconButton>
 
@@ -601,7 +594,7 @@ function Game() {
             maxHeight: "100%",  // Asegura que el contenido no exceda la altura del contenedor
             overflowY: "auto"  // Permite scroll si el contenido es grande
           }}>
-            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + " answer vaguely to this without revealing the answer in a short phrase:"} />
+            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} />
           </Box>
         )}
       </Box>

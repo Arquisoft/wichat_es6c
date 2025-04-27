@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,8 @@ import Chat from "../components/Chat";
 import { motion } from "framer-motion";
 
 import { useTranslation } from "react-i18next";
+
+import { SessionContext } from "../SessionContext";
 
 import i18n from "i18next";
 
@@ -38,6 +40,7 @@ function Game() {
   const [totalTime, setTotalTime] = useState(0);
 
 
+  const {  username } = useContext(SessionContext);
 
   const [questionData, setQuestionData] = useState(null);
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
@@ -50,20 +53,11 @@ function Game() {
   const [animationComplete, setAnimationComplete] = useState(false); // Nuevo estado para controlar la animación
 
   const [showFeedback, setShowFeedback] = useState(false);
-  const [username, setUsername] = useState(null);
 
   const [userMessages, setUserMessages] = useState([]); // Nuevo estado para almacenar todos los mensajes del usuario en la ronda actual
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-  useEffect(() => {
-    const storedSessionId = localStorage.getItem('sessionId');
-
-    if (storedSessionId) {
-      const storedUsername = localStorage.getItem('username');
-      setUsername(storedUsername);
-    }
-  }, []);
 
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
@@ -280,17 +274,39 @@ function Game() {
 
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
-    setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
-    if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
-      console.log("El usuario eligió la opción incorrecta según la respuesta del chat.");
+    console.log(questionData);
+    setUserMessages((prevMessages) => [...prevMessages, message]);
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const messageLower = message.toLowerCase();
+    
+    if (
+      messageLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && messageLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && messageLower.includes(esAnswer.toLowerCase()))
+    ) {
+      console.log("El usuario acertó la respuesta.");
       setTimeLeft(0);
     }
   };
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-
-    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const responseLower = response.toLowerCase();
+    
+    if (
+      responseLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && responseLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && responseLower.includes(esAnswer.toLowerCase()))
+    ) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
     }
@@ -506,10 +522,11 @@ function Game() {
             onBotResponse={handleBotResponse}
             header={
               "Tienes que adivinar un " +
-              questionData.category +
+              gameModeName +
               ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
               userMessages.join(", ")
             }
+            mode="vs"
           />
         </Box>
       </Box>

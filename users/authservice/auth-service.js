@@ -44,6 +44,7 @@ app.post('/login',  [
     
 
     // Check if the user exists and verify the password
+    
     if (user && await bcrypt.compare(password, user.password)) {
       // Generate a JWT token
       const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
