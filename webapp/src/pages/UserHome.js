@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { SessionContext } from "../SessionContext";
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import AIGreeting from '../components/AIGreeting'; // Ajusta la ruta según donde lo pongas
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -48,7 +49,7 @@ const HomePage = () => {
     if (autoPlay && !hovered) {
       interval = setInterval(() => {
         setActiveStep((prev) => (prev + 1) % maxSteps);
-      }, 2000); // Cambia cada 5 segundos
+      }, 2000); // Cambia cada 2 segundos
     }
     return () => clearInterval(interval);
   }, [autoPlay, hovered, maxSteps]);
@@ -87,17 +88,20 @@ const HomePage = () => {
       <Box sx={{ 
         flexGrow: 1, 
         display: "flex",
-        flexDirection: "column", 
+        flexDirection: { xs: "column", md: "row" }, // Apilar en móvil, lado a lado en desktop
         justifyContent: "center", 
         alignItems: "center",
+        gap: 4,
+        padding: 2
       }}>
+        {/* Saludo IA a la izquierda */}
         {username && (
-          <Typography variant="h4" sx={{ marginBottom: 2, color: theme.palette.text.primary }}>
-            {t('UserHome.welcome', { username })}
-          </Typography>
+          <Box sx={{ width: { xs: '100%', md: '30%' } }}>
+            <AIGreeting />
+          </Box>
         )}
 
-        {/* Carrusel mejorado */}
+        {/* Carrusel centrado */}
         <Box 
           sx={{ 
             width: { xs: '80%', sm: '60%', md: '40%' }, // Tamaños relativos según el tamaño de la pantalla
@@ -111,7 +115,7 @@ const HomePage = () => {
           onMouseLeave={handleMouseLeave}
         >
           <CardActionArea onClick={() => handleGameModeSelect(gameModes[activeStep].type)}>
-            <Card sx={{ height: '100%' }}> {/* Asegurar que el Card ocupe todo el espacio disponible */}
+            <Card sx={{ height: '100%' }}>
               <CardMedia
                 component="img"
                 sx={{
@@ -146,10 +150,10 @@ const HomePage = () => {
             top: '35%',
             width: '95%',
             transform: 'translateY(-50%)',
-            px: 1, // Reducir padding horizontal
+            px: 1,
           }}>
             <IconButton
-              size="1rem" // Reducir tamaño del botón
+              size="1rem" 
               onClick={(e) => {
                 e.stopPropagation();
                 handleBack();
@@ -166,7 +170,7 @@ const HomePage = () => {
             </IconButton>
             
             <IconButton
-              size="1rem" // Reducir tamaño del botón
+              size="1rem" 
               onClick={(e) => {
                 e.stopPropagation();
                 handleNext();
@@ -188,9 +192,9 @@ const HomePage = () => {
             display: 'flex',
             justifyContent: 'center',
             position: 'absolute',
-            bottom: 8, // Reducir espacio inferior
+            bottom: 8, 
             width: '100%',
-            gap: 0.5, // Reducir espacio entre indicadores
+            gap: 0.5, 
           }}>
             {gameModes.map((_, index) => (
               <Box
@@ -202,8 +206,8 @@ const HomePage = () => {
                   setTimeout(() => setAutoPlay(true), 10000);
                 }}
                 sx={{
-                  width: { xs: 6, sm: 8 }, // Tamaño más pequeño
-                  height: { xs: 6, sm: 8 }, // Tamaño más pequeño
+                  width: { xs: 6, sm: 8 },
+                  height: { xs: 6, sm: 8 },
                   borderRadius: '50%',
                   backgroundColor: index === activeStep ? theme.palette.primary.main : 'rgba(255,255,255,0.5)',
                   cursor: 'pointer',

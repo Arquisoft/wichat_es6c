@@ -1,7 +1,8 @@
 {
     "UserHome": {
         "welcome": "Welcome {{username}}!",
-        "play": "Play"
+        "play": "Play",
+        "moreOptions": "More game modes"
     },
     "NavBar": {
         "nameApp": "WICHAT",
@@ -81,7 +82,11 @@
         "ex": "Example:"
     },
     "GameType": {
-        "chooseGame": "Choose a game mode"
+        "chooseGame": "Choose a game mode",
+        "normal": "Normal",
+        "vs": "VS",
+        "normalDescription": "Guess the country from an image and AI",
+        "vsDescription": "Make the AI guess what you're seeing"
     },
     "GameMode": {
         "chooseTheme": "Choose a theme",
@@ -114,6 +119,9 @@
         "viewHistory": "View history",
         "socoreAchieved": "Score achieved",
         "totalTime": "Total time"
+    },
+    "AIGreeting": {
+        "message": "Greet the user in a friendly, motivating, and brief manner. Use common emojis like 😊, 🎮, 📜, and 🎉 to make it more engaging. Ask the user if they are ready to play. Use a friendly tone and encourage them to have fun."
     },
     "Footer":{
 

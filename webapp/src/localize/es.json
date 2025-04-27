@@ -1,7 +1,7 @@
 {
     "UserHome": {
         "welcome": "¡Bienvenido {{username}}!",
-        "play": "Jugar"
+        "moreOptions": "Más modos de juego"
     },
     "NavBar": {
         "nameApp": "WICHAT",
@@ -82,7 +82,11 @@
 
     },
     "GameType": {
-        "chooseGame": "Elige un modo de juego"
+        "chooseGame": "Elige un modo de juego",
+        "normal": "Normal",
+        "vs": "VS",
+        "normalDescription": "Adivina el país a partir de una imagen y una IA",
+        "vsDescription": "Haz que la IA adivine lo que estás viendo"
     },
     "GameMode": {
         "chooseTheme": "Elige una temática",
@@ -115,6 +119,9 @@
         "viewHistory": "Consultar historial",
         "socoreAchieved": "Puntuación obtenida",
         "totalTime": "Tiempo total"
+    },
+    "AIGreeting": {
+        "message": "Saluda al usuario de manera amigable, motivadora y breve. Usa emojis comunes como 😊, 🎮, 📜, y 🎉 para hacerlo más atractivo. Pregunta al usuario si está listo para jugar y si quiere conocer las reglas del juego. Usa un tono amigable y anímalo a divertirse."
     },
     "Footer":{
 
