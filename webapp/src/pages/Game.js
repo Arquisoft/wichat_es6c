@@ -203,7 +203,7 @@ function Game() {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try {
             createUserHistory(score, totalTime, round, gameMode);
-            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore } });
+            navigate('/game-finished', { state: { score: score, totalTime: totalTime, maxScore: maxScore, gameType: "normal" } });
           } catch (error) {
             console.error(error);
           }
@@ -354,7 +354,7 @@ function Game() {
           let maxScore = TOTAL_ROUNDS * BASE_SCORE * MULTIPLIER_HIGH;
           try {
             createUserHistory(thisScore, totalTime, correct, gameMode);
-            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore: maxScore } });
+            navigate('/game-finished', { state: { score: thisScore, totalTime: totalTime, maxScore: maxScore, gameType: "normal" } });
           } catch (error) {
             console.error(error);
           }
