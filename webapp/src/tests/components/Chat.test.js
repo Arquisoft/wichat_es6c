@@ -10,7 +10,23 @@ jest.mock('axios');
 
 describe('Chat Component', () => {
   const mockQuestionData = {
+    correctAnswer: 'TestAnswer'
+  };
+
+  const mockQuestionData2 = {
     correctAnswer: 'TestAnswer',
+    enAnswer: 'TestAnswer2',
+  };
+
+  const mockQuestionData3 = {
+    correctAnswer: 'TestAnswer',
+    esAnswer: 'TestAnswer3',
+  };
+
+  const mockQuestionData4= {
+    correctAnswer: 'TestAnswer',
+    enAnswer: 'TestAnswer2',
+    esAnswer: 'TestAnswer3'
   };
 
   const mockHeader = 'Header: ';
@@ -156,4 +172,234 @@ describe('Chat Component', () => {
 
     expect(mockOnUserMessage).not.toHaveBeenCalled();
   });
+
+  it('should not return a message if the mode is vs and the input contains the answer', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    fireEvent.change(inputField, { target: { value: mockQuestionData.correctAnswer } });
+    fireEvent.click(sendButton);
+
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+
+  it('should not return a message if the mode is vs and the input contains the answer in english', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData2}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    fireEvent.change(inputField, { target: { value: mockQuestionData2.enAnswer } });
+    fireEvent.click(sendButton);
+
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+
+  it('should not return a message if the mode is vs and the input contains the answer in spanish', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData3}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    fireEvent.change(inputField, { target: { value: mockQuestionData3.esAnswer } });
+    fireEvent.click(sendButton);
+
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+
+  it('should not return a message if the mode is vs and the input matches any of correctAnswer, enAnswer, or esAnswer', () => {
+    render(
+      <Chat
+        questionData={mockQuestionData4}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+    
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    
+    // Test correctAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.correctAnswer } });
+    fireEvent.click(sendButton);
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+    
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test enAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.enAnswer } });
+    fireEvent.click(sendButton);
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+    
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test esAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.esAnswer } });
+    fireEvent.click(sendButton);
+    expect(mockOnBotResponse).not.toHaveBeenCalled();
+  });
+  it('should return a message if the mode is not vs and the input matches any of correctAnswer, enAnswer, or esAnswer', async () => {
+    axios.post.mockResolvedValue({ data: { answer: 'This is a mock response' } });
+  
+    render(
+      <Chat
+        questionData={mockQuestionData4}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="not-vs"
+      />
+    );
+    
+    const inputField = screen.getByLabelText('Type a message...');
+    const sendButton = screen.getByText('Send');
+    
+    // Test correctAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.correctAnswer } });
+    fireEvent.click(sendButton);
+    
+    await waitFor(() => {
+      expect(mockOnBotResponse).toHaveBeenCalled();
+    });
+  
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test enAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.enAnswer } });
+    fireEvent.click(sendButton);
+    
+    await waitFor(() => {
+      expect(mockOnBotResponse).toHaveBeenCalled();
+    });
+  
+    // Clear input
+    fireEvent.change(inputField, { target: { value: '' } });
+    
+    // Test esAnswer
+    fireEvent.change(inputField, { target: { value: mockQuestionData4.esAnswer } });
+    fireEvent.click(sendButton);
+  
+    await waitFor(() => {
+      expect(mockOnBotResponse).toHaveBeenCalledTimes(3);
+    });
+  });
+  
+  it('should return a message if the mode is vs and the input does not match enAnswer', async () => {
+    axios.post.mockResolvedValueOnce({ data: { answer: 'Respuesta' } });
+  
+    const mockQuestionDataEn = {
+      correctAnswer: 'Correcto',
+      enAnswer: 'Ingles'
+    };
+  
+    render(
+      <Chat
+        questionData={mockQuestionDataEn}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+  
+    const input = screen.getByLabelText('Type a message...');
+    const button = screen.getByText('Send');
+  
+    fireEvent.change(input, { target: { value: 'Otro mensaje' } });
+    fireEvent.click(button);
+  
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockOnBotResponse).toHaveBeenCalledWith('Respuesta');
+    });
+  });
+  
+  it('should return a message if the mode is vs and the input does not match esAnswer', async () => {
+    axios.post.mockResolvedValueOnce({ data: { answer: 'Respuesta' } });
+  
+    const mockQuestionDataEs = {
+      correctAnswer: 'Correcto',
+      esAnswer: 'Español'
+    };
+  
+    render(
+      <Chat
+        questionData={mockQuestionDataEs}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+  
+    const input = screen.getByLabelText('Type a message...');
+    const button = screen.getByText('Send');
+  
+    fireEvent.change(input, { target: { value: 'Otro mensaje' } });
+    fireEvent.click(button);
+  
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockOnBotResponse).toHaveBeenCalledWith('Respuesta');
+    });
+  });
+  
+  it('should return a message if the mode is vs and the input does not match with any', async () => {
+    axios.post.mockResolvedValueOnce({ data: { answer: 'Respuesta' } });
+  
+    render(
+      <Chat
+        questionData={mockQuestionData4}
+        header={mockHeader}
+        onUserMessage={mockOnUserMessage}
+        onBotResponse={mockOnBotResponse}
+        ignoreChat={false}
+        mode="vs"
+      />
+    );
+  
+    const input = screen.getByLabelText('Type a message...');
+    const button = screen.getByText('Send');
+  
+    fireEvent.change(input, { target: { value: 'Mensaje diferente' } });
+    fireEvent.click(button);
+  
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(mockOnBotResponse).toHaveBeenCalledWith('Respuesta');
+    });
+  });
 });
+
