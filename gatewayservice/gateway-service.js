@@ -113,7 +113,7 @@ app.get('/getUserStats', async (req, res) => {
     const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener estadísticas", details: error.message });
+    res.status(error.status).json({ error: "Error al obtener estadísticas", details: error.message });
   }
 });
 

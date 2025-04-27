@@ -99,7 +99,6 @@ export default function UserHistory() {
     setStats(null);       // Limpiar estadísticas anteriores
     setLeaderboard({ topPlayers: [], userPosition: null });
     try {
-      console.log("Fetching stats for user:", username);
       const response = await axios.get(`${gatewayService}/getUserStats`, { params: { username } });
       setStats(response.data);
     } catch (error) {
