@@ -18,9 +18,9 @@
          "en": "Who is this famous person?"
       },
       "fields": {
-         "label": "personLabel",
+         "label": "actorLabel",
          "image": "image",
-         "solution": "personLabel"
+         "solution": "actorLabel"
       }
    },
     "flag": {  
