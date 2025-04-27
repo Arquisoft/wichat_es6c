@@ -91,12 +91,14 @@ function buildSparqlQuery(category, lang) {
 
     if (category === 'famous_people') {
         return `
-            SELECT DISTINCT ?label WHERE {
-                ?person wdt:P31 wd:Q5;
-                        rdfs:label ?label.
-                FILTER (LANG(?label) = "${lang}")
-            }
-            LIMIT 50
+        SELECT DISTINCT ?actorLabel WHERE {
+            ?actor wdt:P31 wd:Q5;            # Instancia de ser humano
+                   wdt:P106 wd:Q33999;        # Ocupación: actor
+                   wdt:P27 wd:Q29;            # Nacionalidad: España
+            ?actor rdfs:label ?actorLabel.  # Etiqueta del actor
+            FILTER (LANG(?actorLabel) = "${lang}")
+        }
+        LIMIT 50
         `;
     }    
 

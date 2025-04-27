@@ -12,16 +12,16 @@
          }
     },
    "famous_people": {
-   "query": "SELECT ?person ?personLabel ?image WHERE { ?person wdt:P31 wd:Q5. ?person wdt:P18 ?image. SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } } ORDER BY RAND() LIMIT ?limit",
-   "question": {
-      "es": "¿Quién es este famoso?",
-      "en": "Who is this famous person?"
-   },
-   "fields": {
-      "label": "personLabel",
-      "image": "image",
-      "solution": "personLabel"
-   }
+   "query": "SELECT ?actor ?actorLabel ?image WHERE { ?actor wdt:P31 wd:Q5;  wdt:P106 wd:Q33999;  wdt:P27 wd:Q29.  OPTIONAL { ?actor wdt:P18 ?image. } SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". }} LIMIT ?limit",
+      "question": {
+         "es": "¿Quién es este famoso?",
+         "en": "Who is this famous person?"
+      },
+      "fields": {
+         "label": "personLabel",
+         "image": "image",
+         "solution": "personLabel"
+      }
    },
     "flag": {  
     "query": "SELECT ?country ?countryLabel ?image WHERE { ?country wdt:P31 wd:Q6256; wdt:P41 ?image.  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". } }ORDER BY RAND() LIMIT ?limit",
