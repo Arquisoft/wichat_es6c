@@ -224,14 +224,20 @@ function Game() {
       console.log("volumen audio:", audio.volume);
     }
 
-
-    audio.play().catch((error) => {
-      console.error("Error reproduciendo el sonido de fondo:", error);
-    });
+    if(audio !== null && audio!== undefined){
+      try{
+        audio.play()
+      }catch (error) {
+        console.error("Error al reproducir el audio:", error);
+      }
+    
+  }
 
     return () => {
-
-      audio.pause();
+      if(audio){
+        audio.pause();
+      }
+      
     };
   }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
 
