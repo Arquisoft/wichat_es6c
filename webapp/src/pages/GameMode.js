@@ -17,7 +17,7 @@ function GameMode() {
     { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
   ], []);
   const vsButtonList = useMemo(() => [
-    { text: 'Países', path: '/game-vs', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text: 'Países', path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
   ], []);
 
   useEffect(() => {
