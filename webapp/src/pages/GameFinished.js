@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
@@ -11,13 +11,13 @@ const GameFinished = () => {
   const [score, setScore] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
   const [maxScore, setMaxScore] = useState(0);
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
 
-
   const { t } = useTranslation();
+
+  const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
 
 
   useEffect(() => {
@@ -28,7 +28,6 @@ const GameFinished = () => {
       setGameType(location.state.gameType);
     }
 
-    // Handle the size of the window - confetti
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
       setWindowHeight(window.innerHeight);
@@ -38,8 +37,20 @@ const GameFinished = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [location]);
 
+  // Efecto para reproducir sonido si hay confeti
+  useEffect(() => {
+    if (score >= maxScore / 2) {
+
+
+      const winningAudio = winningSoundRef.current;
+      winningAudio.volume = 1;
+      winningAudio.play();
+
+      
+    }
+  }, [score]);
+
   const handleRestart = () => {
-    console.log(gameType);
     navigate('/game-mode', { state: { type: gameType } });
   };
 
@@ -48,24 +59,14 @@ const GameFinished = () => {
   };
 
   return (
-    <Stack
-      alignItems="center"
-      justifyContent="center"
-      spacing={4}
-      sx={{ height: "100vh", textAlign: "center" }}
-    >
+    <Stack alignItems="center" justifyContent="center" spacing={4} sx={{ height: "100vh", textAlign: "center" }}>
+      {score >= maxScore/2 && <Confetti width={windowWidth} height={windowHeight} />}
 
-      {/* Confetti */}
-      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
-
-      {/* Title */}
       <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative", top: "-7vw" }}>
         {t("GameFinished.gameOver")}
       </Typography>
 
-      {/* Final score */}
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, position: "relative", top: "-100px" }}>
-        {/* Score */}
         <Box sx={{
           padding: 3,
           border: '2px solid #9b33c0',
@@ -81,7 +82,6 @@ const GameFinished = () => {
           </Typography>
         </Box>
 
-        {/* Total time */}
         <Box sx={{
           padding: 3,
           border: '2px solid #9b33c0',
@@ -98,22 +98,16 @@ const GameFinished = () => {
         </Box>
       </Box>
 
-      {/* Buttons */}
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
-        <Button variant="contained"
-          sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0' }}
-          onClick={handleRestart}>
+        <Button variant="contained" sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0' }} onClick={handleRestart}>
           {t("GameFinished.playAgain")}
         </Button>
-        <Button variant="contained"
-          sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black' }}
-          onClick={handleGoToHistorical}>
-          {t("GameFinished.viewHistory")}        
-          </Button>
+        <Button variant="contained" sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black' }} onClick={handleGoToHistorical}>
+          {t("GameFinished.viewHistory")}
+        </Button>
       </Stack>
     </Stack>
   );
 };
 
 export default GameFinished;
-

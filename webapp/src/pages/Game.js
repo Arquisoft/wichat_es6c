@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -31,6 +31,12 @@ function Game() {
 
   const { t } = useTranslation();
 
+  const audioRef = useRef(null); // Referencia para el audio
+  const hurryAudioRef = useRef(null);
+  const failAudioRef = useRef(null); // Referencia para el sonido de fallo
+  const correctAudioRef = useRef(null); // Referencia para el sonido de respuesta correcta
+  const chooseAudioRef = useRef(null); // Referencia para el sonido de elección
+  const [hurryMode, setHurryMode] = useState(false);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
@@ -57,8 +63,8 @@ function Game() {
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-
-
+  //const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
+  const volumeLevel = 0.3; // Ajusta el nivel de volumen entre 0.0 y 1.0
   const getTimeMultiplierScore = (timeLeft) => {
     if (timeLeft >= TIME_THRESHOLD_HIGH) return MULTIPLIER_HIGH;
     if (timeLeft >= TIME_THRESHOLD_MEDIUM) return MULTIPLIER_MEDIUM;
@@ -157,10 +163,19 @@ function Game() {
     setRound((prevRound) => prevRound + 1); // Incrementar la ronda
     setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
     setSelectedAnswer(null); // Reiniciar la respuesta seleccionada
+    setHurryMode(false);
+    if (hurryAudioRef.current) hurryAudioRef.current.pause();
+
   }, [nextQuestionData, fetchQuestion, preloadNextQuestion]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
+
+    if (failAudioRef.current) {
+      failAudioRef.current.currentTime = 0;
+      failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
+      failAudioRef.current.play();
+    }
 
     setShowFeedback(true);
     setSelectedAnswer(null);
@@ -196,7 +211,35 @@ function Game() {
         }
       }, TRANSITION_ROUND_TIME); // Duración fija para la animación
     }, FEEDBACK_QUESTIONS_TIME);
-  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
+  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode,volumeLevel]);
+
+  useEffect(() => {
+    console.log("volumen:", volumeLevel);
+    if (!audioRef.current) return; // Asegurarse de que la referencia del audio esté disponible
+    const audio = audioRef.current;
+    if (hurryMode || starAnimation || showFeedback || showTransition) {
+      audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
+    } else {
+      audio.volume = 1; // Ajustar volumen normal
+      console.log("volumen audio:", audio.volume);
+    }
+
+    if(audio !== null && audio!== undefined){
+      try{
+        audio.play()
+      }catch (error) {
+        console.error("Error al reproducir el audio:", error);
+      }
+    
+  }
+
+    return () => {
+      if(audio){
+        audio.pause();
+      }
+      
+    };
+  }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
 
   useEffect(() => {
     if (location.state?.mode) {
@@ -236,6 +279,21 @@ function Game() {
   }, [timeLeft, questionData, imageLoaded, showFeedback, showTransition, handleTimeUp, starAnimation]);
 
   useEffect(() => {
+    if (timeLeft === 12 && !hurryMode) {
+      setHurryMode(true);
+
+      if (hurryAudioRef.current) {
+        hurryAudioRef.current.currentTime = 0;
+        hurryAudioRef.current.volume = volumeLevel ; // Ajustar volumen reducido
+        hurryAudioRef.current.play();
+      }
+      if (audioRef.current) {
+        //audioRef.current.pause();
+      }
+    }
+  }, [timeLeft, hurryMode,volumeLevel]);
+
+  useEffect(() => {
     if (animationComplete && imageLoaded) {
       setAnimationComplete(false); // Resetear el estado de la animación
       setTimeLeft(QUESTION_TIME); // Iniciar el temporizador solo después de que todo esté listo
@@ -243,6 +301,12 @@ function Game() {
   }, [animationComplete, imageLoaded]);
 
   const handleAnswer = (isCorrect, selectedOption) => {
+    if (chooseAudioRef.current) {
+      chooseAudioRef.current.currentTime = 0;
+      chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+      chooseAudioRef.current.play();
+    }
+
     setSelectedAnswer(selectedOption);
     setShowFeedback(true);
     let correct = corectAnswers;
@@ -256,7 +320,9 @@ function Game() {
       setTempScore(pointsEarned);
       thisScore = score + pointsEarned;
       setScore(thisScore);
+
     } else {
+
       setTempScore(0);
     }
 
@@ -266,7 +332,19 @@ function Game() {
 
       // Activar la animación de la estrella solo si no está ya activa
       if (!starAnimation) {
+        if (isCorrect && correctAudioRef.current) {
+          correctAudioRef.current.currentTime = 0;
+          correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+          correctAudioRef.current.play();
+        } else {
+          if (failAudioRef.current) {
+            failAudioRef.current.currentTime = 0;
+            failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+            failAudioRef.current.play();
+          }
+        }
         setStarAnimation(true);
+
       }
 
       // Iniciar la carga de la siguiente pregunta e imagen al inicio de la animación
@@ -305,6 +383,7 @@ function Game() {
   // Pantalla de transición
   const TransitionScreen = ({ score, tempScore, starAnimation }) => {
     return (
+
       <Box
         sx={{
           position: "absolute",
@@ -387,7 +466,15 @@ function Game() {
       }}>
 
 
-
+      {/* Sonido de fondo */}
+      <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
+      <audio ref={hurryAudioRef} src="sound/hurry_sound.mp3" />
+      {/* Sonido de fallo */}
+      <audio ref={failAudioRef} src="sound/fail.wav" />
+      {/* Sonido de acierto */}
+      <audio ref={correctAudioRef} src="sound/correct.mp3" />
+      {/* Sonido de elección */}
+      <audio ref={chooseAudioRef} src="sound/choose.mp3" />
       {/* Pantalla de transición */}
       {showTransition && (
         <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
