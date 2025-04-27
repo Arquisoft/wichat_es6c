@@ -40,7 +40,7 @@ function Game() {
   const [totalTime, setTotalTime] = useState(0);
 
 
-  const {  username } = useContext(SessionContext);
+  const { username } = useContext(SessionContext);
 
   const [questionData, setQuestionData] = useState(null);
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
@@ -364,7 +364,7 @@ function Game() {
 
   return (
     <Stack
-      direction={{ xs: "row", md: "row" }} // Mantener las columnas en fila
+      direction={{ xs: "column", md: "row" }} // Columna en móviles, fila en ordenadores
       sx={{
         height: "100vh",
         width: "100vw",
@@ -373,15 +373,16 @@ function Game() {
         backgroundPosition: "center",
         overflow: "hidden",
         position: "relative",
-        gap: { xs: 2, md: 0 }, // Espaciado entre columnas en pantallas pequeñas
+        gap: { xs: "2rem", md: "0" }, // Espaciado entre columnas en móviles
+        padding: "2%", // Padding relativo
       }}
     >
       {/* Columna izquierda: Temporizador y Pregunta */}
       <Stack
-        direction={{ xs: "column", md: "row" }} // Apilar verticalmente en pantallas pequeñas
+        direction="column"
         sx={{
-          flex: { xs: 2, md: 3 },
-          gap: 1, 
+          flex: { xs: 1, md: 2 }, // Ocupa más espacio en ordenadores
+          gap: "1rem",
           padding: "1rem",
         }}
       >
@@ -393,13 +394,12 @@ function Game() {
             justifyContent: "center",
             position: "relative",
             padding: "1rem",
-            flex: { xs: 2, md: 1 }, // Crece más en pantallas pequeñas
           }}
         >
           <Box
             sx={{
-              width: { xs: "8rem", md: "6rem" }, // Crece en pantallas pequeñas
-              height: { xs: "8rem", md: "6rem" },
+              width: { xs: "6rem", md: "8rem" }, // Tamaño relativo al viewport
+              height: { xs: "6rem", md: "8rem" },
               borderRadius: "50%",
               backgroundColor: "orange",
               display: "flex",
@@ -414,7 +414,14 @@ function Game() {
               },
             }}
           >
-            <Typography variant="h4" color="white" fontWeight="bold">
+            <Typography
+              variant="h4"
+              color="white"
+              fontWeight="bold"
+              sx={{
+                fontSize: { xs: "2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
+              }}
+            >
               {timeLeft}
             </Typography>
           </Box>
@@ -427,7 +434,7 @@ function Game() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center", // Centrar la pregunta verticalmente
+            justifyContent: "center",
             padding: "2rem",
             backgroundColor: "rgba(255,255,255,0.8)",
             borderRadius: "1rem",
@@ -438,7 +445,10 @@ function Game() {
           <Typography
             variant="h5"
             fontWeight="bold"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: "1rem",
+              fontSize: { xs: "1.2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
+            }}
           >
             {t("Game-VS.describeMode-" + gameModeName)}
           </Typography>
@@ -451,10 +461,10 @@ function Game() {
               backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD",
               borderRadius: "10px",
               padding: "1rem",
-              mt: 3,
+              mt: "1rem",
               width: "100%",
               wordWrap: "break-word",
-              fontSize: { xs: "1.5rem", md: "2rem" },
+              fontSize: { xs: "1.5rem", md: "2rem" }, // Tamaño de fuente responsivo
             }}
           >
             {questionData.correctAnswer}
@@ -462,23 +472,26 @@ function Game() {
         </Box>
       </Stack>
 
-      {/* Columna derecha: Chat */}
+      {/*Chat */}
       <Box
         sx={{
-          flex: { xs: 5, md: 3 }, // Ocupa más espacio en pantallas grandes
+          flex: { xs: 1, md: 1 }, // Ocupa menos espacio en pantallas grandes
           backgroundColor: "white",
-          borderLeft: "3px solid #ccc",
+          borderLeft: { md: "3px solid #ccc" }, // Borde solo en pantallas grandes
           display: "flex",
           flexDirection: "column",
           height: "90%",
           overflow: "hidden",
-          padding: "2rem",
+          padding: "2%",
+          borderRadius: { xs: "1rem", md: "0" }, // Bordes redondeados en móviles
+          boxShadow: { xs: "0px 4px 10px rgba(0, 0, 0, 0.2)", md: "none" }, // Sombra en móviles
         }}
       >
         <Chat
           questionData={questionData}
           onUserMessage={handleUserMessage}
           onBotResponse={handleBotResponse}
+          hideHeader={true}
           header={
             "Tienes que adivinar un " +
             questionData.category +

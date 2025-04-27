@@ -5,7 +5,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, isMobile }) {
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, isMobile, hideHeader }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -63,20 +63,24 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
         ...(isSmallScreen && { maxWidth: "none" }),
       }}
     >
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{
-          py: 2,
-          bgcolor: "#9b33c0",
-          color: "white",
-          borderRadius: 2,
-          fontSize: isSmallScreen ? "1.2rem" : "2rem",
-        }}
-      >
-        {t("ChatLLM.chatTitle")}
-      </Typography>
+      {/* Mostrar encabezado solo si hideHeader es falso */}
+      {!hideHeader && (
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          sx={{
+            py: 2,
+            bgcolor: "#9b33c0",
+            color: "white",
+            borderRadius: 2,
+            fontSize: isSmallScreen ? "1.2rem" : "2rem",
+          }}
+        >
+          {t("ChatLLM.chatTitle")}
+        </Typography>
+      )}
+
 
       <Box
         sx={{
@@ -176,6 +180,7 @@ Chat.propTypes = {
   onBotResponse: PropTypes.func,
   ignoreChat: PropTypes.bool,
   isMobile: PropTypes.bool,
+  hideHeader: PropTypes.bool,
 };
 
 export default Chat;

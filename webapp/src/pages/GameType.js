@@ -3,6 +3,7 @@ import { Button, Stack, Typography, Box, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function GameType() {
   const buttonList = [
@@ -19,6 +20,10 @@ function GameType() {
     navigate("/game-mode", { state: { type: item.type } });
   };
 
+  const handleGoBack = () => {
+    navigate('/homepage');
+  };
+
   return (
     <Stack
       direction="column"
@@ -32,8 +37,40 @@ function GameType() {
         py: "5%",
         boxSizing: 'border-box',
         backgroundColor: '#f5f5f5', // Fondo adaptable
+        position: 'relative'
       }}
     >
+
+
+      <Button
+        variant="outlined"
+        onClick={handleGoBack}
+        startIcon={<ArrowBackIcon />}
+        sx={{
+          position: "absolute",
+          top: "4%",
+          left: "5%",
+          width: { xs: "40%", sm: "20%" },
+          fontSize: { xs: "0.8rem", sm: "1rem" },
+          textTransform: "none",
+          color: "#ffffff",
+          border: "0.1rem solid rgba(255, 255, 255, 0.4)", 
+          borderRadius: "1rem", 
+          fontWeight: "bold",
+          background: "rgba(128, 0, 128, 0.48)",
+          boxShadow: "0 0.5rem 1.5rem rgba(106, 13, 173, 0.53)", 
+          transition: "all 0.4s ease",
+          "&:hover": {
+            background: "rgba(128, 0, 128, 0.4)",
+            borderColor: "rgba(255, 255, 255, 0.6)",
+            transform: "scale(1.08)",
+            boxShadow: "0 0.6rem 1.8rem rgba(75, 0, 130, 0.5)", 
+          },
+        }}
+      >
+        {t("GameMode.goBack")}
+      </Button>
+
       <Typography
         variant="h4"
         sx={{
@@ -47,6 +84,8 @@ function GameType() {
         {t("GameType.chooseGame")}
       </Typography>
 
+
+
       <Stack
         direction={isSmallScreen ? 'column' : 'row'}
         spacing={3}
@@ -54,14 +93,17 @@ function GameType() {
         justifyContent="center"
         sx={{ width: '100%' }}
       >
+
+
+
         {buttonList.map((item, index) => (
           <Button
             key={index}
             variant="contained"
             onClick={() => handleGameMode(item)}
             sx={{
-              width: { xs: '90%', sm: '40%' }, 
-              height: { xs: '25vh', sm: '35vh', md: "45vh" }, 
+              width: { xs: '90%', sm: '40%' },
+              height: { xs: '25vh', sm: '35vh', md: "45vh" },
               fontSize: '16px',
               textTransform: 'none',
               padding: 0,
@@ -79,7 +121,7 @@ function GameType() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                objectPosition: 'center', 
+                objectPosition: 'center',
                 position: 'absolute',
                 top: 0,
                 left: 0,

@@ -672,6 +672,7 @@ function Game() {
               <Chat questionData={questionData} 
                     header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} 
                     isMobile={isMobile}
+                    hideHeader={false}
               />
             </Box>
           )}
