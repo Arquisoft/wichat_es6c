@@ -12,14 +12,14 @@ function GameMode() {
   const { t } = useTranslation();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const isVerySmallScreen = useMediaQuery('(max-width:400px)');
   const normalButtonList = useMemo(() => [
-    { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
-    { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
+    { text: t('GameMode.countryText'), path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text:  t('GameMode.flagText'), path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
   ], []);
 
   const vsButtonList = useMemo(() => [
-    { text: 'Países', path: '/game-vs', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text:  t('GameMode.countryText'), path: '/game-vs', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
   ], []);
 
   useEffect(() => {
@@ -39,19 +39,20 @@ function GameMode() {
   const handleGameMode = (item) => {
     navigate(item.path, { state: { mode: item.mode, name: item.name } });
   };
-
-  return (
+ return (
     <Stack
       direction="column"
       alignItems="center"
-      spacing={4}
+      spacing={{ xs: 2, sm: 4 }}
       sx={{
         width: "100%",
         justifyContent: "center",
         height: "100%",
-        px: 2,
-        py: 4,
+        px: { xs: 1, sm: 2 },
+        pt: { xs: 6, sm: 8 }, // Aumentado el padding top para bajar el título
+        pb: { xs: 4, sm: 6 }, // Ajustado el padding bottom
         boxSizing: 'border-box',
+        overflow: 'auto',
       }}
     >
       <Typography
@@ -59,9 +60,12 @@ function GameMode() {
         sx={{
           fontWeight: 'bold',
           color: '#0a0a0a',
-          fontSize: { xs: '2rem', sm: '2.5rem' },
+          fontSize: { xs: '1.5rem', sm: '2.5rem' },
           textAlign: 'center',
-          letterSpacing: '1px',
+          letterSpacing: { xs: 'normal', sm: '1px' },
+          px: 1,
+          mb: { xs: 3, sm: 4 }, // Aumentado el margin bottom para separar más del contenido
+          mt: { xs: 2, sm: 3 } // Añadido margin top adicional
         }}
       >
         {t("GameMode.chooseTheme")}
@@ -69,10 +73,14 @@ function GameMode() {
 
       <Stack
         direction={isSmallScreen ? 'column' : 'row'}
-        spacing={3}
+        spacing={{ xs: 3, sm: 4 }} // Aumentado el spacing entre botones
         alignItems="center"
         justifyContent="center"
-        sx={{ width: '100%' }}
+        sx={{ 
+          width: '100%',
+          maxWidth: '1200px',
+          p: { xs: 1, sm: 0 }
+        }}
       >
         {buttonList.map((item, index) => (
           <Button
@@ -80,14 +88,21 @@ function GameMode() {
             variant="contained"
             onClick={() => handleGameMode(item)}
             sx={{
-              width: { xs: '80%', sm: '300px' },
-              height: { xs: '200px', sm: '350px' },
+              width: { xs: '90%', sm: '300px', md: '350px' },
+              height: { xs: isVerySmallScreen ? '150px' : '180px', sm: '300px', md: '350px' },
+              minWidth: 'unset',
               fontSize: '16px',
               textTransform: 'none',
               padding: 0,
               position: 'relative',
               overflow: 'hidden',
               borderRadius: 2,
+              boxShadow: 3,
+              '&:hover': {
+                transform: { xs: 'none', sm: 'scale(1.02)' },
+                boxShadow: 4
+              },
+              transition: 'all 0.3s ease'
             }}
           >
             <Box
@@ -101,8 +116,28 @@ function GameMode() {
                 position: 'absolute',
                 top: 0,
                 left: 0,
+                filter: 'brightness(0.8)',
+                '&:hover': {
+                  filter: 'brightness(1)'
+                }
               }}
             />
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                bgcolor: 'rgba(0,0,0,0.7)',
+                color: 'white',
+                p: 1,
+                textAlign: 'center',
+                fontSize: { xs: '1.1rem', sm: '1.3rem' },
+                fontWeight: 'bold'
+              }}
+            >
+              {item.text}
+            </Box>
           </Button>
         ))}
       </Stack>

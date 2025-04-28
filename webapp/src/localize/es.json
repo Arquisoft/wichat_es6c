@@ -84,13 +84,15 @@
     "GameType": {
         "chooseGame": "Elige un modo de juego",
         "normal": "Normal",
-        "vs": "VS",
+        "vs": "VS IA",
         "normalDescription": "Adivina el país a partir de una imagen y una IA",
         "vsDescription": "Haz que la IA adivine lo que estás viendo"
     },
     "GameMode": {
         "chooseTheme": "Elige una temática",
-        "countryName": "país"
+        "countryName": "país",
+         "countryText": "Países",
+        "flagText": "Banderas"
     },
     "Game": {
         "totalScore": "Puntuación total",

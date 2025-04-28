@@ -84,13 +84,15 @@
     "GameType": {
         "chooseGame": "Choose a game mode",
         "normal": "Normal",
-        "vs": "VS",
+        "vs": "VS IA",
         "normalDescription": "Guess the country from an image and AI",
         "vsDescription": "Make the AI guess what you're seeing"
     },
     "GameMode": {
         "chooseTheme": "Choose a theme",
-        "countryName": "country"
+        "countryName": "country",
+        "countryText": "Countries",
+        "flagText": "Flags"
     },
     "Game": {
         "totalScore": "Total score",
