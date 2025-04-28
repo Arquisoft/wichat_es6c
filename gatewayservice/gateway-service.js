@@ -198,7 +198,7 @@ app.post('/askllm', async (req, res) => {
     const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
     res.json(llmResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    handleErrors(res, error);
   }
 });
 

@@ -67,29 +67,33 @@ const NavMenu = () => {
           )}
 
           {/* Nueva opción: More Options Games */}
-                {isMobile && sessionId && (
-                <Button
-                  color="inherit"
-                  startIcon={<Games />}
-                  onClick={() => navigate('/game-type')}
-                  sx={{
-                  color: "white", 
-                  borderRadius: "20px", 
-                  px: 3,
-                  py: 1,
-                  fontWeight: "bold", 
-                  textTransform: "none", 
-                  border: "2px solid white", 
-                  "&:hover": {
-                    backgroundColor: "#9b33c0", 
-                  },
-                  }}
-                >
-                  {t('UserHome.moreOptions')}
-                </Button>
-                )}
+          {isMobile && sessionId && (
+            <Button
+              color="inherit"
+              startIcon={<Games />}
+              onClick={() => navigate('/game-type')}
+              sx={{
+                color: "white",
+                borderRadius: "20px",
+                px: { xs: 2, sm: 3 }, // Menos padding en móviles muy pequeños
+                py: 1,
+                fontWeight: "bold",
+                textTransform: "none",
+                border: "2px solid white",
+                "&:hover": {
+                  backgroundColor: "#9b33c0",
+                },
+                fontSize: { xs: '0.8rem', sm: '0.9rem' }, // Tamaño de fuente responsive
+                minWidth: 'auto', // Permite que el botón se ajuste al contenido
+                margin: { xs: '0.5rem', sm: '0' }, // Margen en móviles pequeños
+                whiteSpace: 'nowrap', // Evita saltos de línea
+              }}
+            >
+              {t('UserHome.moreOptions')}
+            </Button>
+          )}
 
-                {/* Menú de configuración */}
+          {/* Menú de configuración */}
           <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
             <MoreVert />
           </IconButton>
