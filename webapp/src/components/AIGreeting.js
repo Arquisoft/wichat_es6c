@@ -20,7 +20,7 @@ const AIGreeting = () => {
           headers: { 'Content-Type': 'application/json' }
         });
 
-        setGreeting(response.data?.answer || "¡Hola! ¡Espero que tengas un gran día!");
+        setGreeting(response.data?.answer || t("AIGreeting.messageFail"));
       } catch (error) {
         console.error("Error al obtener el saludo:", error);
         setGreeting("¡Hola! ¡Espero que tengas un gran día!");
@@ -30,7 +30,7 @@ const AIGreeting = () => {
     };
 
     fetchGreeting();
-  }, [header]);
+  }, [header,t]);
 
   if (loading) {
     return (

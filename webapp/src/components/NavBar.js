@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
-import { Person, Settings, Logout, MoreVert, Language } from "@mui/icons-material";
+import { Person, Settings, Games, Logout, MoreVert, Language } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -23,14 +23,18 @@ const NavMenu = () => {
 
 
   const { t } = useTranslation();
-  //const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
+  const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
 
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    //setLang(lng);
+    setLang(lng);
     handleLanguageMenuClose();
   }
+
+  React.useEffect(() => {
+    i18n.changeLanguage(lang);
+  }, [lang]);
 
   const logout = () => {
     destroySession();
@@ -62,60 +66,86 @@ const NavMenu = () => {
             </>
           )}
 
-          {/* Menú de configuración */}
-            <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
-              <MoreVert />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-              {/* Agregar opciones móviles si hay sesión iniciada */}
-              {isMobile && sessionId && (
-                <>
-                  <MenuItem onClick={() => { handleMenuClose(); navigate('/history'); }}>
-                    <Person sx={{ mr: 1 }} /> {t('NavBar.profile')}
-                  </MenuItem>
-                  <MenuItem onClick={() => { handleMenuClose(); logout(); }}>
-                    <Logout sx={{ mr: 1 }} /> {t('NavBar.logout')}
-                  </MenuItem>
-                </>
-              )}
+          {/* Nueva opción: More Options Games */}
+                {isMobile && sessionId && (
+                <Button
+                  color="inherit"
+                  startIcon={<Games />}
+                  onClick={() => navigate('/game-type')}
+                  sx={{
+                  color: "white", 
+                  borderRadius: "20px", 
+                  px: 3,
+                  py: 1,
+                  fontWeight: "bold", 
+                  textTransform: "none", 
+                  border: "2px solid white", 
+                  "&:hover": {
+                    backgroundColor: "#9b33c0", 
+                  },
+                  }}
+                >
+                  {t('UserHome.moreOptions')}
+                </Button>
+                )}
 
-              {sessionId && (
-                <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
-                  <Settings sx={{ mr: 1 }} /> {t('NavBar.settings')}
+                {/* Menú de configuración */}
+          <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
+            <MoreVert />
+          </IconButton>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+            {/* Agregar opciones móviles si hay sesión iniciada */}
+            {isMobile && sessionId && (
+              <>
+                <MenuItem onClick={() => { handleMenuClose(); navigate('/history'); }}>
+                  <Person sx={{ mr: 1 }} /> {t('NavBar.profile')}
                 </MenuItem>
-              )}
-              
-              <MenuItem onClick={handleLanguageMenuOpen}>
-                <Language sx={{ mr: 1 }} /> {t('NavBar.changeLanguage')}
+                <MenuItem onClick={() => { handleMenuClose(); logout(); }}>
+                  <Logout sx={{ mr: 1 }} /> {t('NavBar.logout')}
+                </MenuItem>
+
+              </>
+            )}
+
+            {sessionId && (
+              <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
+                <Settings sx={{ mr: 1 }} /> {t('NavBar.settings')}
               </MenuItem>
+            )}
 
-              <Menu
-                anchorEl={languageMenuAnchorEl}
-                open={Boolean(languageMenuAnchorEl)}
-                onClose={handleLanguageMenuClose}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-              >
-                <MenuItem onClick={() => changeLanguage('en')}>
-                  <img src="/images/flags/uk.png" alt="English" style={{ width: 20, height: 15, marginRight: 10 }} />
-                  {t('NavBar.english')}
-                </MenuItem>
-                <MenuItem onClick={() => changeLanguage('es')}>
-                  <img src="/images/flags/spain.png" alt="Español" style={{ width: 20, height: 15, marginRight: 10 }} />
-                  {t('NavBar.spanish')}
-                </MenuItem>
-              </Menu>
+            <MenuItem onClick={handleLanguageMenuOpen}>
+              <Language sx={{ mr: 1 }} /> {t('NavBar.changeLanguage')}
+            </MenuItem>
+
+            <Menu
+              anchorEl={languageMenuAnchorEl}
+              open={Boolean(languageMenuAnchorEl)}
+              onClose={handleLanguageMenuClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem onClick={() => changeLanguage('en')}>
+                <img src="/images/flags/uk.png" alt="English" style={{ width: 20, height: 15, marginRight: 10 }} />
+                {t('NavBar.english')}
+              </MenuItem>
+              <MenuItem onClick={() => changeLanguage('es')}>
+                <img src="/images/flags/spain.png" alt="Español" style={{ width: 20, height: 15, marginRight: 10 }} />
+                {t('NavBar.spanish')}
+              </MenuItem>
             </Menu>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>
   );
 };
+
+
 
 export default NavMenu;

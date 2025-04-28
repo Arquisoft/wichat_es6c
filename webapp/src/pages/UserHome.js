@@ -11,9 +11,9 @@ import {
   Avatar,
   Grid,
   LinearProgress,
-  Chip,
   Skeleton,
   useTheme,
+  useMediaQuery
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ const HomePage = () => {
   const [userStats, setUserStats] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loadingStats, setLoadingStats] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); 
 
   const gameModes = [
     {
@@ -116,7 +117,7 @@ const HomePage = () => {
         height: "100vh",
         p: { xs: 2, md: 4 },
         overflow: "hidden",
-        alignItems: "center", // Centrado vertical
+        alignItems: "flex-start", // Centrado vertical
         justifyContent: "center", // Centrado horizontal
       }}
     >
@@ -129,7 +130,7 @@ const HomePage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center", // Centrado vertical
+          justifyContent: "flex-start", // Centrado vertical
           overflow: "hidden",
           p: { xs: 1, sm: 2 },
         }}
@@ -146,7 +147,7 @@ const HomePage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center", 
+          justifyContent: "flex-start", 
           overflow: "hidden",
           p: { xs: 1, sm: 2 },
           height: "100%",
@@ -160,7 +161,8 @@ const HomePage = () => {
             borderRadius: 2,
             overflow: "hidden",
             boxShadow: 3,
-            mb: 3,
+            mb: 2, // Reducir el margen inferior
+            mt: { xs: 2, sm: 4 },
           }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -288,6 +290,7 @@ const HomePage = () => {
         </Box>
 
         {/* Botón más opciones */}
+        {!isMobile && (
         <Button
           variant="outlined"
           size="large"
@@ -302,6 +305,7 @@ const HomePage = () => {
         >
           {t("UserHome.moreOptions")}
         </Button>
+        )}
       </Grid>
 
       {/* Columna derecha - Info usuario */}

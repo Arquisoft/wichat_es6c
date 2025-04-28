@@ -121,7 +121,9 @@
         "totalTime": "Tiempo total"
     },
     "AIGreeting": {
-        "message": "Saluda al usuario de manera amigable, motivadora y  muy breve. Usa emojis comunes como 😊, 🎮, 📜, y 🎉 para hacerlo más atractivo. Pregunta al usuario si está listo para jugar. Usa un tono amigable y anímalo a divertirse."
+        "message": "Da la bienvenida al usuario de manera cálida, amigable y motivadora máximo ocho palabras. Usa emojis atractivos como 😊, 🎮, 📜 y 🎉 para hacerlo animado. ¡Anímalo a divertirse y pregúntale si está listo para empezar a jugar!", 
+        "messageFail": "¡Hola! ¡Espero que tengas un gran día!"
+
     },
     "Footer":{
 

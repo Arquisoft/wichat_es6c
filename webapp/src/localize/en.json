@@ -121,7 +121,10 @@
         "totalTime": "Total time"
     },
     "AIGreeting": {
-        "message": "Greet the user in a friendly, motivating, and very brief manner. Use common emojis like 😊, 🎮, 📜, and 🎉 to make it more engaging. Ask the user if they are ready to play. Use a friendly tone and encourage them to have fun."
+        "message": "Welcome the user warmly in a concise, friendly, and motivating tone maximum eight words. Use engaging emojis like 😊, 🎮, 📜, and 🎉 to make it lively. Encourage them to have fun and ask if they're ready to start playing!", 
+
+
+        "messageFail": "Hello! I hope you have a great day!"
     },
     "Footer":{
 
