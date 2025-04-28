@@ -1,13 +1,16 @@
 import { React, useState, useEffect, useMemo } from 'react';
-import { Button, Stack, Typography, Box } from '@mui/material';
+import { Button, Stack, Typography, Box, useMediaQuery } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function GameMode() {
   const [gameType, setGameType] = useState('');
   const location = useLocation();
   const [buttonList, setButtonList] = useState([]);
-
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { t } = useTranslation()
 
@@ -43,49 +46,89 @@ function GameMode() {
     navigate(item.path, { state: { mode: item.mode, name: item.name } });
   };
 
+  const handleGoBack = () => {
+    navigate('/game-type');
+  };
+  
   return (
     <Stack
       direction="column"
       alignItems="center"
-      spacing={3}
-      sx={{ width: "100%", justifyContent: "center", height: "100vh" }}
+      spacing={4}
+      sx={{
+        width: "100%",
+        justifyContent: "center",
+        height: "100%",
+        px: "5%",
+        py: "5%",
+        boxSizing: 'border-box',
+        position: 'relative'
+      }}
     >
+      <Button
+        variant="outlined"
+        onClick={handleGoBack}
+        startIcon={<ArrowBackIcon />}
+        sx={{
+          position: "absolute",
+          top: "4%", 
+          left: "5%", 
+          width: { xs: "40%", sm: "20%" }, 
+          fontSize: { xs: "0.8rem", sm: "1rem" },
+          textTransform: "none",
+          color: "#ffffff",
+          border: "0.1rem solid rgba(255, 255, 255, 0.4)",
+          borderRadius: "1rem", 
+          fontWeight: "bold",
+          background: "rgba(128, 0, 128, 0.48)",
+          boxShadow: "0 0.5rem 1.5rem rgba(106, 13, 173, 0.53)", 
+          transition: "all 0.4s ease",
+          "&:hover": {
+            background: "rgba(128, 0, 128, 0.4)",
+            borderColor: "rgba(255, 255, 255, 0.6)",
+            transform: "scale(1.08)", 
+            boxShadow: "0 0.6rem 1.8rem rgba(75, 0, 130, 0.5)", 
+          },
+        }}
+      >
+        {t("GameMode.goBack")}
+      </Button>
+
+
       <Typography
         variant="h4"
         sx={{
-          marginBottom: '40px',
           fontWeight: 'bold',
           color: '#0a0a0a',
-          fontSize: '2.5rem',
-          letterSpacing: '1px',
+          fontSize: { xs: '2rem', sm: '2.5rem' },
           textAlign: 'center',
+          letterSpacing: '1px',
         }}
       >
         {t("GameMode.chooseTheme")}
       </Typography>
 
-      {/* Stack for adding the buttons */}
       <Stack
-        direction="row"
-        spacing={2}
+        direction={isSmallScreen ? 'column' : 'row'}
+        spacing={3}
         alignItems="center"
-        sx={{ width: "100%", justifyContent: "center" }}
+        justifyContent="center"
+        sx={{ width: '100%' }}
       >
-        {/* Creates a new button for each element in buttonList*/}
         {buttonList.map((item, index) => (
           <Button
             key={index}
             variant="contained"
             onClick={() => handleGameMode(item)}
             sx={{
-              width: "300px",
-              height: "350px",
+              width: { xs: '80%', sm: '300px' },
+              height: { xs: '200px', sm: '350px' },
               fontSize: '16px',
-              textAlign: "center",
               textTransform: 'none',
-              padding: '0',
+              padding: 0,
               position: 'relative',
               overflow: 'hidden',
+              borderRadius: 2,
             }}
           >
             <Box
