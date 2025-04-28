@@ -48,7 +48,7 @@ const GameFinished = () => {
 
       
     }
-  }, [score]);
+  }, [score, maxScore]);
 
   const handleRestart = () => {
     navigate('/game-mode', { state: { type: gameType } });
