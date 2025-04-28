@@ -41,12 +41,13 @@ const AIGreeting = () => {
   }
 
   return (
-    <Box sx={{ p: 1, backgroundColor: "background.paper", borderRadius: 2, boxShadow: 3 }}>
-      <Typography 
-      variant="h6" 
-      color="text.primary" 
-      textAlign="center"
-      fontSize={{ xs: "0.8rem", sm: "1rem", md: "1.2rem", lg: "1.8rem" }}
+    <Box 
+    sx={{ p: { xs: "1em", }, backgroundColor: "background.paper", borderRadius: 2, boxShadow: 3 }}>
+      <Typography
+        variant="h6"
+        color="text.primary"
+        textAlign="center"
+        fontSize={{ xs: "0.8rem", sm: "1rem", md: "1.2rem", lg: "1.8rem" }}
       >
         <Typewriter
           words={[greeting]}

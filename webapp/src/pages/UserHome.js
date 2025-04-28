@@ -347,16 +347,16 @@ const HomePage = () => {
             {userStats && (
               <Card sx={{ p: 2 }}>
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                  Estadísticas
+                {t('History.generalStats')}
                 </Typography>
 
                 <Grid container spacing={1} sx={{ mb: 1 }}>
                   <Grid item xs={6}>
-                    <Typography variant="body2">Partidas</Typography>
+                    <Typography variant="body2">{t('History.totalGames')}</Typography>
                     <Typography variant="h6">{userStats.totalGames || 0}</Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2">Aciertos</Typography>
+                    <Typography variant="body2">{t('History.correct')}</Typography>
                     <Typography variant="h6">
                       {userStats.totalCorrect
                         ? `${((userStats.totalCorrect / (userStats.totalWrong + userStats.totalCorrect)) * 100).toFixed(2)}%`
@@ -379,7 +379,7 @@ const HomePage = () => {
                   }}
                 />
                 <Typography variant="caption">
-                  Aciertos frente a errores: {userStats.totalCorrect || 0} / {userStats.totalWrong || 0}
+                {t('History.correct')} / {t('History.incorrect')}: {userStats.totalCorrect || 0} / {userStats.totalWrong || 0}
                 </Typography>
               </Card>
             )}
