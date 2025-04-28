@@ -5,7 +5,7 @@ const dataService = require('./question-data-service');
 const generateService = require('./question-generate-service');
 const app = express();
 const port = 8004;
-
+var repeatedAnswers = [];
 // Middleware to parse JSON in request body
 app.use(express.json());
 
@@ -54,18 +54,22 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
       }
     }
 
-    const question = await dataService.getRandomQuestionByCategory(language, category);
-
+    const question = await dataService.getRandomQuestionByCategory(language, category, repeatedAnswers);
+    
     if (!question) {
       return res.status(404).json({ message: "There are no more questions available." });
     }
-
+    repeatedAnswers.push(question.correctAnswer);
+    if(repeatedAnswers.includes(question.correctAnswer)){
+      repeatedAnswers=[];
+    }
     await dataService.deleteQuestionById(question._id);
     res.json(question);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 const server = app.listen(port, () => {
   console.log(`Question Service listening at http://localhost:${port}`);

@@ -75,7 +75,7 @@ async function getImagesFromWikidata(category, language, numImages) {
             if (!fields) {
                 throw new Error(`Fields not defined for category: ${category}`);
             }
-            const { label, image, extra } = fields;
+            const { label, image, extra, es_label,en_label } = fields;
 
             const filteredImages = data
                 .filter(item => item[label] && item[image])  
@@ -83,7 +83,9 @@ async function getImagesFromWikidata(category, language, numImages) {
                 .map(item => ({
                     label: item[label].value,
                     imageUrl: item[image].value,
-                    country: item[extra].value
+                    country: item[extra].value,
+                    es_label: item[es_label].value,
+                    en_label: item[en_label].value,
                 }));
 
             return filteredImages;
@@ -151,7 +153,9 @@ async function processQuestions(images,category, language) {
             correctAnswer: image.country,
             category: category,
             language: language,
-            imageUrl: image.imageUrl
+            imageUrl: image.imageUrl,
+            enAnswer: image.en_label,
+            esAnswer: image.es_label
         };
         console.log(newQuestion);
         questions.push(newQuestion);

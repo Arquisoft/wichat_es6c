@@ -60,17 +60,24 @@ module.exports = {
         }
     },
 
-  
-
-    getRandomQuestionByCategory: async function (language, categoryParam) {
+    getRandomQuestionByCategory: async function(language, categoryParam,repeatedAnswers=[]) {
         try {
-            const question = await Question.aggregate([
+            var question = await Question.aggregate([
                 { $match: { category: categoryParam } },
                 { $match: { language: language } },
+                { $match: { correctAnswer: { $nin: repeatedAnswers } } }, // Exclude repeated answers
                 { $sample: { size: 1 } } // Select a random document
             ]);
-
-            return question.length > 0 ? question[0] : null;
+            if (question.length === 0) {
+                question = await Question.aggregate([
+                    { $match: { category: categoryParam } },
+                    { $match: { language: language } },
+                   
+                    { $sample: { size: 1 } } // Select a random document
+                ]);
+            }
+    
+            return question.length > 0 ? question[0] : null; 
         } catch (error) {
             console.error("Error fetching random question:", error);
             throw new Error(error.message);

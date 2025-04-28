@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
@@ -24,6 +24,9 @@ const GameFinished = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
 
+  const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
+
+
   useEffect(() => {
     if (location.state) {
       setScore(location.state.score);
@@ -40,6 +43,19 @@ const GameFinished = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [location]);
+
+  // Efecto para reproducir sonido si hay confeti
+  useEffect(() => {
+    if (score >= maxScore / 2) {
+
+
+      const winningAudio = winningSoundRef.current;
+      winningAudio.volume = 1;
+      winningAudio.play();
+
+      
+    }
+  }, [score]);
 
   const handleRestart = () => {
     navigate('/game-mode', { state: { type: gameType } });
@@ -122,7 +138,6 @@ const GameFinished = () => {
         </Box>
       </Stack>
 
-      {/* Buttons */}
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
         <Button
           variant="contained"

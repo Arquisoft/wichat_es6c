@@ -123,5 +123,9 @@
         "title": "Wichat",
         "github": "GitHub",
         "apiDocs": "API Docs"
+    },
+    "NotFound":{
+        "title": "Página no encontrada",
+        "button_msg": "Volver al inicio"
     }
 }
