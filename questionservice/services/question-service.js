@@ -59,10 +59,11 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     if (!question) {
       return res.status(404).json({ message: "There are no more questions available." });
     }
-    repeatedAnswers.push(question.correctAnswer);
     if(repeatedAnswers.includes(question.correctAnswer)){
       repeatedAnswers=[];
     }
+    repeatedAnswers.push(question.correctAnswer);
+    
     await dataService.deleteQuestionById(question._id);
     res.json(question);
   } catch (error) {

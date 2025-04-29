@@ -605,7 +605,7 @@ function Game() {
             hideHeader={true}
             header={
               "Tienes que adivinar un " +
-              questionData.category +
+              gameModeName +
               ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
               userMessages.join(", ")
             }

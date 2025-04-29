@@ -46,16 +46,21 @@ const GameFinished = () => {
 
   // Efecto para reproducir sonido si hay confeti
   useEffect(() => {
-    if (score >= maxScore / 2) {
-
+    if (maxScore > 0 && score >= (maxScore / 2)) {
+      console.log(score, maxScore / 2)
 
       const winningAudio = winningSoundRef.current;
       winningAudio.volume = 1;
-      winningAudio.play();
+      winningAudio.play().catch((error) => {
+        // Silenciosamente ignorar el error si autoplay está bloqueado
+        if (error.name !== 'AbortError') {
+          console.warn('Autoplay bloqueado:', error.message);
+        }
+      });
 
       
     }
-  }, [score]);
+  }, [score, maxScore]);
 
   const handleRestart = () => {
     navigate('/game-mode', { state: { type: gameType } });
