@@ -125,13 +125,12 @@ async function getIncorrectOptions(correctAnswer, category, lang) {
                 'Accept': 'application/json'
             }
         });
-
         const data = response.data.results.bindings
                     .map(item => item.label.value) 
                     .filter(label => label && !/\d/.test(label));  
     
         const incorrectOptions = data.filter(option => option !== correctAnswer);
-    
+        
         return incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
     } catch (error) {
         console.error(`Error retrieving countries: ${error.message}`);
