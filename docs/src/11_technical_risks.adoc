@@ -34,6 +34,17 @@ endif::arc42help[]
 | Nunca se ha trabajado con un LLM | Esta es la primera vez que el equipo trabaja con un modelo de lenguaje o con ese en particular. Esto puede llevar a un retraso debido a la necesidad de obtener información sobre el funcioanmiento de este.
 | Tiempos de respuesta de Wikidata y el LLM | Al ser parte integral de la aplicación la conexión con Wikidata y el modelo de lenguaje si hay algún problema en la conexión que haga que sus tiempos de respuesta sean demasiado largos esto puede repercutir en nuestra aplicación. 
 |Trabajo en equipo | Los miembros del equipo no se conocen ni han trabajado en conjunto anteriormente, se desconoce las formas de trabajo y nivel de compromiso de cada uno. Hay que tener en cuenta la posibilidad de abandono de uno de los integrantes.
+| Dependencia de la API de Wikidata | La aplicación depende de la API de Wikidata para obtener información. Si la API no está disponible o cambia, esto puede afectar el funcionamiento de la aplicación.
+| Dependencia de la API del LLM | La aplicación depende de la API del modelo de lenguaje para obtener información. Si la API no está disponible o cambia, esto puede afectar el funcionamiento de la aplicación.
+| Dependencia de la red electrica | La aplicación depende de la red electrica para su funcionamiento. Si hay un corte de luz o un problema con la red electrica, esto puede afectar el funcionamiento de la aplicación.
 |===
 
 === Deuda Técnica
+|===
+|Deuda|Descripcion
+| No se cambia de LLM| La aplicación no puede cambiar de modelo de LLM en caso deque el utilizado no esté disponible. Si este fallara no se podría utilizar el chat.
+| Falta de paginación en el historial| La aplicación no tiene paginación en el historial de mensajes. Esto puede afectar el rendimiento de la aplicación si hay muchos mensajes en el historial y hacer incomodo para el usuario buscar partidas.
+| Mal funcionamiento del juego al acabar la partida | La aplicación no funciona perfectamente al finalizar una partida, tarda más tiempo del esperado y proboca que los sonidos se comporten de forma extrña.
+| No se utiliza un modelo de mricroservisios| La aplicación divide el código de una forma parecida a est aruitectura, pero comparten la misma base de datos y no están completamente desacoplados. Esto puede afectar el rendimiento de la aplicación y hacer que sea más difícil de escalar.
+
+|===
