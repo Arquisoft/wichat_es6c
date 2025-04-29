@@ -1,29 +1,27 @@
 import React from 'react';
-import { Button, Stack, Typography, Box } from '@mui/material';
+import { Button, Stack, Typography, Box, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
 function GameType() {
-
-  // List of tuples. Saves the text, the path and the game mode of the buttons.
   const buttonList = [
     { text: 'Normal', type: 'normal', imageSrc: '/images/gameMode/default-type.jpg' },
     { text: 'VS IA', type: 'vs', imageSrc: '/images/gameMode/vs-ia.jpg' }
   ];
 
-  const handleGoBack = () => {
-    navigate('/homepage');
-  };
-
   const { t } = useTranslation();
-
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleGameMode = (item) => {
-
     navigate("/game-mode", { state: { type: item.type } });
+  };
+
+  const handleGoBack = () => {
+    navigate('/homepage');
   };
 
   return (
@@ -38,9 +36,12 @@ function GameType() {
         px: "5%",
         py: "5%",
         boxSizing: 'border-box',
+        backgroundColor: '#f5f5f5', // Fondo adaptable
         position: 'relative'
       }}
     >
+
+
       <Button
         variant="outlined"
         onClick={handleGoBack}
@@ -63,52 +64,53 @@ function GameType() {
             background: "rgba(128, 0, 128, 0.4)",
             borderColor: "rgba(255, 255, 255, 0.6)",
             transform: "scale(1.08)",
-            boxShadow: "0 0.6rem 1.8rem rgba(75, 0, 130, 0.5)",
+            boxShadow: "0 0.6rem 1.8rem rgba(75, 0, 130, 0.5)", 
           },
         }}
       >
         {t("GameMode.goBack")}
       </Button>
 
-
       <Typography
         variant="h4"
         sx={{
-          marginBottom: '40px',
           fontWeight: 'bold',
           color: '#0a0a0a',
-          fontSize: '2.5rem',
-          letterSpacing: '1px',
+          fontSize: { xs: '1.8rem', sm: '2.5rem' }, // Tamaño responsivo
           textAlign: 'center',
+          letterSpacing: '1px',
         }}
       >
         {t("GameType.chooseGame")}
       </Typography>
 
-      {/* Stack for adding the buttons */}
+
+
       <Stack
-        direction="row"
-        spacing={2}
+        direction={isSmallScreen ? 'column' : 'row'}
+        spacing={3}
         alignItems="center"
-        sx={{ width: "100%", justifyContent: "center" }}
+        justifyContent="center"
+        sx={{ width: '100%' }}
       >
 
 
-        {/* Creates a new button for each element in buttonList*/}
+
         {buttonList.map((item, index) => (
           <Button
             key={index}
             variant="contained"
             onClick={() => handleGameMode(item)}
             sx={{
-              width: "300px",
-              height: "350px",
+              width: { xs: '90%', sm: '40%' },
+              height: { xs: '25vh', sm: '35vh', md: "45vh" },
               fontSize: '16px',
-              textAlign: "center",
               textTransform: 'none',
-              padding: '0',
+              padding: 0,
               position: 'relative',
               overflow: 'hidden',
+              borderRadius: 2,
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // Sombra para mejor visibilidad
             }}
           >
             <Box
@@ -119,6 +121,7 @@ function GameType() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
+                objectPosition: 'center',
                 position: 'absolute',
                 top: 0,
                 left: 0,

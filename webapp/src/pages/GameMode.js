@@ -7,19 +7,19 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function GameMode() {
   const [gameType, setGameType] = useState('');
-  const location = useLocation();
   const [buttonList, setButtonList] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { t } = useTranslation()
-
-  // List of tuples. Saves the text, the path and the game mode of the buttons.
   const normalButtonList = useMemo(() => [
     { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
     { text: 'Famosos', path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
     { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
   ], []);
+
   const vsButtonList = useMemo(() => [
     { text: 'Famosos', path: '/game', mode: 'famous_people', name: "famous people", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
     { text: 'Banderas', path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
@@ -27,7 +27,6 @@ function GameMode() {
 
   useEffect(() => {
     if (location.state?.type) {
-
       setGameType(location.state.type);
     }
   }, [location]);
@@ -38,17 +37,15 @@ function GameMode() {
     } else if (gameType === 'vs') {
       setButtonList(vsButtonList);
     }
-  }, [gameType, normalButtonList, vsButtonList]); // Added normalButtonList and vsButtonList
-
-  const navigate = useNavigate();
+  }, [gameType, normalButtonList, vsButtonList]);
 
   const handleGameMode = (item) => {
     navigate(item.path, { state: { mode: item.mode, name: item.name } });
   };
-
   const handleGoBack = () => {
     navigate('/game-type');
   };
+
   
   return (
     <Stack

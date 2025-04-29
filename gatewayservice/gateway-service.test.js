@@ -396,4 +396,56 @@ describe('Gateway Service', () => {
     expect(response.status).toBe(500);
     expect(response.body).toHaveProperty('error', 'Error updating user profile');
   });
+
+  it('should forward the /questions request to the question service', async () => {
+    axios.post.mockResolvedValueOnce({
+      data: { success: true, message: 'Questions added successfully' },
+    });
+
+    const questions = [
+      {
+        question: "Which country does this image belong to?",
+        options: ["Singapore", "Guatemala", "Paraguay", "Poland"],
+        correctAnswer: "Poland",
+        category: "country",
+        language: "en",
+        imageUrl: "http://example.com/image.jpg",
+      },
+    ];
+
+    const response = await request(app)
+      .post('/questions')
+      .send({ questions });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ success: true, message: 'Questions added successfully' });
+
+
+    expect(axios.post).toHaveBeenCalledWith(
+      'http://localhost:8004/questions',
+      { questions }
+    );
+  });
+
+  it('should handle errors from the question service', async () => {
+    axios.post.mockRejectedValueOnce(new Error('Failed to add questions'));
+
+    const questions = [
+      {
+        question: "Which country does this image belong to?",
+        options: ["Singapore", "Guatemala", "Paraguay", "Poland"],
+        correctAnswer: "Poland",
+        category: "country",
+        language: "en",
+        imageUrl: "http://example.com/image.jpg",
+      },
+    ];
+
+    const response = await request(app)
+      .post('/questions')
+      .send({ questions });
+
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty('error', 'Failed to add questions');
+  });
 });

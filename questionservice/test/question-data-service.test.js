@@ -76,7 +76,7 @@ afterEach(async () => {
 
 describe('Question Data Service', () => {
   it('should return the number of questions by category', async () => {
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','country');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es', 'country');
     expect(numberQuestions).toBe(3);
   }
   );
@@ -91,7 +91,7 @@ describe('Question Data Service', () => {
       imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     };
     await dataService.saveQuestion(newQuestion);
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','country');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es', 'country');
     expect(numberQuestions).toBe(4);
   }
   );
@@ -106,14 +106,14 @@ describe('Question Data Service', () => {
       imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     };
     await dataService.saveQuestion(newQuestion);
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','test');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es', 'test');
     expect(numberQuestions).toBe(1);
   }
   );
 
   it('should return a random question of an existant category', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('es','country');
-    
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es', 'country');
+
     const isQuestionValid = questions.some(
       (q) =>
         q.question === randomQuestion.question &&
@@ -128,15 +128,15 @@ describe('Question Data Service', () => {
   );
 
   it('should delete a question from its category', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('es','country');
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es', 'country');
     await dataService.deleteQuestionById(randomQuestion._id);
-    const numberQuestions = await dataService.getNumberQuestionsByCategory('es','country');
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es', 'country');
     expect(numberQuestions).toBe(2);
   }
   );
 
   it('should return null from an empty category', async () => {
-    const randomQuestion = await dataService.getRandomQuestionByCategory('es','prueba');
+    const randomQuestion = await dataService.getRandomQuestionByCategory('es', 'prueba');
     // Verifica que no haya preguntas en la categoría "prueba"
     expect(randomQuestion).toBe(null);
   }
@@ -146,8 +146,8 @@ describe('Question Data Service', () => {
     await mongoose.disconnect();
 
     await expect(dataService.getNumberQuestionsByCategory('es', 'country'))
-        .rejects
-        .toThrow('Client must be connected before running operations');
+      .rejects
+      .toThrow('Client must be connected before running operations');
   }
   );
 
@@ -162,8 +162,8 @@ describe('Question Data Service', () => {
       imageUrl: "http://commons.wikimedia.org/wiki/Special:FilePath/Channel%20Island%20NT.jpg"
     };
     await expect(dataService.saveQuestion(newQuestion))
-        .rejects
-        .toThrow('Client must be connected before running operations');
+      .rejects
+      .toThrow('Client must be connected before running operations');
   }
   );
 
@@ -172,8 +172,8 @@ describe('Question Data Service', () => {
     await mongoose.disconnect();
 
     await expect(dataService.deleteQuestionById(randomQuestion._id))
-        .rejects
-        .toThrow('Client must be connected before running operations');
+      .rejects
+      .toThrow('Client must be connected before running operations');
   }
   );
 
@@ -181,8 +181,34 @@ describe('Question Data Service', () => {
     await mongoose.disconnect();
 
     await expect(dataService.getRandomQuestionByCategory('es', 'country'))
-        .rejects
-        .toThrow('Client must be connected before running operations');
+      .rejects
+      .toThrow('Client must be connected before running operations');
   }
   );
+
+  it('should save multiple questions to the database', async () => {
+    const newQuestions = [
+      {
+        question: "¿Cuál es la capital de Francia?",
+        options: ["París", "Madrid", "Roma", "Berlín"],
+        correctAnswer: "París",
+        category: "geography",
+        language: "es",
+        imageUrl: "http://example.com/image1.jpg",
+      },
+      {
+        question: "¿Cuál es la capital de Alemania?",
+        options: ["París", "Madrid", "Roma", "Berlín"],
+        correctAnswer: "Berlín",
+        category: "geography",
+        language: "es",
+        imageUrl: "http://example.com/image2.jpg",
+      },
+    ];
+    await dataService.saveQuestions(newQuestions);
+
+    const numberQuestions = await dataService.getNumberQuestionsByCategory('es', 'geography');
+    expect(numberQuestions).toBe(2);
+  });
+
 });
