@@ -17,23 +17,23 @@ Estos incluyen:
 ****
 endif::arc42help[]
 
-La aplicación WIChat permite a los usuarios participar a un concurso online de preguntas y respuestas similar a "Saber y Ganar". 
+La aplicación WIChat permite a los usuarios participar en un concurso online de preguntas y respuestas similar a "Saber y Ganar". 
 
-El usario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de que lugar se trata.
-El usario se encontrará con una serie de modos de juego, entre los que se encuentran:
+El usuario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de qué lugar se trata.
+El usuario se encontrará con una serie de modos de juego, entre los que se encuentran:
 
 * "Modo normal": el usuario tiene un tiempo limitado para adivinar la imagen y se puede pedirle ayuda a un LLM para facilitarle la tarea. Dentro de este modo además hay: 
 
 * "Modo VS": El usuario juega haciendo que el LLM adivine lo que un texto describe. El LLM tiene un tiempo limitado para adivinar.
 
-Hambos tienen varias submodalidades, como por ejemplo:
+Ambos tienen varias submodalidades, como por ejemplo:
 
-- "Paises": El usuario tendrá que adivinar en base a la foto de un lugar de un pais y la ia en base al nombre del pais.
-- "Bandera": El usuario tendrá que adivinar por la imágen de una bandera.
-- "Famosos": El usuario tendrá que adivinar por la imágen de una persona famosa y la ia en base a un texto que describe a esa persona.
+- "Países": El usuario tendrá que adivinar en base a la foto de un lugar de un país y la ia en base al nombre del país.
+- "Bandera": El usuario tendrá que adivinar por la imagen de una bandera.
+- "Famosos": El usuario tendrá que adivinar por la imagen de una persona famosa y la ia en base a un texto que describe a esa persona.
 
 
-Tanto las pistas como las imágenes son generadas automaticamnete a partir de Wikidata (https://www.wikidata.org/). En caso de las pistas se tratan cuidadosamente para que no contengan información que pueda dar la respuesta correcta de manera directa.
+Tanto las pistas como las imágenes son generadas automáticamnete a partir de Wikidata (https://www.wikidata.org/). En caso de las pistas se tratan cuidadosamente para que no contengan información que pueda dar la respuesta correcta de manera directa.
 
 === Resumen de Requisitos
 
@@ -65,7 +65,7 @@ endif::arc42help[]
 * Los usuarios registrados podrán ver su historial de participaciones.
 * Los usuarios podrán ver su puntuación y la de otros usuarios.
 * Se podrá interactuar con la aplicación para obtener pistas gracias a un modelo de lenguaje.
-* Las preguntas y las pistas serán genrados automaticamente a partir de los datos de Wikidata.
+* Las preguntas y las pistas serán generados automáticamente a partir de los datos de Wikidata.
 * El sistema permitirá acceder a los datos de los usuarios y de las preguntas accedidas mediante unas APIs.
 * Habrá un plazo de tiempo determinado para responder a las preguntas.
 
@@ -138,7 +138,7 @@ endif::arc42help[]
 | Universidad/Uniovi | _<http://uniovi.es/>_ | Que se emplee el conocimiento lo mejor posible para tomar las decisiones arquitectónicas más adecuadas favoreciendo el aprendizaje.
 | Cliente/RTVE | _<https://www.rtve.es/>_ | Que las decisiones arquitectónicas sean las más adecuadas para que la aplicación funcione de la manera que esperan. 
 | Empresa/ChattySw | _<http://ChattySw.es/>_ | Que las decisiones arquitectónicas sean las más adecuadas para que la aplicación funcione de la manera que esperan los clientes. 
-| Empresa/Empathy | _<https://empathy.ai/>_ | Interesada en que durante el desarrollo se utilice su tecnología de procesamiento de lenguaje natural de la manera más eficiente y adecada para que tengamos un buen aprendizaje y para realizar pruebas que aporten la mayor parte .
+| Empresa/Empathy | _<https://empathy.ai/>_ | Interesada en que durante el desarrollo se utilice su tecnología de procesamiento de lenguaje natural de la manera más eficiente y adecuada para que tengamos un buen aprendizaje y para realizar pruebas que aporten la mayor parte .
 | Alumno/Jorge Puente García | _<https://github.com/JorgeePG>_ | Que las decisiones arquitectónicas sean las más adecuadas y que tengan una aplicabilidad dentro de las posibilidades de los desarrolladores.
 | Alumno/Claudia Rodriguez Fuertes | _<https://github.com/claudiaRFS>_ | Que las decisiones arquitectónicas sean las más adecuadas y que tengan una aplicabilidad dentro de las posibilidades de los desarrolladores.
 | Alumno/German García de la Llana | _<https://github.com/germandelallana>_ | Que las decisiones arquitectónicas sean las más adecuadas y que tengan una aplicabilidad dentro de las posibilidades de los desarrolladores.
