@@ -1,0 +1,34 @@
+---
+config:
+  theme: forest
+---
+flowchart LR
+    A{{"Objetivos de Calidad"}} --> nU("Usabilidad") & nS("Seguridad") & nF("Fiabilidad") & nR("Rendimiento") & nM("Mantenibilidad") & nP("Portabilidad") & nE("Eficiencia")
+
+    nU --> u1(["Interfaz intuitiva y accesible"])
+    nU --> u2(["Facilidad de uso"])
+    
+    nS --> s1(["Autenticación segura y cifrado de datos"])
+    nS --> s2(["Protección contra accesos no autorizados"])
+    
+    nF --> f1(["El sistema debe ser estable y confiable"])
+    nF --> f2(["Manejo adecuado de errores y excepciones"])
+    
+    nR --> r1(["Pruebas de carga"])
+    nR --> r2(["Tiempo de respuesta de la web < 3 s"])
+    
+    nM --> m1(["Código bien documentado"])
+    nM --> m2(["Facilidad para agregar nuevas funcionalidades"])
+    
+    nP --> p1(["Compatible con diferentes dispositivos"])
+    
+    nE --> e1(["Uso óptimo de recursos del servidor"])
+
+    style A stroke:#000000,fill:#B3E5FC,color:#000000
+    style nU stroke:#000000,fill:#69D7A7
+    style nS stroke:#000000,fill:#F19A7B
+    style nF stroke:#000000,fill:#EECF8F
+    style nR stroke:#000000,fill:#9498F8
+    style nM stroke:#000000,fill:#BABCF1
+    style nP stroke:#000000,fill:#D4EFDF
+    style nE stroke:#000000,fill:#F7E8CA

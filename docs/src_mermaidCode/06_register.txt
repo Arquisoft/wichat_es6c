@@ -1,0 +1,23 @@
+---
+config:
+  theme: forest
+---
+sequenceDiagram
+    participant Usuario
+    participant WebApp
+    participant API Gateway
+    participant User Service
+    participant MongoDB
+
+    Usuario ->> WebApp: Solicita registrarse
+    WebApp -->> Usuario: Redijire a la página de registro
+    Usuario ->> WebApp: Completa y envia el formulario de registro
+    WebApp ->> API Gateway: POST /adduser (username, password)
+    API Gateway ->> User Service: POST /adduser (username, password)
+    User Service ->> User Service: Valida los datos
+    User Service ->> User Service: Hashea la contraseña
+    User Service ->> MongoDB: Guarda el usuario
+    MongoDB -->> User Service: Respuesta JSON 
+    User Service -->> API Gateway: Respuesta JSON 
+    API Gateway -->> WebApp: Respuesta JSON 
+    WebApp ->> Usuario: Muestra mensaje de éxito 

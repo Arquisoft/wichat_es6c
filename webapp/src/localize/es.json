@@ -1,0 +1,131 @@
+{
+    "UserHome": {
+        "welcome": "¡Bienvenido {{username}}!",
+        "play": "Jugar"
+    },
+    "NavBar": {
+        "nameApp": "WICHAT",
+        "profile": "Perfil",
+        "settings": "Ajustes",
+        "logout": "Cerrar sesión",
+        "changeLanguage": "Cambiar idioma",
+        "APIDocs": "API Docs",
+        "spanish": "Español",
+        "english": "Inglés"
+    },
+    "Register": {
+        "signUp": "Registrarse",
+        "user": "Usuario",
+        "password": "Contraseña",
+        "name": "Nombre",
+        "surname": "Apellidos",
+        "submit": "Enviar",
+        "textForm": "¿Ya tienes una cuenta?",
+        "textFormLink": "Inicia sesión aquí"
+    },
+    "Login": {
+        "sigIn": "Iniciar sesión en Wichat",
+        "user": "Usuario",
+        "sigInConfirm": "Iniciar sesión",
+        "password": "Contraseña",
+        "textForm": "Nuevo en Wichat?",
+        "textFormLink": "Crea una cuenta aquí",
+        "notValidUserOrPassword": "Usuario o contraseña incorrectos",
+        "unknownError": "Error desconocido en el servidor",
+        "nonRespnse": "No se recibió respuesta del servidor",
+        "errorRequest": "Error al enviar la solicitud"
+    },
+    "History": {
+        "profileUpdate": "¡Perfil actualziado correctamente!",
+        "title": "Historial del usuario",
+        "viewHistory": "Ver historial",
+        "viewStats": "Ver estadísticas",
+        "viewRanking": "Ver clasificación",
+        "mainPage": "Menú Principal",
+        "editProfile": "Editar perfil",
+        "cancel": "Cancelar",
+        "updatingProfile": "Actualizando...",
+        "saveChanges": "Guardar cambios",
+        "usernameDisplay": "Usuario: <strong>{{username}}</strong>",
+        "correctAnswers": "Respuestas correctas",
+        "incorrectAnswers": "Respuestas incorrectas",
+        "time": "Tiempo (segundos)",
+        "score": "Puntuación",
+        "gameMode": "Modo de juego",
+        "nameRequired": "El nombre es obligatorio",
+        "maxCharacters": "Máximo 200 caracteres",
+        "surnameRequired": "El apellido es obligatorios",
+        "generalStats": "Estadísticas Generales",
+        "urlNotValid": "URL no válida",
+        "name": "Nombre *",
+        "surname": "Apellidos *",
+        "urlImage": "URL de la imagen *",
+        "description": "Descripción *",
+        "nonStatsAvailable": "No hay estadísticas disponibles",
+        "nonGames": "No hay partidas en el historial",
+        "nonRanking": "No hay datos de ranking en el historial",
+        "distributionAnswers": "Distribución de respuestas",
+        "distributionGames": "Resultados de partidas",
+        "won": "Ganadas",
+        "lost": "Perdidas",
+        "totalGames": "Total partidas",
+        "averageScore": "Promedio de puntos",
+        "totalTime": "Tiempo total",
+        "correct": "Correctas",
+        "incorrect": "Incorrectas",
+        "globalRanking": "Clasificación global",
+        "position": "Posición",
+        "user": "Usuario",
+        "percentageHits": "% Aciertos",
+        "games": "Partidas",
+        "ex": "Ejemplo:"
+
+    },
+    "GameType": {
+        "chooseGame": "Elige un modo de juego"
+    },
+    "GameMode": {
+        "chooseTheme": "Elige una temática",
+        "countryName": "país",
+        "goBack": "Volver atrás"
+
+    },
+    "Game": {
+        "totalScore": "Puntuación total",
+        "loading": "Cargando ronda...",
+        "rounds": "{{round}} de {{TOTAL_ROUNDS}} rondas",
+        "loadingImage": "Cargando imagen...",
+        "loadingNextImage": "Cargando siguiente imagen..."
+    },
+    "ChatLLM": {
+        "noResponse": "No hay respuesta del servidor",
+        "chatTitle": "Chat con IA",
+        "typing": "Escribiendo...",
+        "sendMessage": "Enviar",
+        "typeMessage": "Escribe un mensaje..."
+    },
+    "Game-VS": {
+        "totalScore": "Puntuación total",
+        "loading": "Cargando ronda...",
+        "rounds": "{{round}} de {{TOTAL_ROUNDS}} rondas",
+        "describeMode-country": "Describe el siguiente país"
+    },
+    "GameFinished": {
+        "gameOver": "¡Juego terminado!",
+        "seconds": "segundos",
+        "playAgain": "Volver a jugar",
+        "viewHistory": "Consultar historial",
+        "socoreAchieved": "Puntuación obtenida",
+        "totalTime": "Tiempo total"
+    },
+    "Footer":{
+
+        "title": "Wichat",
+        "github": "GitHub",
+        "apiDocs": "API Docs"
+    },
+    "NotFound":{
+        "title": "Página no encontrada",
+        "button_msg": "Volver al inicio"
+    }
+}

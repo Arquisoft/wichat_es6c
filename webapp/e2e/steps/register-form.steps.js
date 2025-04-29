@@ -3,6 +3,7 @@ const { defineFeature, loadFeature }=require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
 const feature = loadFeature('./features/register-form.feature');
 
+
 let page;
 let browser;
 
@@ -27,22 +28,30 @@ defineFeature(feature, test => {
     
     let username;
     let password;
-
+    let name;
+    let surname;
     given('An unregistered user', async () => {
-      username = "pablo"
-      password = "pabloasw"
-      await expect(page).toClick("button", { text: "Don't have an account? Register here." });
+      username = "german_test"
+      password = "German1234567"
+      name = "german"
+      surname ="de la llana"
+
+
+      await expect(page).toClick('a[href="/register"]');
     });
 
     when('I fill the data in the form and press submit', async () => {
       await expect(page).toFill('input[name="username"]', username);
       await expect(page).toFill('input[name="password"]', password);
-      await expect(page).toClick('button', { text: 'Add User' })
+      await expect(page).toFill('input[name="name"]', name);
+      await expect(page).toFill('input[name="surname"]', surname);
+      await expect(page).toClick('button', { text: 'Submit' })
     });
 
-    then('A confirmation message should be shown in the screen', async () => {
-        await expect(page).toMatchElement("div", { text: "User added successfully" });
-    });
+    then('I should be redirect to the homepage', async () => {
+        await expect(page).toMatchElement('button', { text: "Play" });
+
+      });
   })
 
   afterAll(async ()=>{

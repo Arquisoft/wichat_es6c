@@ -3,7 +3,7 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-building-block-view]]
 
 
-== Building Block View
+== Vista de bloques de construcción
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -42,7 +42,8 @@ See https://docs.arc42.org/section-5/[Building Block View] in the arc42 document
 ****
 endif::arc42help[]
 
-=== Whitebox Overall System
+=== Sistema general de caja blanca
+
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -67,18 +68,35 @@ In the best case you will get away with examples or simple signatures.
 ****
 endif::arc42help[]
 
-_**<Overview Diagram>**_
+image:05_whitebox.jpg["Diagram 5.1: Resumen del Sistema"]
 
 Motivation::
 
-_<text explanation>_
+El propósito principal del sistema es ejecutar un juego de preguntas con imágenes utilizando información obtenida dinámicamente de la Wikidata API y además teniendo la posibilidad de interactuar con un LLM para solicitar su ayuda. Esto permite a los usuarios interactuar con datos reales y actualizados, mejorando la experiencia de usuario y la utilidad de la aplicación. 
 
 
-Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
 
-Important Interfaces::
-_<Description of important interfaces>_
+Bloques de construcción contenidos::
+|===
+|Building Blocks |Description
+
+|WICHAT
+|Parte principal de la aplicación, que controla el juego y la conexión con el resto de bloques.
+|BD
+|Base de datos encargada de almacenar los datos relacionados con los usuarios.
+|Wikidata
+|Fuente de datos a la que se conecta la aplicacion para obtener las imágenes de las preguntas.
+|LLM
+|Modelo de lenguaje con el que el usuario puede interactuar para obtener pistas sobre las preguntas del juego.
+|===
+
+Interfaces importantes::
+* Frontend ↔ API Gateway: Interfaz RESTful para la comunicación entre el frontend y el backend.
+
+* API Gateway ↔ Backend: Interfaz interna para enrutar solicitudes a los microservicios.
+
+* Backend ↔ Base de Datos: Interfaz para acceder y gestionar los datos almacenados.
+
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -102,11 +120,12 @@ Its headline is the name of the black box.
 ****
 endif::arc42help[]
 
-==== <Name black box 1>
-
 ifdef::arc42help[]
 [role="arc42help"]
 ****
+==== <Name black box 1>
+
+
 Here you describe <black box 1>
 according the the following black box template:
 
@@ -117,8 +136,7 @@ according the the following black box template:
 * (Optional) Fulfilled requirements (if you need traceability to requirements).
 * (Optional) Open issues/problems/risks
 
-****
-endif::arc42help[]
+
 
 _<Purpose/Responsibility>_
 
@@ -151,8 +169,11 @@ _<black box template>_
 ==== <Name interface m>
 
 
+****
+endif::arc42help[]
 
-=== Level 2
+
+=== Nivel 2
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -165,42 +186,41 @@ Leave out normal, simple, boring or standardized parts of your system
 ****
 endif::arc42help[]
 
-==== White Box _<building block 1>_
+
+image:05_2_whitebox2.png["Diagram 5.2: Desglose Wichat"]
+
+
+
+Contained Building Blocks::
+|===
+|Building Blocks |Description
+
+|WICHAT App
+|Parte central del proyecto, encargada de comunicar al usuario con el resto de servicios de la aplicación.
+|Question Generator Service
+|Parte de la aplicación encargada de conectarse a Wikidata y obtener imagenes e información para las preguntas del juego.
+|User Service
+|Parte encargada de tratar la información del usuario: puntuación, historial....
+Se conecta al base de datos para almacenar esta información.
+|Authentication Service
+|Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
+|LLM Service
+|Parte encargada de la comunicación con el modelo de lenguaje. Envía la información necesaria para obtener las pistas del jugador y devolverlas.
+|===
 
 ifdef::arc42help[]
 [role="arc42help"]
-****
-...describes the internal structure of _building block 1_.
-****
-endif::arc42help[]
-
-_<white box template>_
-
-==== White Box _<building block 2>_
-
-
-_<white box template>_
-
-...
-
-==== White Box _<building block m>_
-
-
-_<white box template>_
-
-
 
 === Level 3
 
-ifdef::arc42help[]
-[role="arc42help"]
+
 ****
 Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
 
 When you need more detailed levels of your architecture please copy this
 part of arc42 for additional levels.
 ****
-endif::arc42help[]
+
 
 ==== White Box <_building block x.1_>
 
@@ -223,3 +243,5 @@ _<white box template>_
 ==== White Box <_building block y.1_>
 
 _<white box template>_
+
+endif::arc42help[]
