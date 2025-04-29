@@ -37,6 +37,7 @@ function Game() {
   const failAudioRef = useRef(null); // Referencia para el sonido de fallo
   const correctAudioRef = useRef(null); // Referencia para el sonido de respuesta correcta
   const chooseAudioRef = useRef(null); // Referencia para el sonido de elección
+  const failSoundPlayedRef = useRef(false);
   //const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
   const volumeLevel = 0.3; // Ajusta el nivel de volumen entre 0.0 y 1.0
   const [hurryMode, setHurryMode] = useState(false);
@@ -153,8 +154,8 @@ function Game() {
     setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
     setHurryMode(false);
     if (hurryAudioRef.current) hurryAudioRef.current.pause();
-
-  }, [nextQuestionData, fetchQuestion, preloadNextQuestion]);
+    failSoundPlayedRef.current = false;
+  }, [nextQuestionData, fetchQuestion, preloadNextQuestion,failSoundPlayedRef]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
@@ -250,10 +251,10 @@ function Game() {
         if (prevTime <= 1) {
           if (!timeUpTriggered) {
             timeUpTriggered = true;
-            if (failAudioRef.current && failAudioRef.current.paused) {
-              console.log("Se reproduce el audio de fallo");
+            if (failAudioRef.current && failAudioRef.current.paused && !failSoundPlayedRef.current) {
+              failSoundPlayedRef.current = true;
               failAudioRef.current.currentTime = 0;
-              failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
+              failAudioRef.current.volume = volumeLevel;
               failAudioRef.current.play();
             }
             handleTimeUp();
@@ -357,10 +358,10 @@ function Game() {
       (enAnswer && messageLower.includes(enAnswer.toLowerCase())) ||
       (esAnswer && messageLower.includes(esAnswer.toLowerCase()))
     ) {
-      if (failAudioRef.current && failAudioRef.current.paused) {
-        console.log("Se reproduce el audio de fallo");
+      if (failAudioRef.current && failAudioRef.current.paused && !failSoundPlayedRef.current) {
+        failSoundPlayedRef.current = true;
         failAudioRef.current.currentTime = 0;
-        failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
+        failAudioRef.current.volume = volumeLevel;
         failAudioRef.current.play();
       }
 

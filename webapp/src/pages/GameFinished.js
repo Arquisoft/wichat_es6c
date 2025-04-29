@@ -78,7 +78,7 @@ const GameFinished = () => {
       sx={{ height: "100vh", textAlign: "center", px: 2 }}
     >
       {/* Confetti */}
-      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
       <Typography
