@@ -40,6 +40,7 @@ function Game() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
+  const [gameModeName, setGameModeName] = useState(''); // Estado para el tipo de juego
   const [round, setRound] = useState(1);
   const [totalTime, setTotalTime] = useState(0);
 
@@ -176,7 +177,12 @@ function Game() {
     if (failAudioRef.current) {
       failAudioRef.current.currentTime = 0;
       failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
-      failAudioRef.current.play();
+      const playPromise = failAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de fallo:", error);
+        });
+      }
     }
 
     setShowFeedback(true);
@@ -226,14 +232,12 @@ function Game() {
       console.log("volumen audio:", audio.volume);
     }
 
-    if(audio !== null && audio!== undefined){
-      try{
-        audio.play()
-      }catch (error) {
+    const playPromise = audio.play();
+    if (playPromise !== null && playPromise !== undefined) {
+      playPromise.catch((error) => {
         console.error("Error al reproducir el audio:", error);
-      }
-    
-  }
+      });
+    }
 
     return () => {
       if(audio){
@@ -246,6 +250,7 @@ function Game() {
   useEffect(() => {
     if (location.state?.mode) {
       setGameMode(location.state.mode);
+      setGameModeName(location.state.name); // Guardar el nombre del modo de juego
     }
   }, [location.state]);
 
@@ -286,8 +291,13 @@ function Game() {
 
       if (hurryAudioRef.current) {
         hurryAudioRef.current.currentTime = 0;
-        hurryAudioRef.current.volume = volumeLevel ; // Ajustar volumen reducido
-        hurryAudioRef.current.play();
+        hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+        const playPromise = hurryAudioRef.current.play();
+        if (playPromise !== null && playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Error reproduciendo el sonido de prisa:", error);
+          });
+        }
       }
       if (audioRef.current) {
         //audioRef.current.pause();
@@ -306,7 +316,12 @@ function Game() {
     if (chooseAudioRef.current) {
       chooseAudioRef.current.currentTime = 0;
       chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-      chooseAudioRef.current.play();
+      const playPromise = chooseAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de elección:", error);
+        });
+      }
     }
 
     setSelectedAnswer(selectedOption);
@@ -337,12 +352,22 @@ function Game() {
         if (isCorrect && correctAudioRef.current) {
           correctAudioRef.current.currentTime = 0;
           correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-          correctAudioRef.current.play();
+          const playPromise = correctAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de acierto:", error);
+            });
+          }
         } else {
           if (failAudioRef.current) {
             failAudioRef.current.currentTime = 0;
             failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-            failAudioRef.current.play();
+            const playPromise = failAudioRef.current.play();
+            if (playPromise !== null && playPromise !== undefined) {
+              playPromise.catch((error) => {
+                console.error("Error reproduciendo el sonido de fallo:", error);
+              });
+            }
           }
         }
         setStarAnimation(true);
@@ -582,7 +607,7 @@ function Game() {
             animation: "pulse 1.5s infinite",
             "@keyframes pulse": {
               "0%": { transform: "scale(1)" },
-              "50%": { transform: "scale(1.05)" },
+              "50%": { transform: "scale(1.1)" },
               "100%": { transform: "scale(1)" }
             },
             // Ajustes adicionales para pantallas pequeñas
@@ -757,7 +782,7 @@ function Game() {
               overflowY: "auto"
             }}>
               <Chat questionData={questionData} 
-                    header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} 
+                    header={"Knowing that there is a picture of the " + gameModeName +" "+ questionData.correctAnswer + " and the user thinks that may be one of these " + questionData.options + ", answer vaguely to this WITHOUT EVER revealing the answer, in a short phrase:"}                    
                     isMobile={isMobile}
                     hideHeader={false}
               />

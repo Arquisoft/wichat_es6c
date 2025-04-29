@@ -61,6 +61,7 @@ module.exports = {
     },
 
     getRandomQuestionByCategory: async function(language, categoryParam,repeatedAnswers=[]) {
+        console.log("Respuestas ya usadas:",repeatedAnswers)
         try {
             var question = await Question.aggregate([
                 { $match: { category: categoryParam } },

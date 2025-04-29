@@ -46,16 +46,22 @@ const GameFinished = () => {
 
   // Efecto para reproducir sonido si hay confeti
   useEffect(() => {
-    if (score >= maxScore / 2) {
-
+    if (maxScore > 0 && score >= (maxScore / 2)) {
+      console.log(score, maxScore / 2);
 
       const winningAudio = winningSoundRef.current;
       winningAudio.volume = 1;
-      winningAudio.play();
-
-      
+      const playPromise = winningAudio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          // Silenciosamente ignorar el error si autoplay está bloqueado
+          if (error.name !== 'AbortError') {
+            console.warn('Autoplay bloqueado:', error.message);
+          }
+        });
+      }
     }
-  }, [score]);
+  }, [score, maxScore]);
 
   const handleRestart = () => {
     navigate('/game-mode', { state: { type: gameType } });
@@ -73,7 +79,7 @@ const GameFinished = () => {
       sx={{ height: "100vh", textAlign: "center", px: 2 }}
     >
       {/* Confetti */}
-      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
       <Typography

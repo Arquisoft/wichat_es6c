@@ -116,13 +116,13 @@ const testOptions = {
         results: {
             bindings: [
                 {
-                    countryLabel: { value: "Rusia" }
+                    label: { value: "Rusia" }
                 },
                 {
-                    countryLabel: { value: "Australia" }
+                    label: { value: "Australia" }
                 },
                 {
-                    countryLabel: { value: "Turquía" }
+                    label: { value: "Turquía" }
                 }
             ]
         }
@@ -207,7 +207,7 @@ describe('Question Generate Service', () => {
         expect(questionCount).toBe(4);
     });
 
-    it('should add questions from wikidata if the databse is empty, return a random question and then delete one', async () => {
+    it('should add questions from wikidata if the database is empty, return a random question and then delete one', async () => {
         const collections = mongoose.connection.collections;
         for (const key in collections) {
             await collections[key].deleteMany({});
@@ -223,8 +223,8 @@ describe('Question Generate Service', () => {
 
         expect(countries).toContainEqual(response.body.correctAnswer);
         const questionCount = await Question.countDocuments();
-        expect(questionCount).toBe(4);
-    });
+        expect(questionCount).toBe(4); 
+    }, 300000);
 
     it('should save questions to the database via POST /questions', async () => {
         const questions = [

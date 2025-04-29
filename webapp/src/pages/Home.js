@@ -17,6 +17,7 @@ const Home = () => {
     if (sessionId) {
       navigate('/homepage');
     }
+    
   }, [sessionId, navigate]);
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 function GameMode() {
   const [gameType, setGameType] = useState('');
   const [buttonList, setButtonList] = useState([]);
@@ -15,11 +16,13 @@ function GameMode() {
 
   const normalButtonList = useMemo(() => [
     { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text: 'Famosos', path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
     { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
   ], []);
 
   const vsButtonList = useMemo(() => [
-    { text: 'Países', path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text: 'Famosos', path: '/game', mode: 'famous_people', name: "famous people", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: 'Banderas', path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
   ], []);
 
   useEffect(() => {
@@ -43,6 +46,7 @@ function GameMode() {
     navigate('/game-type');
   };
 
+  
   return (
     <Stack
       direction="column"
