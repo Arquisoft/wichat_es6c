@@ -39,9 +39,6 @@ See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== Registro
-image:06_register.png["Diagrama 6.1: Registro"]
-
 
 .* _<insert runtime diagram or textual description of the scenario>_
 .* _<insert description of the notable aspects of the interactions between the
@@ -60,6 +57,9 @@ image:06_register.png["Diagrama 6.1: Registro"]
 .Alice -> Bob: Another authentication Request
 .Alice <-- Bob: another authentication Response
 .----
+
+=== Registro
+image:06_register.png["Diagrama 6.1: Registro"]
 
 === Inicio de sesión
 
