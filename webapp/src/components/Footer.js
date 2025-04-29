@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const { t } = useTranslation();
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
   return (
     <Box
@@ -45,7 +46,7 @@ const Footer = () => {
           <GitHub sx={{ mr: 1 }} /> {t('Footer.github')}
         </Link>
         <Link
-          href="http://localhost:8000/api-doc"
+          href={apiEndpoint+"/api-doc"}
           target="_blank"
           rel="noopener noreferrer"
           sx={{
