@@ -21,6 +21,7 @@ jobs:
     - run: npm --prefix questionservice ci
     - run: npm --prefix users/authservice test -- --coverage
     - run: npm --prefix users/userservice test -- --coverage
+    - run: npm --prefix users/historyservice test -- --coverage
     - run: npm --prefix questionservice test -- --coverage
     - run: npm --prefix llmservice test -- --coverage
     - run: npm --prefix gatewayservice test -- --coverage
@@ -106,7 +107,7 @@ jobs:
         workdir: users/userservice
 
   docker-push-historyservice:
-    name: Push user service Docker Image to GitHub Packages
+    name: Push history service Docker Image to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
