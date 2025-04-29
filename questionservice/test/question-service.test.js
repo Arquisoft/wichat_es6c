@@ -207,7 +207,7 @@ describe('Question Generate Service', () => {
         expect(questionCount).toBe(4); 
     });
 
-    it('should add questions from wikidata if the databse is empty, return a random question and then delete one', async () => {
+    it('should add questions from wikidata if the database is empty, return a random question and then delete one', async () => {
         const collections = mongoose.connection.collections;
         for (const key in collections) {
             await collections[key].deleteMany({});
@@ -224,7 +224,7 @@ describe('Question Generate Service', () => {
         expect(countries).toContainEqual(response.body.correctAnswer);
         const questionCount = await Question.countDocuments();
         expect(questionCount).toBe(4); 
-    });
+    }, 300000);
 
     it('should return an error if there are no questions', async () => {
         // Limpia la base de datos antes de ejecutar el test
