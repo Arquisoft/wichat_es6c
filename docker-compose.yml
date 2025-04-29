@@ -1,6 +1,6 @@
 services:
   mongodb:
-    container_name: mongodb-wichat_0
+    container_name: mongodb-wichat_es6c
     image: mongo
     profiles: ["dev", "prod"]
     volumes:
@@ -11,8 +11,8 @@ services:
       - mynetwork
 
   authservice:
-    container_name: authservice-wichat_0
-    image: ghcr.io/arquisoft/wichat_0/authservice:latest
+    container_name: authservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/authservice:latest
     profiles: ["dev", "prod"]
     build: ./users/authservice
     depends_on:
@@ -25,8 +25,8 @@ services:
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
   userservice:
-    container_name: userservice-wichat_0
-    image: ghcr.io/arquisoft/wichat_0/userservice:latest
+    container_name: userservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/userservice:latest
     profiles: ["dev", "prod"]
     build: ./users/userservice
     depends_on:
@@ -38,19 +38,51 @@ services:
     environment:
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
-  llmservice:
-    container_name: llmservice-wichat_0
-    image: ghcr.io/arquisoft/wichat_0/llmservice:latest
+  historyservice:
+    container_name: historyservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/historyservice:latest
     profiles: ["dev", "prod"]
-    build: ./llmservice
+    build: ./users/historyservice
+    depends_on:
+      - mongodb
+    ports:
+      - "8007:8007"
+    networks:
+      - mynetwork
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/userdb   
+
+  llmservice:
+    container_name: llmservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/llmservice:latest
+    profiles: ["dev", "prod"]
+    env_file:
+      - .env
+    build: 
+      context: ./llmservice
     ports:
       - "8003:8003"
     networks:
       - mynetwork
 
+  questionservice:
+    container_name: questionservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/questionservice:latest
+    profiles: ["dev", "prod"]
+    build: ./questionservice
+    depends_on:
+      - mongodb
+    ports:
+      - "8004:8004"
+    networks:
+      - mynetwork
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/questiondb
+      
+
   gatewayservice:
-    container_name: gatewayservice-wichat_0
-    image: ghcr.io/arquisoft/wichat_0/gatewayservice:latest
+    container_name: gatewayservice-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/gatewayservice:latest
     profiles: ["dev", "prod"]
     build: ./gatewayservice
     depends_on:
@@ -58,6 +90,8 @@ services:
       - userservice
       - authservice
       - llmservice
+      - questionservice
+      - historyservice
     ports:
       - "8000:8000"
     networks:
@@ -65,16 +99,15 @@ services:
     environment:
       AUTH_SERVICE_URL: http://authservice:8002
       USER_SERVICE_URL: http://userservice:8001
+      HISTORY_SERVICE_URL: http://historyservice:8007
       LLM_SERVICE_URL: http://llmservice:8003
+      QUESTION_SERVICE_URL: http://questionservice:8004
 
   webapp:
-    container_name: webapp-wichat_0
-    image: ghcr.io/arquisoft/wichat_0/webapp:latest
+    container_name: webapp-wichat_es6c
+    image: ghcr.io/arquisoft/wichat_es6c/webapp:latest
     profiles: ["dev", "prod"]
-    build: 
-      context: ./webapp
-      args:
-        LLM_API_KEY: ${LLM_API_KEY}
+    build: ./webapp
     depends_on:
       - gatewayservice
     ports:
@@ -82,7 +115,7 @@ services:
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus-wichat_0
+    container_name: prometheus-wichat_es6c
     profiles: ["dev"]
     networks:
       - mynetwork
@@ -96,7 +129,7 @@ services:
       
   grafana:
     image: grafana/grafana
-    container_name: grafana-wichat_0
+    container_name: grafana-wichat_es6c
     profiles: ["dev"]
     networks:
       - mynetwork

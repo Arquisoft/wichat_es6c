@@ -1,0 +1,46 @@
+---
+config:
+  theme: forest
+  look: classic
+---
+classDiagram
+direction TB
+    class User {
+	    +String id
+	    +String name
+	    +String email
+	    +Date registrationDate
+	    +List games
+    }
+    class Game {
+	    +String id
+	    +Date date
+	    +List answeredQuestions
+	    +int correctAnswers
+	    +int score
+	    +int totalTime
+    }
+    class Question {
+	    +String id
+	    +String question
+	    +String correctAnswer
+	    +List answers
+	    +String image
+    }
+    class LLMService {
+    }
+    class History {
+        +String id
+        +String userId
+        +Date gameDate
+        +int score
+        +int correctAnswers
+        +int incorrectAnswers
+        +int totalTime
+    }
+
+    User "1" --> "N" Game : participates in
+    User "1" --> "N" History : has
+    Game "1" --> "N" Question : contains
+    Game "1" --> "N" LLMService : provides
+    Game "1" --> "1" History : generates

@@ -1,21 +1,34 @@
 const axios = require('axios');
 const express = require('express');
-
+const cors = require('cors');
 const app = express();
 const port = 8003;
 
 // Middleware to parse JSON in request body
 app.use(express.json());
 
+require('dotenv').config();
+
+const allowedOrigins = ["http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,POST",
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+
+
+
 // Define configurations for different LLM APIs
 const llmConfigs = {
-  gemini: {
-    url: (apiKey) => `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-    transformRequest: (question) => ({
-      contents: [{ parts: [{ text: question }] }]
-    }),
-    transformResponse: (response) => response.data.candidates[0]?.content?.parts[0]?.text
-  },
   empathy: {
     url: () => 'https://empathyai.prod.empathy.co/v1/chat/completions',
     transformRequest: (question) => ({
@@ -43,7 +56,7 @@ function validateRequiredFields(req, requiredFields) {
 }
 
 // Generic function to send questions to LLM
-async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
+async function sendQuestionToLLM(question, apiKey, model = 'empathy') {
   try {
     const config = llmConfigs[model];
     if (!config) {
@@ -71,9 +84,15 @@ async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
 app.post('/ask', async (req, res) => {
   try {
     // Check if required fields are present in the request body
-    validateRequiredFields(req, ['question', 'model', 'apiKey']);
+    validateRequiredFields(req, ['question', 'model']);
 
-    const { question, model, apiKey } = req.body;
+    const { question, model } = req.body;
+
+    const apiKey = process.env.LLM_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({ error: 'API key is missing.' });
+    }
+
     const answer = await sendQuestionToLLM(question, apiKey, model);
     res.json({ answer });
 
@@ -87,5 +106,3 @@ const server = app.listen(port, () => {
 });
 
 module.exports = server
-
-

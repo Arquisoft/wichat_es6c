@@ -1,0 +1,129 @@
+{
+    "UserHome": {
+        "welcome": "Welcome {{username}}!",
+        "play": "Play"
+    },
+    "NavBar": {
+        "nameApp": "WICHAT",
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Sign out",
+        "changeLanguage": "Change language",
+        "APIDocs": "API Docs",
+        "spanish": "Spanish",
+        "english": "English"
+    },
+    "Register": {
+        "signUp": "Sign Up",
+        "user": "Username",
+        "password": "Password",
+        "name": "Name",
+        "surname": "Surname",
+        "submit": "Submit",
+        "textForm": "Already have an account?",
+        "textFormLink": "Sign in here"
+    },
+    "Login": {
+        "sigIn": "Sign in to Wichat",
+        "user": "Username",
+        "sigInConfirm": "Sign In",
+        "password": "Password",
+        "textForm": "New to Wichat?",
+        "textFormLink": "Create an account here",
+        "notValidUserOrPassword": "Not valid username or password",
+        "unknownError": "Unknown error in the server",
+        "nonRespnse": "No response from server",
+        "errorRequest": "Request error"
+    },
+    "History": {
+        "profileUpdate": "Profile updated successfully!",
+        "title": "User History",
+        "viewHistory": "View History",
+        "viewStats": "View Stats",
+        "viewRanking": "View Ranking",
+        "mainPage": "Main Page",
+        "editProfile": "Edit Profile",
+        "cancel": "Cancel",
+        "updatingProfile": "Updating...",
+        "saveChanges": "Save changes",
+        "usernameDisplay": "User: <strong>{{username}}</strong>",
+        "correctAnswers": "Correct Answers",
+        "incorrectAnswers": "Wrong Answers",
+        "time": "Time (seconds)",
+        "score": "Score",
+        "nonStatsAvailable": "No stats available",
+        "nonGames": "No games in history",
+        "position": "Position",
+        "nonRanking": "No data in ranking history",
+        "gameMode": "Game Mode",
+        "generalStats": "General Stats",
+        "distributionAnswers": "Answers Distribution",
+        "distributionGames": "Games Outcomes",
+        "won": "Won",
+        "lost": "Lost",
+        "totalGames": "Total games",
+        "averageScore": "Average score",
+        "totalTime": "Total time",
+        "correct": "Correct",
+        "incorrect": "Incorrect",
+        "globalRanking": "Global ranking",
+        "user": "User",
+        "percentageHits": "% Hits",
+        "games": "Games",
+        "nameRequired": "Name is required",
+        "maxCharacters": "Maximum 200 characters",
+        "surnameRequired": "Surname is required",
+        "urlNotValid": "URL not valid",
+        "name": "Name *",
+        "surname": "Surname *",
+        "urlImage": "URL image *",
+        "description": "Description *",
+        "ex": "Example:"
+    },
+    "GameType": {
+        "chooseGame": "Choose a game mode"
+    },
+    "GameMode": {
+        "chooseTheme": "Choose a theme",
+        "countryName": "country",
+        "goBack": "Go back"
+    },
+    "Game": {
+        "totalScore": "Total score",
+        "loading": "Loading round...",
+        "rounds": "{{round}} of {{TOTAL_ROUNDS}} rounds",
+        "loadingImage": "Loading image...",
+        "loadingNextImage": "Loading next image..."
+    },
+    "ChatLLM": {
+        "noResponse": "No response from the server",
+        "chatTitle": "Chat with IA",
+        "typing": "Typing...",
+        "sendMessage": "Send",
+        "typeMessage": "Type a message..."
+    },
+    "Game-VS": {
+        "totalScore": "Total score",
+        "loading": "Loading round...",
+        "rounds": "{{round}} of {{TOTAL_ROUNDS}} rounds",
+        "describeMode-country": "Describe the following country"
+    },
+    "GameFinished": {
+        "gameOver": "Game over!",
+        "seconds": "seconds",
+        "playAgain": "Play again",
+        "viewHistory": "View history",
+        "socoreAchieved": "Score achieved",
+        "totalTime": "Total time"
+    },
+    "Footer":{
+
+        "title": "Wichat",
+        "github": "GitHub",
+        "apiDocs": "API Docs"
+    },
+    "NotFound":{
+        "title": "Page not found",
+        "button_msg": "Home page"
+    }
+}

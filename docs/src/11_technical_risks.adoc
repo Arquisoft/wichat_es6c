@@ -25,3 +25,15 @@ See https://docs.arc42.org/section-11/[Risks and Technical Debt] in the arc42 do
 
 ****
 endif::arc42help[]
+
+=== Riesgos
+[options="header",cols="1,3"]
+|===
+|Riesgo|Descripcion
+| Bajo conocimiento de algunas herramientas y lenguajes| Algunos miembros del grupo nunca han trabajado o no tienen mucha experiencia con algunas de las herramientas o lenguajes utilizados para el desarrollo de la aplicación. Esto puede llevar a errores o retrasos debido a su falta de conocimiento.
+| Nunca se ha trabajado con un LLM | Esta es la primera vez que el equipo trabaja con un modelo de lenguaje o con ese en particular. Esto puede llevar a un retraso debido a la necesidad de obtener información sobre el funcioanmiento de este.
+| Tiempos de respuesta de Wikidata y el LLM | Al ser parte integral de la aplicación la conexión con Wikidata y el modelo de lenguaje si hay algún problema en la conexión que haga que sus tiempos de respuesta sean demasiado largos esto puede repercutir en nuestra aplicación. 
+|Trabajo en equipo | Los miembros del equipo no se conocen ni han trabajado en conjunto anteriormente, se desconoce las formas de trabajo y nivel de compromiso de cada uno. Hay que tener en cuenta la posibilidad de abandono de uno de los integrantes.
+|===
+
+=== Deuda Técnica

@@ -102,6 +102,7 @@ endif::arc42help[]
 3|Fiabilidad|El sistema debe garantizar una disponibilidad del 99%. Las pistas generadas por el LLM deben ser correctas en un 95% de los casos, minimizando alucinaciones y respuestas erróneas.|
 4|Rendimiento|El sistema debe soportar hasta 50 usuarios concurrentes sin degradación del rendimiento. El tiempo de respuesta de la API de Wikidata y del LLM no debe superar los 5000 ms en el 95% de las solicitudes.|
 5|Mantenibilidad|El código debe estar documentado y modularizado, permitiendo que todos los implicados en el desarrollo puedan trabajar con ello lo mejor posible.|
+
 |===
 
 === Partes Interesadas

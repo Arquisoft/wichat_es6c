@@ -5,18 +5,18 @@
     "main": "service.js",
     "scripts": {
         "start": "node auth-service.js",
-        "test": "jest"
+        "test": "jest --coverage"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/arquisoft/wichat_0.git"
+        "url": "git+https://github.com/arquisoft/wichat_es6c.git"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/arquisoft/wichat_0/issues"
+        "url": "https://github.com/arquisoft/wichat_es6c/issues"
     },
-    "homepage": "https://github.com/arquisoft/wichat_0#readme",
+    "homepage": "https://github.com/arquisoft/wichat_es6c#readme",
     "dependencies": {
         "bcrypt": "^5.1.1",
         "body-parser": "^1.20.3",

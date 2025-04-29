@@ -1,7 +1,7 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-context-and-scope]]
-== Context and Scope
+== Alcance y contexto del sistema
 
 
 ifdef::arc42help[]
@@ -30,7 +30,7 @@ See https://docs.arc42.org/section-3/[Context and Scope] in the arc42 documentat
 ****
 endif::arc42help[]
 
-=== Business Context
+=== Contexto de negocio
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -51,9 +51,19 @@ The title of the table is the name of your system, the three columns contain the
 ****
 endif::arc42help[]
 
-**<Diagram or Table>**
+WIChat es una aplicación web de preguntas y respuestas basada en imágenes, desarrollada por ChattySw para RTVE. La aplicación permite a los usuarios registrarse, jugar y obtener premios por responder correctamente a preguntas sobre imágenes generadas automáticamente. Además, tendrá integrado un modelo de lenguaje (LLM) que proporcionará pistas para ayudar a los concursantes a responder correctamente.
 
-**<optionally: Explanation of external domain interfaces>**
+image:03_businessContext.png["Diagram 3.1: Contexto de negocio"]
+
+**Usuario:** Identidad que iteractúa con el sistema.
+
+**WiChat:** Maneja las entradas del usuario y se conecta a las APIs externas.
+
+**Wikidata:** Proporciona datos precisos y actualizados que se utilizan para generar las preguntas y respuestas de la aplicación.
+
+**LLM:** Modelo de inteligencia artificial que procesa las consultas de los usuarios, generando respuestas coherentes y relevantes basadas en el contexto y los datos obtenidos de Wikidata y la base de datos.
+
+**Base de datos:** Almacena los datos de los usuarios, estadísticas de juegos y registros de consultas. 
 
 === Technical Context
 
@@ -73,8 +83,5 @@ together with a mapping table showing the relationships between channels and inp
 ****
 endif::arc42help[]
 
-**<Diagram or Table>**
+image:03_technicalContext.png["Diagram 3.2: Contexto Tencológico"]
 
-**<optionally: Explanation of technical interfaces>**
-
-**<Mapping Input/Output to Channels>**
