@@ -14,7 +14,10 @@ async function startServer() {
     userservice = await require("../../users/userservice/user-service");
     authservice = await require("../../users/authservice/auth-service");
     llmservice = await require("../../llmservice/llm-service");
+    questionservice = await require("../../questionservice/services/question-service");
+    historyservice = await require("../../users/historyservice/history-service");
     gatewayservice = await require("../../gatewayservice/gateway-service");
+
 }
 
 startServer();
