@@ -46,5 +46,7 @@ endif::arc42help[]
 | Falta de paginación en el historial| La aplicación no tiene paginación en el historial de mensajes. Esto puede afectar el rendimiento de la aplicación si hay muchos mensajes en el historial y hacer incomodo para el usuario buscar partidas.
 | Mal funcionamiento del juego al acabar la partida | La aplicación no funciona perfectamente al finalizar una partida, tarda más tiempo del esperado y proboca que los sonidos se comporten de forma extrña.
 | No se utiliza un modelo de mricroservisios| La aplicación divide el código de una forma parecida a est aruitectura, pero comparten la misma base de datos y no están completamente desacoplados. Esto puede afectar el rendimiento de la aplicación y hacer que sea más difícil de escalar.
+| Lentitud en la carga de preguntas desde Wikidata | La aplicación tarda mucho tiempo en cargar las preguntas desde Wikidata. Esto afecta al rendimiento de la aplicación y se necesita esperar mucho tiempo si al inicar una partida no hay preguntas en la base de datos.
+| Malas contestaciones del LLM | El LLM responde cosas que no tienen sentido o no son correctas. Esto puede afectar la experiencia del usuario y hacer que el juego sea menos divertido.
 
 |===
