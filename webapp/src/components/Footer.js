@@ -46,7 +46,7 @@ const Footer = () => {
           <GitHub sx={{ mr: 1 }} /> {t('Footer.github')}
         </Link>
         <Link
-          href={apiEndpoint}
+          href={apiEndpoint+"/api-doc"}
           target="_blank"
           rel="noopener noreferrer"
           sx={{
