@@ -2,246 +2,273 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-building-block-view]]
 
-
 == Vista de bloques de construcción
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-.Content
-The building block view shows the static decomposition of the system into building blocks (modules, components, subsystems, classes, interfaces, packages, libraries, frameworks, layers, partitions, tiers, functions, macros, operations, data structures, ...) as well as their dependencies (relationships, associations, ...)
-
-This view is mandatory for every architecture documentation.
-In analogy to a house this is the _floor plan_.
-
-.Motivation
-Maintain an overview of your source code by making its structure understandable through
-abstraction.
-
-This allows you to communicate with your stakeholder on an abstract level without disclosing implementation details.
-
-.Form
-The building block view is a hierarchical collection of black boxes and white boxes
-(see figure below) and their descriptions.
-
-image::05_building_blocks-EN.png["Hierarchy of building blocks"]
-
-*Level 1* is the white box description of the overall system together with black
-box descriptions of all contained building blocks.
-
-*Level 2* zooms into some building blocks of level 1.
-Thus it contains the white box description of selected building blocks of level 1, together with black box descriptions of their internal building blocks.
-
-*Level 3* zooms into selected building blocks of level 2, and so on.
-
-
-.Further Information
-
-See https://docs.arc42.org/section-5/[Building Block View] in the arc42 documentation.
-
-****
-endif::arc42help[]
 
 === Sistema general de caja blanca
 
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you describe the decomposition of the overall system using the following white box template. It contains
-
- * an overview diagram
- * a motivation for the decomposition
- * black box descriptions of the contained building blocks. For these we offer you alternatives:
-
-   ** use _one_ table for a short and pragmatic overview of all contained building blocks and their interfaces
-   ** use a list of black box descriptions of the building blocks according to the black box template (see below).
-   Depending on your choice of tool this list could be sub-chapters (in text files), sub-pages (in a Wiki) or nested elements (in a modeling tool).
-
-
- * (optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
-Since there are so many ways to specify interfaces why do not provide a specific template for them.
- In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
- restrictions, versions, qualities, necessary compatibilities and many things more.
-In the best case you will get away with examples or simple signatures.
-
-****
-endif::arc42help[]
-
-image:05_whitebox.jpg["Diagram 5.1: Resumen del Sistema"]
+image::05_whitebox.jpg["Diagram 5.1: Resumen del Sistema"]
 
 Motivation::
 
-El propósito principal del sistema es ejecutar un juego de preguntas con imágenes utilizando información obtenida dinámicamente de la Wikidata API y además teniendo la posibilidad de interactuar con un LLM para solicitar su ayuda. Esto permite a los usuarios interactuar con datos reales y actualizados, mejorando la experiencia de usuario y la utilidad de la aplicación. 
-
-
+El propósito principal del sistema es ejecutar un juego de preguntas con imágenes o texto utilizando información obtenida dinámicamente de la Wikidata API y además teniendo la posibilidad de interactuar con un LLM para solicitar su ayuda o ayudarlo a encontrar la respuesta dependiendo del modo de juego. Esto permite a los usuarios interactuar con datos reales y actualizados, mejorando la experiencia de usuario y la utilidad de la aplicación.
 
 Bloques de construcción contenidos::
+
 |===
 |Building Blocks |Description
 
 |WICHAT
-|Parte principal de la aplicación, que controla el juego y la conexión con el resto de bloques.
+|Parte principal de la aplicación, que controla el flujo del juego, maneja la lógica de negocio y coordina la interacción entre los servicios. Implementado en Node.js con un enfoque modular.
+
 |BD
-|Base de datos encargada de almacenar los datos relacionados con los usuarios.
+|Base de datos encargada de almacenar los datos relacionados con los usuarios y con las preguntas. Se utiliza MongoDB.
+
 |Wikidata
-|Fuente de datos a la que se conecta la aplicacion para obtener las imágenes de las preguntas.
+|Fuente de datos a la que se conecta la aplicación para obtener las imágenes, las preguntas y la información para facilitar el trabajo de la aplicación.
+
 |LLM
 |Modelo de lenguaje con el que el usuario puede interactuar para obtener pistas sobre las preguntas del juego.
 |===
 
 Interfaces importantes::
+
 * Frontend ↔ API Gateway: Interfaz RESTful para la comunicación entre el frontend y el backend.
-
-* API Gateway ↔ Backend: Interfaz interna para enrutar solicitudes a los microservicios.
-
+* API Gateway ↔ Backend: Interfaz interna para enrutar solicitudes a los servicios.
 * Backend ↔ Base de Datos: Interfaz para acceder y gestionar los datos almacenados.
 
+=== Nivel 2 
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Insert your explanations of black boxes from level 1:
-
-If you use tabular form you will only describe your black boxes with name and
-responsibility according to the following schema:
-
-[cols="1,2" options="header"]
-|===
-| **Name** | **Responsibility**
-| _<black box 1>_ | _<Text>_
-| _<black box 2>_ | _<Text>_
-|===
-
-
-
-If you use a list of black box descriptions then you fill in a separate black box template for every important building block .
-Its headline is the name of the black box.
-****
-endif::arc42help[]
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-==== <Name black box 1>
-
-
-Here you describe <black box 1>
-according the the following black box template:
-
-* Purpose/Responsibility
-* Interface(s), when they are not extracted as separate paragraphs. This interfaces may include qualities and performance characteristics.
-* (Optional) Quality-/Performance characteristics of the black box, e.g.availability, run time behavior, ....
-* (Optional) directory/file location
-* (Optional) Fulfilled requirements (if you need traceability to requirements).
-* (Optional) Open issues/problems/risks
-
-
-
-_<Purpose/Responsibility>_
-
-_<Interface(s)>_
-
-_<(Optional) Quality/Performance Characteristics>_
-
-_<(Optional) Directory/File Location>_
-
-_<(Optional) Fulfilled Requirements>_
-
-_<(optional) Open Issues/Problems/Risks>_
-
-
-
-
-==== <Name black box 2>
-
-_<black box template>_
-
-==== <Name black box n>
-
-_<black box template>_
-
-
-==== <Name interface 1>
-
-...
-
-==== <Name interface m>
-
-
-****
-endif::arc42help[]
-
-
-=== Nivel 2
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.
-
-You have to decide which building blocks of your system are important enough to justify such a detailed description.
-Please prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.
-Leave out normal, simple, boring or standardized parts of your system
-****
-endif::arc42help[]
-
-
-image:05_2_whitebox2.png["Diagram 5.2: Desglose Wichat"]
-
-
+image::05_2_whitebox2.png["Diagram 5.2: Desglose Wichat"]
 
 Contained Building Blocks::
+
 |===
 |Building Blocks |Description
 
-|WICHAT App
-|Parte central del proyecto, encargada de comunicar al usuario con el resto de servicios de la aplicación.
-|Question Generator Service
-|Parte de la aplicación encargada de conectarse a Wikidata y obtener imagenes e información para las preguntas del juego.
-|User Service
-|Parte encargada de tratar la información del usuario: puntuación, historial....
-Se conecta al base de datos para almacenar esta información.
-|Authentication Service
-|Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
+|API Gateway
+|Punto de entrada unificado para todas las peticiones del frontend. Redirige solicitudes a los distintos servicios y expone métricas y documentación.
+
+|Question Management
+|Conjunto de servicios encargados de gestionar el ciclo de vida de las preguntas en la aplicación. Incluye los siguientes componentes:
+
+- **Question Generator Service**  
+  Parte de la aplicación encargada de conectarse a Wikidata y obtener imágenes e información para las preguntas del juego.
+
+- **Question Data Service**  
+  Parte de la aplicación encargada de tratar con la información de las preguntas conectándose a la base de datos para almacenar esta información y eliminando las preguntas que ya han salido.
+
+- **Question Service**  
+  Parte de la aplicación encargada de gestionar el ciclo de vida de las preguntas en la aplicación. Orquesta dos componentes internos (`question-data-service` y `question-generator-service`). Es el encargado de relacionarse con el API Gateway y de recibir las peticiones de preguntas. Se encarga de la lógica de negocio relacionada con las preguntas.
+ 
+
+|User Management
+|Conjunto de servicios encargados de gestionar la información del usuario. Incluye los siguientes componentes:
+
+ - **User Service**  
+  Parte encargada de tratar la información del usuario: puntuación, historial, etc. Se conecta a la base de datos para almacenar esta información.  
+ - **Authentication Service**  
+  Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
+ - **History Service**  
+  Parte encargada de el tratamiento de los datos de las partidas de todos los usuarios. Se conecta a la base de datos para almacenar esta información.
+
 |LLM Service
 |Parte encargada de la comunicación con el modelo de lenguaje. Envía la información necesaria para obtener las pistas del jugador y devolverlas.
+
 |===
 
-ifdef::arc42help[]
-[role="arc42help"]
+=== Nivel 3 
+image::05_3_BlackBox_Question_Management.png["Diagram 5.3.1: Desglose de Question Management"]
 
-=== Level 3
+|===
+|Building Blocks |Description
 
+|Question Generator Service
+|Parte de la aplicación encargada de conectarse a Wikidata y obtener imágenes e información para las preguntas del juego.
 
-****
-Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
+|Question Data Service
+|Parte de la aplicación encargada de tratar con la información de las preguntas conectándose a la base de datos para almacenar esta información y eliminando las preguntas que ya han salido.
 
-When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.
-****
+|Question Service
+|Parte de la aplicación encargada de gestionar el ciclo de vida de las preguntas en la aplicación. Orquesta dos componentes internos(question-data-service y question-generator-service). Es el encargado de relacionarse con gateway y de recibir las peticiones de preguntas. Se encarga de la lógica de negocio relacionada con las preguntas.
 
+|===
 
-==== White Box <_building block x.1_>
+image::05_3_BlackBox_User_Management.png["Diagram 5.3.2: Desglose de User Management"]
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Specifies the internal structure of _building block x.1_.
-****
-endif::arc42help[]
+|===
+|Building Blocks |Description
 
-_<white box template>_
+|User Service
+|Parte encargada de tratar la información del usuario: puntuación, historial, etc. Se conecta a la base de datos para almacenar esta información.
 
+|Authentication Service
+|Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
 
-==== White Box <_building block x.2_>
+|History Service
+|Parte encargada de el tratamiento de los datos de las partidas de todos los usuarios. Se conecta a la base de datos para almacenar esta información.
 
-_<white box template>_
+|===
 
+==== Black Box: API Gateway
 
+*Purpose/Responsibility*::
 
-==== White Box <_building block y.1_>
+El API Gateway actúa como un único punto de entrada para todas las peticiones desde el frontend. Es responsable de:
 
-_<white box template>_
+- Redirigir solicitudes REST al servicio correspondiente (usuarios, autenticación, historial, preguntas, modelo LLM).
+- Unificar la interfaz de comunicación entre cliente y microservicios.
+- Agregar instrumentación con Prometheus para monitoreo.
+- Publicar documentación del API utilizando Swagger (OpenAPI).
+- Gestionar CORS y errores de red para los servicios backend.
 
-endif::arc42help[]
+*Interface(s)*::
+
+- HTTP REST:
+  - `/questions/:lang/:category` → Question Generator Service.
+  - `/createUserHistory`, `/getUserStats`, `/getLeaderboard` → History Service.
+  - `/user/profile/:username`, `/user/update/profile/:username` → User Service.
+  - `/login` → Auth Service.
+  - `/askllm` → LLM Service.
+  - `/api-doc` → Exposición de documentación Swagger.
+  - `/health` → Endpoint para chequeo de estado.
+
+*Quality/Performance Characteristics*::
+
+- Tolerancia a fallos básica mediante manejo de errores HTTP con axios.
+- Extensible: fácilmente ampliable a nuevos servicios.
+- Observabilidad: expone métricas para Prometheus.
+- Documentado: incluye Swagger/OpenAPI.
+
+*Directory/File Location*::
+
+- Imagen Docker desplegada en Azure.
+
+*Fulfilled Requirements*::
+
+- Centraliza la entrada de peticiones HTTP.
+- Permite escalabilidad y desacoplamiento entre frontend y servicios.
+- Facilita pruebas y exploración del sistema vía documentación automática.
+
+*Open Issues/Problems/Risks*::
+
+- Usa rutas fijas, sin descubrimiento dinámico de servicios.
+
+==== Black Box: Question Service
+
+- **Responsabilidad**  
+  Se encarga de gestionar el ciclo de vida de las preguntas en el juego. Orquesta dos componentes internos (`question-data-service` y `question-generate-service`) para:
+  - Verificar si hay suficientes preguntas disponibles en la base de datos.
+  - Generar nuevas preguntas si es necesario.
+  - Devolver una pregunta aleatoria al usuario.
+  - Eliminar la pregunta una vez ha sido servida.
+
+- **Interfaces expuestas**
+  - `GET /getQuestionsDb/:lang/:category`  
+    Recibe solicitudes del API Gateway para obtener una pregunta aleatoria de una categoría e idioma concretos. Se asegura de que haya suficientes preguntas generadas y disponibles.
+
+- **Relaciones**
+  - 🔁 **Internas:**
+    - `question-data-service`: utilizado para obtener, contar, y eliminar preguntas desde la base de datos.
+    - `question-generate-service`: encargado de generar nuevas preguntas usando información de Wikidata si no hay suficientes preguntas en la base de datos.
+  - ⚡ **Externas:**
+    - Gateway Service (recibe la solicitud).
+
+- **Datos**
+  - Aunque no gestiona directamente almacenamiento, manipula datos almacenados en MongoDB a través de `question-data-service`.
+
+- **Tecnología**
+  - Node.js
+  - Express.js
+
+- **Notas adicionales**
+  - Incluye lógica de espera y reintento si no hay suficientes preguntas disponibles en la base de datos.
+  - No es un microservicio autónomo en términos de almacenamiento: depende de servicios internos para la persistencia y generación.
+
+==== Black Box: History Service
+
+- **Responsabilidad**  
+  Se encarga de gestionar y almacenar el historial de juegos de los usuarios, incluyendo su puntuación, respuestas correctas/incorrectas, tiempo jugado y modo de juego. También proporciona estadísticas detalladas y el ranking global de los jugadores.
+
+- **Interfaces expuestas**
+  - `POST /createUserHistory`  
+    Recibe los datos del historial del juego de un usuario y lo almacena en la base de datos.
+  - `GET /getUserHistory`  
+    Devuelve el historial de juegos de un usuario específico, identificado por su `username`.
+  - `GET /getUserStats`  
+    Obtiene estadísticas agregadas sobre el rendimiento de un usuario, como el total de juegos jugados, respuestas correctas, incorrectas, tiempo total y puntuación promedio.
+  - `GET /getLeaderboard`  
+    Devuelve el ranking global de los jugadores, ordenado por diferentes métricas como la puntuación total, precisión, tiempo promedio, etc.
+
+- **Relaciones**
+  - 🔁 **Internas:**
+    - MongoDB: utilizado para almacenar y recuperar los datos de historial de usuario.
+    - `UserHistory` (modelo de MongoDB): utilizado para definir y gestionar el esquema de los registros de historial de usuario.
+  - ⚡ **Externas:**
+    - API Gateway (recibe las solicitudes del usuario y las redirige a este servicio).
+    
+- **Datos**
+  - Almacena datos de historial de juego en una base de datos MongoDB, incluyendo:
+    - `username`
+    - `correctAnswers`
+    - `wrongAnswers`
+    - `time`
+    - `score`
+    - `gameMode`
+
+- **Tecnología**
+  - Node.js
+  - Express.js
+  - MongoDB
+  - Swagger para documentación OpenAPI
+  
+- **Notas adicionales**
+  - Utiliza **agregación** en MongoDB para calcular estadísticas y rankings globales.
+  - El servicio soporta filtrado por diferentes criterios (e.g., por `username`, `sortBy`).
+  - Implementa un sistema de rankings que tiene en cuenta varios criterios y asigna un **ranking global**.
+  - Validaciones de entrada básicas para asegurar que los datos sean consistentes antes de almacenarlos o procesarlos.
+
+==== Black Box: Authentication Service
+
+- **Responsabilidad**  
+  Este servicio se encarga de gestionar la autenticación de los usuarios. Proporciona funcionalidades como iniciar sesión, validando las credenciales del usuario y generando un **token JWT** para autenticar futuras solicitudes. Utiliza la base de datos para verificar las credenciales de usuario.
+
+- **Interfaces expuestas**
+  - `POST /login`  
+    Recibe el `username` y la `password` de un usuario, verifica que sean correctos, y si lo son, genera un **token JWT** para la autenticación del usuario.
+    - **Entrada:** 
+      - `username`: Nombre de usuario.
+      - `password`: Contraseña del usuario.
+    - **Salida:**
+      - `token`: JWT que el cliente puede usar para autenticarse en futuras solicitudes.
+      - `username`: El nombre de usuario.
+      - `createdAt`: Fecha de creación de la cuenta del usuario.
+
+- **Relaciones**
+  - 🔁 **Internas:**
+    - MongoDB: utilizado para almacenar los datos de usuario.
+    - `User` (modelo de MongoDB): modelo que define la estructura de los datos de usuario en la base de datos.
+  - ⚡ **Externas:**
+    - API Gateway (gestiona las solicitudes que provienen del frontend y las dirige a este servicio).
+    - **bcrypt**: para la encriptación y comparación de contraseñas.
+    - **jwt**: para la generación y validación de tokens de acceso.
+
+- **Datos**
+  - Almacena los datos del usuario en una base de datos MongoDB, incluyendo:
+    - `username`: Nombre de usuario.
+    - `password`: Contraseña encriptada del usuario.
+    - `createdAt`: Fecha de creación de la cuenta del usuario.
+
+- **Tecnología**
+  - Node.js
+  - Express.js
+  - MongoDB
+  - bcrypt (para encriptación de contraseñas)
+  - jsonwebtoken (para la creación de tokens JWT)
+  - express-validator (para validación de datos de entrada)
+
+- **Notas adicionales**
+  - La autenticación se basa en la comparación de contraseñas encriptadas utilizando **bcrypt**.
+  - El servicio genera un **token JWT** válido por una hora, que debe ser incluido en las solicitudes subsecuentes para autenticar al usuario.
+  - Se valida que los campos `username` y `password` sean proporcionados y cumplan con una longitud mínima antes de procesar la solicitud.
+  - El token JWT es enviado como respuesta en caso de que las credenciales sean correctas.
+  - Si las credenciales son incorrectas, se devuelve un error de autenticación (401).
