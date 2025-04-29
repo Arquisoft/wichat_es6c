@@ -63,11 +63,9 @@ image:08_domainModel.png["Diagram 8.1: Modelo del dominio"]
 
 === _Conceptos de experiencia de usuario (UX)_
 
-_El objetivo crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida._
+_El objetivo es crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida._
 
-* _Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla, desde pantallas grandes como las de ordenadore, pasando por pantallas medias como las de tablets hasta dispositivos móviles._
-
-* _Accesibilidad: Cumplimiento de estándares WCAG para garantizar que la aplicación sea usable por personas con discapacidades._
+* _Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla, desde pantallas grandes como las de ordenador, pasando por pantallas medias como las de tablets hasta dispositivos móviles._
 
 * _Feedback Visual: Proporcionar retroalimentación visual inmediata para las acciones del usuario._
 
@@ -75,11 +73,10 @@ _El objetivo crear una aplicación intuitiva, accesible y atractiva, que permita
 
 === _Conceptos de seguridad y protección_
 
-* _Autenticación y Autorización: Se buscará realizrar una correcta autenticación de usuarios evitando que los datos de logueo sean vulnerados._
+* _Autenticación y Autorización: Se realiza una correcta autenticación de usuarios evitando que los datos de logueo sean vulnerables._
 
-* _Protección de Datos: Garantizar la privacidad de los usuarios encriptando las contraseñas y datos sensibles._
+* _Protección de Datos: Se garantiza la privacidad de los usuarios encriptando las contraseñas y los datos sensibles._
 
-* _Cifrado: Uso de HTTPS para la transmisión de datos y cifrado de datos sensibles._
 
 === _Patrones de arquitectura y diseño_
 
@@ -87,9 +84,7 @@ _Serán utilizados dos patrones:_
 
 *API Gateway:* _Este actúa como punto de entrada único para todas las solicitudes que realice el usuario delegandolas en sus servicios correspondientes._
 
-*Patrón de Servicios:* _Cada componente, como AuthService, UserService y LLM, es un servicio independiente que se enfoca en una funcionalidad específica, facilitando el mantenimiento del sistema._
-
-_Consultar los patrones utilizado en " "_
+*Patrón de Servicios:* _Cada componente, como AuthService, UserService, LLM, HistoryService son servicios independientes que se enfocan en una funcionalidad específica, facilitando el mantenimiento del sistema._
 
 === _Conceptos técnicos_
 
