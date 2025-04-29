@@ -76,9 +76,11 @@ export default function UserHistory() {
     const video = videoRef.current;
     if (video) {
       video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      if(video.play()){
       video.play().catch(error => {
         console.log("Auto-play was prevented:", error);
       });
+    }
     }
   }, []);
 

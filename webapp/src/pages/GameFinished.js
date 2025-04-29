@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 
 import { Button, Typography, Stack, Box } from "@mui/material";
@@ -78,9 +77,11 @@ const GameFinished = () => {
     const video = videoRef.current;
     if (video) {
       video.playbackRate = 0.5; // Reduce la velocidad si es necesario
-      video.play().catch(error => {
-        console.log("Auto-play was prevented:", error);
-      });
+      if (video.play()) {
+        video.play().catch(error => {
+          console.log("Auto-play was prevented:", error);
+        });
+      }
     }
   }, []);
 

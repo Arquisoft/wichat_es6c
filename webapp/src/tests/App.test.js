@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import App from '../App';
 import { SessionContext } from '../SessionContext';
-import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('i18next', () => ({
   changeLanguage: jest.fn(),
@@ -53,7 +52,7 @@ describe('App component', () => {
         </MemoryRouter>
       </SessionContext.Provider>
     );
-    const notFoundMessage = screen.getByText(/404/i);
+    const notFoundMessage = screen.getByText(/page not found/i);
     expect(notFoundMessage).toBeInTheDocument();
   });
 });

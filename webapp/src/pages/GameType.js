@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {  useEffect, useRef } from "react";
 import { Button, Stack, Typography, Box, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -21,14 +21,19 @@ function GameType() {
   const handleGameMode = (item) => {
     navigate("/game-mode", { state: { type: item.type } });
   };
+  const handleGoBack = () => {
+    navigate('/homepage');
+  };
 
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
       video.playbackRate = 0.5; // Reduce la velocidad si es necesario
-      video.play().catch(error => {
-        console.log("Auto-play was prevented:", error);
-      });
+      if (video.play()) {
+        video.play().catch(error => {
+          console.log("Auto-play was prevented:", error);
+        });
+      }
     }
   }, []);
 
