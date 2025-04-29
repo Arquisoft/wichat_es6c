@@ -94,7 +94,7 @@ _Se contemplan las siguientes tecnologías y herramientas:_
 
 * _Frameworks: React para el frontend y Node.js para el backend._
 
-* _Bases de Datos: MongoDB para la gestión de todos los datos de la aplicación, ya que es flexible y escala bien._
+* _Bases de Datos: MongoDB para la gestión de todos los datos de la aplicación, ya que es flexible y escalable._
 
 * _Despliegue: Uso de Docker para la contenerización y orquestación de servicios y uso de azure para el despliegue en la nube._
 
