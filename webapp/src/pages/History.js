@@ -47,7 +47,7 @@ export default function UserHistory() {
 
   const fetchUserProfile = useCallback(async (user) => {
     try {
-      const response = await axios.get(`http://localhost:8000/user/profile/${user}`);
+      const response = await axios.get(`${gatewayService}/user/profile/${user}`);
       setUserProfile(response.data);
 
       // Solo actualiza los campos si NO estamos en modo edición
