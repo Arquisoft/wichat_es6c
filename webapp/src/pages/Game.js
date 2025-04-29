@@ -177,9 +177,12 @@ function Game() {
     if (failAudioRef.current) {
       failAudioRef.current.currentTime = 0;
       failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
-      failAudioRef.current.play().catch((error) => {
-        console.error("Error reproduciendo el sonido de fallo:", error);
-      });
+      const playPromise = failAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de fallo:", error);
+        });
+      }
     }
 
     setShowFeedback(true);
@@ -229,16 +232,12 @@ function Game() {
       console.log("volumen audio:", audio.volume);
     }
 
-    if(audio !== null && audio!== undefined){
-      try{
-        audio.play().catch((error) => {
-          console.error("Error al reproducir el audio:", error);
-        });
-      }catch (error) {
+    const playPromise = audio.play();
+    if (playPromise !== null && playPromise !== undefined) {
+      playPromise.catch((error) => {
         console.error("Error al reproducir el audio:", error);
-      }
-    
-  }
+      });
+    }
 
     return () => {
       if(audio){
@@ -292,10 +291,13 @@ function Game() {
 
       if (hurryAudioRef.current) {
         hurryAudioRef.current.currentTime = 0;
-        hurryAudioRef.current.volume = volumeLevel ; // Ajustar volumen reducido
-        hurryAudioRef.current.play().catch((error) => {
-          console.error("Error reproduciendo el sonido de prisa:", error);
-        });
+        hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+        const playPromise = hurryAudioRef.current.play();
+        if (playPromise !== null && playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Error reproduciendo el sonido de prisa:", error);
+          });
+        }
       }
       if (audioRef.current) {
         //audioRef.current.pause();
@@ -314,9 +316,12 @@ function Game() {
     if (chooseAudioRef.current) {
       chooseAudioRef.current.currentTime = 0;
       chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-      chooseAudioRef.current.play().catch((error) => {
-        console.error("Error reproduciendo el sonido de elección:", error);
-      });
+      const playPromise = chooseAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de elección:", error);
+        });
+      }
     }
 
     setSelectedAnswer(selectedOption);
@@ -347,16 +352,22 @@ function Game() {
         if (isCorrect && correctAudioRef.current) {
           correctAudioRef.current.currentTime = 0;
           correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-          correctAudioRef.current.play().catch((error) => {
-            console.error("Error reproduciendo el sonido de acierto:", error);
-          });
+          const playPromise = correctAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de acierto:", error);
+            });
+          }
         } else {
           if (failAudioRef.current) {
             failAudioRef.current.currentTime = 0;
             failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-            failAudioRef.current.play().catch((error) => {
-              console.error("Error reproduciendo el sonido de fallo:", error);
-            });
+            const playPromise = failAudioRef.current.play();
+            if (playPromise !== null && playPromise !== undefined) {
+              playPromise.catch((error) => {
+                console.error("Error reproduciendo el sonido de fallo:", error);
+              });
+            }
           }
         }
         setStarAnimation(true);

@@ -196,9 +196,12 @@ function Game() {
         if (hurryAudioRef.current) {
           hurryAudioRef.current.currentTime = 0;
           hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-          hurryAudioRef.current.play().catch((error) => {
-            console.error("Error reproduciendo el sonido de prisa:", error);
-          });
+          const playPromise = hurryAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de prisa:", error);
+            });
+          }
         }
         if (audioRef.current) {
           //audioRef.current.pause();
@@ -220,9 +223,12 @@ function Game() {
       }
   
       console.log(hurryMode, starAnimation, showFeedback, showTransition);
-      audio.play().catch((error) => {
-        console.error("Error reproduciendo el sonido de fondo:", error);
-      });
+      const playPromise = audio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de fondo:", error);
+        });
+      }
   
       return () => {
   
@@ -257,9 +263,12 @@ function Game() {
               failSoundPlayedRef.current = true;
               failAudioRef.current.currentTime = 0;
               failAudioRef.current.volume = volumeLevel;
-              failAudioRef.current.play().catch((error) => {
-                console.error("Error reproduciendo el sonido de fallo:", error);
-              });
+              const playPromise = failAudioRef.current.play();
+              if (playPromise !== null && playPromise !== undefined) {
+                playPromise.catch((error) => {
+                  console.error("Error reproduciendo el sonido de fallo:", error);
+                });
+              }
             }
             handleTimeUp();
           }
@@ -288,9 +297,12 @@ function Game() {
     if (chooseAudioRef.current) {
       chooseAudioRef.current.currentTime = 0;
       chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-      chooseAudioRef.current.play().catch((error) => {
-        console.error("Error reproduciendo el sonido de elección:", error);
-      });
+      const playPromise = chooseAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de elección:", error);
+        });
+      }
     }
     setShowFeedback(true);
     let correct = corectAnswers;
@@ -317,9 +329,12 @@ function Game() {
         if (isCorrect && correctAudioRef.current) {
           correctAudioRef.current.currentTime = 0;
           correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-          correctAudioRef.current.play().catch((error) => {
-            console.error("Error reproduciendo el sonido de acierto:", error);
-          });
+          const playPromise = correctAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de acierto:", error);
+            });
+          }
         } else {
           
         }
@@ -370,9 +385,12 @@ function Game() {
         failSoundPlayedRef.current = true;
         failAudioRef.current.currentTime = 0;
         failAudioRef.current.volume = volumeLevel;
-        failAudioRef.current.play().catch((error) => {
-          console.error("Error reproduciendo el sonido de fallo:", error);
-        });
+        const playPromise = failAudioRef.current.play();
+        if (playPromise !== null && playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Error reproduciendo el sonido de fallo:", error);
+          });
+        }
       }
 
 
