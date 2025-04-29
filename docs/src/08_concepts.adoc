@@ -63,23 +63,21 @@ image:08_domainModel.png["Diagram 8.1: Modelo del dominio"]
 
 === _Conceptos de experiencia de usuario (UX)_
 
-_Aunque el desarrollo aún no ha comenzado, se tiene como objetivo crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida._
+_El objetivo crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida._
 
-* _Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla._
+* _Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla, desde pantallas grandes como las de ordenadore, pasando por pantallas medias como las de tablets hasta dispositivos móviles._
 
 * _Accesibilidad: Cumplimiento de estándares WCAG para garantizar que la aplicación sea usable por personas con discapacidades._
 
 * _Feedback Visual: Proporcionar retroalimentación visual inmediata para las acciones del usuario._
 
-* _Prototipos: "url prototipos"_
+* _Feedback Auditivo: Proporcionar retroalimentación auditiva inmediata para las acciones del usuario favoreciendo el entendimiento de este sobre lo que está ocurriendo._
 
 === _Conceptos de seguridad y protección_
 
-_Aún sin desarrollar. Sin embargo, se contemplan las siguientes consideraciones iniciales:_
+* _Autenticación y Autorización: Se buscará realizrar una correcta autenticación de usuarios evitando que los datos de logueo sean vulnerados._
 
-* _Autenticación y Autorización: Se buscará realizrar una correcta autenticación de usuarios._
-
-* _Protección de Datos: Garantizar la privacidad de los usuarios._
+* _Protección de Datos: Garantizar la privacidad de los usuarios encriptando las contraseñas y datos sensibles._
 
 * _Cifrado: Uso de HTTPS para la transmisión de datos y cifrado de datos sensibles._
 
@@ -89,21 +87,21 @@ _Serán utilizados dos patrones:_
 
 *API Gateway:* _Este actúa como punto de entrada único para todas las solicitudes que realice el usuario delegandolas en sus servicios correspondientes._
 
-*Patrón de Micoservicios:* _Cada componente, como AuthService, UserService y LLM, es un servicio independiente que se enfoca en una funcionalidad específica, facilitando el mantenimiento del sistema._
+*Patrón de Servicios:* _Cada componente, como AuthService, UserService y LLM, es un servicio independiente que se enfoca en una funcionalidad específica, facilitando el mantenimiento del sistema._
 
 _Consultar los patrones utilizado en " "_
 
 === _Conceptos técnicos_
 
-_Aún sin desarrollar. Sin embargo, se contemplan las siguientes tecnologías y herramientas:_
+_Se contemplan las siguientes tecnologías y herramientas:_
 
-* _Lenguajes de Programación: JavaScript para el frontend._
+* _Lenguajes de Programación: JavaScript para el frontend y el backend aprovechando que se utiliza React y Node.js._
 
-* _Frameworks: React para el frontend._
+* _Frameworks: React para el frontend y Node.js para el backend._
 
-* _Bases de Datos: MongoDB para la gestión de datos._
+* _Bases de Datos: MongoDB para la gestión de todos los datos de la aplicación, ya que es flexible y escala bien._
 
-* _Despliegue: Uso de Docker para la contenerización y orquestación de servicios._
+* _Despliegue: Uso de Docker para la contenerización y orquestación de servicios y uso de azure para el despliegue en la nube._
 
 === _Conceptos de desarrollo_
 
@@ -111,10 +109,14 @@ _Hemos decidido empezar nuestro proyecto de cero pero basándonos en proyectos d
 
 * _Metodología Ágil: Uso de Scrum para la gestión del proyecto._
 
-* _Control de Versiones: Uso de Git y GitHub para el control de versiones y colaboración._
+* _Control de Versiones: Uso de Git y GitHub para el control de versiones y colaboración, favoreciendo que todos los compañeros revisen, aprendan y ayuden lo mejor posible en el desarrollo._
 
-* _Integración Continua: Con total intención de automatizar pruebas y despliegues._
+* _Integración Continua: Todas las pruebas han sido automatizadas, el despliegue y la monitorización también._
 
 === _Conceptos operativos_
 
 * _Monitorización: Es importante asegurarse de que el sistema funcione correctamente en todo momento. Para ello, se utilizarán herramientas que permitan supervisar el rendimiento del sistema, detectar errores y medir el uso de recursos. Esto nos ayudará a identificar problemas antes de que afecten a los usuarios._
+Estas herramientas incluiyen:
+- Prometheus: Herramienta de monitorización y alerta que recopila métricas de aplicaciones y sistemas.
+- Grafana: Herramienta de visualización de datos que se integra con Prometheus para crear paneles de control personalizados.
+- Artillery: Herramienta de pruebas de carga que simula múltiples usuarios para evaluar el rendimiento del sistema bajo condiciones de carga diferentes.
