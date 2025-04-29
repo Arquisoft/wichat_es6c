@@ -77,7 +77,7 @@ app.post('/createUserHistory', async (req, res) => {
       const historyResponse = await axios.post(historyServiceUrl+'/createUserHistory', req.body);
       res.json(historyResponse.data);
   } catch (error) {
-    handleErrors(res, new Error("Ha fallado algo en el servidor, error al crear el historial"));
+    handleErrors(res, error);
 
   }
 });
@@ -112,7 +112,7 @@ app.get('/getUserStats', async (req, res) => {
     const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
     res.json(response.data);
   } catch (error) {
-    handleErrors(res, new Error("Error al obtener estadísticas"));
+    handleErrors(res, error);
 
   }
 });
