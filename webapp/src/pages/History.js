@@ -1,7 +1,7 @@
-import { useEffect, useState, useContext, useCallback} from "react";
+import { useEffect, useState, useRef, useContext, useCallback } from "react";
 import axios from "axios";
 import {
-  Container, Alert, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid, TextField, 
+  Container, Alert, Typography, Button, Table, Box, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Card, CardContent, Grid, TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
@@ -13,7 +13,7 @@ export default function UserHistory() {
   const [stats, setStats] = useState(null);
   const [leaderboard, setLeaderboard] = useState({
     topPlayers: [],
-    userPosition: null  
+    userPosition: null
   });
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
@@ -29,7 +29,9 @@ export default function UserHistory() {
 
   const { t } = useTranslation();
   const { username } = useContext(SessionContext);
-  const gatewayService = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+  const gatewayService = process.env.HISTORY_SERVICE_URL || 'http://localhost:8000';
+  const videoRef = useRef(null);
+
 
   // Función de validación
   const validateForm = () => {
@@ -60,7 +62,7 @@ export default function UserHistory() {
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
-  },[editMode]);
+  }, [editMode]);
 
   useEffect(() => {
     if (username) {
@@ -70,6 +72,17 @@ export default function UserHistory() {
   }, [username,editMode,userProfile,fetchUserProfile]);
 
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      if(video.play()){
+      video.play().catch(error => {
+        console.log("Auto-play was prevented:", error);
+      });
+    }
+    }
+  }, []);
 
   const fetchHistory = async () => {
     if (!username) return;
@@ -94,7 +107,6 @@ export default function UserHistory() {
     setStats(null);       // Limpiar estadísticas anteriores
     setLeaderboard({ topPlayers: [], userPosition: null });
     try {
-      console.log("Fetching stats for user:", username);
       const response = await axios.get(`${gatewayService}/getUserStats`, { params: { username } });
       setStats(response.data);
     } catch (error) {
@@ -165,7 +177,7 @@ export default function UserHistory() {
         description: description.trim(),
       };
 
-       await updateUserProfile(username, updatedUser);
+      await updateUserProfile(username, updatedUser);
 
       // Actualiza el perfil y cierra edición
       setUserProfile(prev => ({
@@ -216,12 +228,73 @@ export default function UserHistory() {
 
   return (
     <Container maxWidth="md" sx={{ textAlign: "center", mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+
+      {/* Video de fondo - Configuración idéntica a HomePage */}
+      <Box
+        component="video"
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        sx={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          minWidth: "100%",
+          minHeight: "100%",
+          width: "auto",
+          height: "auto",
+          transform: "translate(-50%, -50%)",
+          zIndex: -1,
+          objectFit: "cover",
+          opacity: 0.7,
+        }}
+      >
+        <source src="/videos/background_white_small.mp4" type="video/mp4" />
+      </Box>
+
+      {/* Capa oscura para mejorar legibilidad - Configuración idéntica */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+
+          backgroundColor: "rgba(255, 255, 255, 0.09)",
+          zIndex: -1,
+        }}
+      />
+
+      <Typography variant="h4"
+
+        sx={{
+          fontWeight: 'bold',
+          color: 'white',
+          backgroundColor: '#6A0DAD',
+          borderRadius: '11px',
+
+        }}
+
+        gutterBottom>
         {t('History.title')}
       </Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        <Trans i18nKey="History.usernameDisplay" values={{ username }} components={{ strong: <strong /> }} />
-      </Typography>
+      <Typography variant="subtitle1" sx={{
+        fontWeight: 'medium',
+        color: 'white',
+        backgroundColor: '#6A0DAD',
+        borderRadius: '11px',
+             }} gutterBottom>
+        <Trans
+          i18nKey="History.usernameDisplay"
+
+          values={{ username }}
+          components={{
+            strong: <strong style={{ color: '#FFD700' }} />
+          }}
+        /> </Typography>
 
       {userProfile && !editMode && (
         <Card sx={{ display: 'flex', alignItems: 'center', mb: 3, p: 2, boxShadow: 3, borderRadius: 2, backgroundColor: '#f9f9f9' }}>
@@ -537,7 +610,7 @@ export default function UserHistory() {
                       width: { xs: '3em', md: '5em' },
                       pl: { xs: 1, md: 2 } // Padding izquierdo ajustado
                     }}>
-                            {t('History.position')}
+                      {t('History.position')}
                     </TableCell>
 
                     {/* Usuario */}
@@ -548,7 +621,7 @@ export default function UserHistory() {
                         '&:hover': { backgroundColor: 'action.hover' }
                       }}
                     >
-                       {t('History.user')}
+                      {t('History.user')}
                     </TableCell>
 
                     {/* Puntuación Total */}
@@ -559,7 +632,7 @@ export default function UserHistory() {
                         '&:hover': { backgroundColor: 'action.hover' }
                       }}
                     >
-                       {t('History.score')}
+                      {t('History.score')}
                     </TableCell>
 
                     {/* % Aciertos */}
@@ -570,7 +643,7 @@ export default function UserHistory() {
                         '&:hover': { backgroundColor: 'action.hover' }
                       }}
                     >
-                       {t('History.percentageHits')}
+                      {t('History.percentageHits')}
                     </TableCell>
 
                     {/* Correctas */}
@@ -581,7 +654,7 @@ export default function UserHistory() {
                         '&:hover': { backgroundColor: 'action.hover' }
                       }}
                     >
-                        {t('History.correct')}
+                      {t('History.correct')}
                     </TableCell>
 
                     {/* Partidas */}
@@ -592,7 +665,7 @@ export default function UserHistory() {
                         '&:hover': { backgroundColor: 'action.hover' }
                       }}
                     >
-                        {t('History.games')}
+                      {t('History.games')}
                     </TableCell>
                   </TableRow>
                 </TableHead>

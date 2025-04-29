@@ -211,8 +211,7 @@ describe('Gateway Service', () => {
     expect(response.status).toBe(500);
 
     // Check that the error message is as expected
-    expect(response.body).toHaveProperty('error', 'Ha fallado algo en el servidor');
-    expect(response.body).toHaveProperty('details', 'Failed to create user history');
+    expect(response.body).toHaveProperty('error', 'Ha fallado algo en el servidor, error al crear el historial');
   });
 
   it('should forward the getUserHistory request to the history service', async () => {

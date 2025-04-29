@@ -77,10 +77,8 @@ app.post('/createUserHistory', async (req, res) => {
       const historyResponse = await axios.post(historyServiceUrl+'/createUserHistory', req.body);
       res.json(historyResponse.data);
   } catch (error) {
-    res.status(500).json({ 
-      error: 'Ha fallado algo en el servidor',
-      details: error.message,
-    });
+    handleErrors(res, new Error("Ha fallado algo en el servidor, error al crear el historial"));
+
   }
 });
 
@@ -100,7 +98,8 @@ app.get("/getUserHistory", async (req, res) => {
     res.json(response.data); // Enviar la respuesta al cliente
   } catch (error) {
     console.error("Error en Gateway:", error.response?.data || error.message);
-    res.status(500).json({ error: "Error en el servidor del Gateway" });
+    handleErrors(res, new Error("Error en el servidor del Gateway"));
+
   }
 });
 
@@ -113,7 +112,8 @@ app.get('/getUserStats', async (req, res) => {
     const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener estadísticas", details: error.message });
+    handleErrors(res, new Error("Error al obtener estadísticas"));
+
   }
 });
 
@@ -130,10 +130,9 @@ app.get('/getLeaderboard', async (req, res) => {
     res.json(response.data);
   } catch (error) {
     console.error('Error en gateway /getLeaderboard:', error.response?.data || error.message);
-    res.status(500).json({ 
-      error: "Error al obtener ranking",
-      details: error.response?.data?.error || error.message 
-    });
+    handleErrors(res, new Error("Error al obtener ranking"));
+
+  
   }
 });
 
@@ -199,7 +198,7 @@ app.post('/askllm', async (req, res) => {
     const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
     res.json(llmResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    handleErrors(res, error);
   }
 });
 
