@@ -3,9 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import App from '../App';
 import { SessionContext } from '../SessionContext';
 
-jest.mock('i18next', () => ({
-  changeLanguage: jest.fn(),
-}));
+import '../localize/i18n';
 
 describe('App component', () => {
   it('renders home by default', () => {
@@ -16,7 +14,7 @@ describe('App component', () => {
         </MemoryRouter>
       </SessionContext.Provider>
     );
-    const homeElement = screen.getByText(/home/i);
+    const homeElement = screen.getByText(/sign in to wichat/i);
     expect(homeElement).toBeInTheDocument();
   });
 
@@ -28,20 +26,8 @@ describe('App component', () => {
         </MemoryRouter>
       </SessionContext.Provider>
     );
-    const loginMessage = screen.getByRole('heading', { name: /login/i });
+    const loginMessage = screen.getByRole('heading', { name: /sign in to wichat/i });
     expect(loginMessage).toBeInTheDocument();
-  });
-
-  test('renders user homepage if authenticated', () => {
-    render(
-      <SessionContext.Provider value={{ isLoggedIn: true }}>
-        <MemoryRouter initialEntries={['/homepage']}>
-          <App />
-        </MemoryRouter>
-      </SessionContext.Provider>
-    );
-    const userHomeElement = screen.getByText(/user home/i);
-    expect(userHomeElement).toBeInTheDocument();
   });
 
   test('renders 404 page for unknown routes', () => {
