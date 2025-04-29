@@ -19,11 +19,21 @@ endif::arc42help[]
 
 La aplicación WIChat permite a los usuarios participar a un concurso online de preguntas y respuestas similar a "Saber y Ganar". 
 
-El usuario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de que lugar se trata.
+El usario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de que lugar se trata.
+El usario se encontrará con una serie de modos de juego, entre los que se encuentran:
 
-El usuario puede recibir pistas sobre la imagen hablando con el chat con inteligencia artificial incluido en el juego.
+* "Modo normal": el usuario tiene un tiempo limitado para adivinar la imagen y se puede pedirle ayuda a un LLM para facilitarle la tarea. Dentro de este modo además hay: 
 
-Tanto las pistas como las imágenes son generadas automaticamnete a partir de Wikidata (https://www.wikidata.org/)
+* "Modo VS": El usuario juega haciendo que el LLM adivine lo que un texto describe. El LLM tiene un tiempo limitado para adivinar.
+
+Hambos tienen varias submodalidades, como por ejemplo:
+
+- "Paises": El usuario tendrá que adivinar en base a la foto de un lugar de un pais y la ia en base al nombre del pais.
+- "Bandera": El usuario tendrá que adivinar por la imágen de una bandera.
+- "Famosos": El usuario tendrá que adivinar por la imágen de una persona famosa y la ia en base a un texto que describe a esa persona.
+
+
+Tanto las pistas como las imágenes son generadas automaticamnete a partir de Wikidata (https://www.wikidata.org/). En caso de las pistas se tratan cuidadosamente para que no contengan información que pueda dar la respuesta correcta de manera directa.
 
 === Resumen de Requisitos
 
@@ -49,13 +59,14 @@ Consulta https://docs.arc42.org/section-1/[Introducción y Objetivos] en la docu
 
 endif::arc42help[]
 
-* Se deberá poder acceder desde la web.
+* Se deberá poder acceder desde la web tanto en ordenadores como en teléfonos.
 * El sistema mostrará imagenes, las respuestas y un sistema de pistas.
 * Los usuarios podrán registrarse en el sistema.
 * Los usuarios registrados podrán ver su historial de participaciones.
+* Los usuarios podrán ver su puntuación y la de otros usuarios.
 * Se podrá interactuar con la aplicación para obtener pistas gracias a un modelo de lenguaje.
 * Las preguntas y las pistas serán genrados automaticamente a partir de los datos de Wikidata.
-* El sistema permitirá acceder a los datos de los usuarios y de las preguntas generadas mediante una API.
+* El sistema permitirá acceder a los datos de los usuarios y de las preguntas accedidas mediante unas APIs.
 * Habrá un plazo de tiempo determinado para responder a las preguntas.
 
 
@@ -89,7 +100,7 @@ endif::arc42help[]
 1|Seguridad|Los datos de los usuarios (credenciales, historial de juegos) deben estar cifrados. El sistema debe prevenir ataques comunes (SQL injection, XSS).|
 2|Usabilidad|Los usuarios deben poder interactuar con el sistema de manera intuitiva, registrarse, jugar y obtener pistas con la menor dificultad posible. El tiempo de respuesta para mostrar una pregunta o pista no debe superar los 2 segundos.|
 3|Fiabilidad|El sistema debe garantizar una disponibilidad del 99%. Las pistas generadas por el LLM deben ser correctas en un 95% de los casos, minimizando alucinaciones y respuestas erróneas.|
-4|Rendimiento|El sistema debe soportar hasta 100 usuarios concurrentes sin degradación del rendimiento. El tiempo de respuesta de la API de Wikidata y del LLM no debe superar los 1000 ms en el 95% de las solicitudes.|
+4|Rendimiento|El sistema debe soportar hasta 50 usuarios concurrentes sin degradación del rendimiento. El tiempo de respuesta de la API de Wikidata y del LLM no debe superar los 5000 ms en el 95% de las solicitudes.|
 5|Mantenibilidad|El código debe estar documentado y modularizado, permitiendo que todos los implicados en el desarrollo puedan trabajar con ello lo mejor posible.|
 |===
 
