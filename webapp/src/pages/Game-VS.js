@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback,useRef } from "react";
 import { Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
-  const FEEDBACK_QUESTIONS_TIME = 1; // 1 segundo (1000 ms)
+  const FEEDBACK_QUESTIONS_TIME = 500; // 1 segundo (1000 ms)
   const TRANSITION_ROUND_TIME = 2000; // 3 segundos (3000 ms)
 
 
@@ -32,6 +32,15 @@ function Game() {
 
   const { t } = useTranslation();
 
+  const audioRef = useRef(null); // Referencia para el audio
+  const hurryAudioRef = useRef(null);
+  const failAudioRef = useRef(null); // Referencia para el sonido de fallo
+  const correctAudioRef = useRef(null); // Referencia para el sonido de respuesta correcta
+  const chooseAudioRef = useRef(null); // Referencia para el sonido de elección
+  const failSoundPlayedRef = useRef(false);
+  //const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
+  const volumeLevel = 0.3; // Ajusta el nivel de volumen entre 0.0 y 1.0
+  const [hurryMode, setHurryMode] = useState(false);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
@@ -143,14 +152,17 @@ function Game() {
 
     setRound((prevRound) => prevRound + 1); // Incrementar la ronda
     setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
-
-
-  }, [nextQuestionData, fetchQuestion, preloadNextQuestion]);
+    setHurryMode(false);
+    if (hurryAudioRef.current) hurryAudioRef.current.pause();
+    failSoundPlayedRef.current = false;
+  }, [nextQuestionData, fetchQuestion, preloadNextQuestion,failSoundPlayedRef]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
+    
     setShowFeedback(true);
-
+    
+    
     setTempScore(0);
     setTimeout(() => {
       setShowFeedback(false);
@@ -178,6 +190,53 @@ function Game() {
   }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
 
   useEffect(() => {
+      if (timeLeft === 12 && !hurryMode) {
+        setHurryMode(true);
+  
+        if (hurryAudioRef.current) {
+          hurryAudioRef.current.currentTime = 0;
+          hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+          const playPromise = hurryAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de prisa:", error);
+            });
+          }
+        }
+        if (audioRef.current) {
+          //audioRef.current.pause();
+        }
+      }
+    }, [timeLeft, hurryMode,volumeLevel]);
+
+   useEffect(() => {
+      console.log("volumen:", volumeLevel);
+      if (!audioRef.current) return; // Asegurarse de que la referencia del audio esté disponible
+      const audio = audioRef.current;
+      audio.volume = volumeLevel; // Ajustar volumen normal
+      if (hurryMode || starAnimation || showFeedback || showTransition) {
+        console.log(hurryMode, starAnimation, showFeedback, showTransition);
+        audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
+      } else {
+        audio.volume = 1; // Ajustar volumen normal
+        console.log("volumen audio:", audio.volume);
+      }
+  
+      console.log(hurryMode, starAnimation, showFeedback, showTransition);
+      const playPromise = audio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de fondo:", error);
+        });
+      }
+  
+      return () => {
+  
+        audio.pause();
+      };
+    }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
+
+  useEffect(() => {
     if (location.state?.mode) {
       setGameMode(location.state.mode);
       setGameModeName(location.state.name); // Guardar el nombre del modo de juego
@@ -200,6 +259,17 @@ function Game() {
         if (prevTime <= 1) {
           if (!timeUpTriggered) {
             timeUpTriggered = true;
+            if (failAudioRef.current && failAudioRef.current.paused && !failSoundPlayedRef.current) {
+              failSoundPlayedRef.current = true;
+              failAudioRef.current.currentTime = 0;
+              failAudioRef.current.volume = volumeLevel;
+              const playPromise = failAudioRef.current.play();
+              if (playPromise !== null && playPromise !== undefined) {
+                playPromise.catch((error) => {
+                  console.error("Error reproduciendo el sonido de fallo:", error);
+                });
+              }
+            }
             handleTimeUp();
           }
           clearInterval(timer);
@@ -224,6 +294,16 @@ function Game() {
 
   const handleAnswer = (isCorrect, selectedOption) => {
 
+    if (chooseAudioRef.current) {
+      chooseAudioRef.current.currentTime = 0;
+      chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+      const playPromise = chooseAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de elección:", error);
+        });
+      }
+    }
     setShowFeedback(true);
     let correct = corectAnswers;
     let thisScore = score;
@@ -246,6 +326,18 @@ function Game() {
 
       // Activar la animación de la estrella solo si no está ya activa
       if (!starAnimation) {
+        if (isCorrect && correctAudioRef.current) {
+          correctAudioRef.current.currentTime = 0;
+          correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+          const playPromise = correctAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de acierto:", error);
+            });
+          }
+        } else {
+          
+        }
         setStarAnimation(true);
       }
 
@@ -274,17 +366,53 @@ function Game() {
 
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
-    setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
-    if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
-      console.log("El usuario eligió la opción incorrecta según la respuesta del chat.");
+
+    console.log(questionData);
+    setUserMessages((prevMessages) => [...prevMessages, message]);
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const messageLower = message.toLowerCase();
+    
+    if (
+      messageLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && messageLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && messageLower.includes(esAnswer.toLowerCase()))
+    ) {
+      if (failAudioRef.current && failAudioRef.current.paused && !failSoundPlayedRef.current) {
+        failSoundPlayedRef.current = true;
+        failAudioRef.current.currentTime = 0;
+        failAudioRef.current.volume = volumeLevel;
+        const playPromise = failAudioRef.current.play();
+        if (playPromise !== null && playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Error reproduciendo el sonido de fallo:", error);
+          });
+        }
+      }
+
+
       setTimeLeft(0);
+      
     }
   };
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-
-    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const responseLower = response.toLowerCase();
+    
+    if (
+      responseLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && responseLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && responseLower.includes(esAnswer.toLowerCase()))
+    ) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
     }
@@ -377,6 +505,17 @@ function Game() {
         padding: "2%", // Padding relativo
       }}
     >
+
+      {/* Sonido de fondo */}
+            <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
+      <audio ref={hurryAudioRef} src="sound/hurry_sound.mp3" />
+      {/* Sonido de fallo */}
+      <audio ref={failAudioRef} src="sound/fail.wav" />
+      {/* Sonido de acierto */}
+      <audio ref={correctAudioRef} src="sound/correct.mp3" />
+      {/* Sonido de elección */}
+      <audio ref={chooseAudioRef} src="sound/choose.mp3" />
+
       {/* Columna izquierda: Temporizador y Pregunta */}
       <Stack
         direction="column"
@@ -418,15 +557,13 @@ function Game() {
               variant="h4"
               color="white"
               fontWeight="bold"
-              sx={{
-                fontSize: { xs: "2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
-              }}
+              fontSize={{ xs: "1.5rem", sm: "2rem", md: "3rem" }} // Texto adaptable
             >
               {timeLeft}
             </Typography>
           </Box>
         </Box>
-
+      
         {/* Pregunta */}
         <Box
           sx={{
@@ -469,6 +606,11 @@ function Game() {
           >
             {questionData.correctAnswer}
           </Typography>
+          <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
+                    {t("Game.rounds", { round, TOTAL_ROUNDS })}
+          
+                  </Typography>
+          
         </Box>
       </Stack>
 
@@ -487,18 +629,20 @@ function Game() {
           boxShadow: { xs: "0px 4px 10px rgba(0, 0, 0, 0.2)", md: "none" }, // Sombra en móviles
         }}
       >
-        <Chat
-          questionData={questionData}
-          onUserMessage={handleUserMessage}
-          onBotResponse={handleBotResponse}
-          hideHeader={true}
-          header={
-            "Tienes que adivinar un " +
-            questionData.category +
-            ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
-            userMessages.join(", ")
-          }
-        />
+  
+          <Chat
+            questionData={questionData}
+            onUserMessage={handleUserMessage}
+            onBotResponse={handleBotResponse}
+            hideHeader={true}
+            header={
+              "Tienes que adivinar un " +
+              gameModeName +
+              ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
+              userMessages.join(", ")
+            }
+            mode="vs"
+          />
       </Box>
 
       {/* Pantalla de Transición */}

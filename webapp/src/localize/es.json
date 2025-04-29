@@ -124,5 +124,9 @@
         "github": "GitHub",
         "apiDocs": "API Docs",
         "appMovil": "App Android"
+    },
+    "NotFound":{
+        "title": "Página no encontrada",
+        "button_msg": "Volver al inicio"
     }
 }

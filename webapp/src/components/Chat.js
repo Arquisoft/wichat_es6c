@@ -5,7 +5,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, isMobile, hideHeader }) {
+
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, mode, isMobile, hideHeader }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -22,8 +23,15 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
     onUserMessage && onUserMessage(userMessage.content);
 
     setInput("");
-    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) return;
-    setIsTyping(true);
+    console.log(questionData);
+    if(mode && mode==="vs"){
+    if (
+      userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || 
+      (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || 
+      (questionData.esAnswer && userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase()))
+    ) return;
+  }
+    setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -174,6 +182,8 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
 Chat.propTypes = {
   questionData: PropTypes.shape({
     correctAnswer: PropTypes.string.isRequired,
+    enAnswer: PropTypes.string,  // Propiedad opcional
+    esAnswer: PropTypes.string   // Propiedad opcional
   }).isRequired,
   header: PropTypes.string.isRequired,
   onUserMessage: PropTypes.func,
@@ -181,6 +191,7 @@ Chat.propTypes = {
   ignoreChat: PropTypes.bool,
   isMobile: PropTypes.bool,
   hideHeader: PropTypes.bool,
+  mode: PropTypes.string
 };
 
 export default Chat;

@@ -87,6 +87,7 @@
         "chooseTheme": "Choose a theme",
         "countryName": "country",
         "goBack": "Go back"
+
     },
     "Game": {
         "totalScore": "Total score",
@@ -122,5 +123,9 @@
         "github": "GitHub",
         "apiDocs": "API Docs",
         "appMovil": "App Android"
+    },
+    "NotFound":{
+        "title": "Page not found",
+        "button_msg": "Home page"
     }
 }

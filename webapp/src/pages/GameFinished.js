@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
@@ -24,6 +24,9 @@ const GameFinished = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
 
+  const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
+
+
   useEffect(() => {
     if (location.state) {
       setScore(location.state.score);
@@ -41,6 +44,25 @@ const GameFinished = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [location]);
 
+  // Efecto para reproducir sonido si hay confeti
+  useEffect(() => {
+    if (maxScore > 0 && score >= (maxScore / 2)) {
+      console.log(score, maxScore / 2);
+
+      const winningAudio = winningSoundRef.current;
+      winningAudio.volume = 1;
+      const playPromise = winningAudio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          // Silenciosamente ignorar el error si autoplay está bloqueado
+          if (error.name !== 'AbortError') {
+            console.warn('Autoplay bloqueado:', error.message);
+          }
+        });
+      }
+    }
+  }, [score, maxScore]);
+
   const handleRestart = () => {
     navigate('/game-mode', { state: { type: gameType } });
   };
@@ -57,7 +79,7 @@ const GameFinished = () => {
       sx={{ height: "100vh", textAlign: "center", px: 2 }}
     >
       {/* Confetti */}
-      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
       <Typography
@@ -122,7 +144,6 @@ const GameFinished = () => {
         </Box>
       </Stack>
 
-      {/* Buttons */}
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
         <Button
           variant="contained"
