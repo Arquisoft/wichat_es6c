@@ -76,39 +76,6 @@ Contained Building Blocks::
 
 |===
 
-=== Nivel 3 
-image::05_3_BlackBox_Question_Management.png["Diagram 5.3.1: Desglose de Question Management"]
-
-|===
-|Building Blocks |Description
-
-|Question Generator Service
-|Parte de la aplicación encargada de conectarse a Wikidata y obtener imágenes e información para las preguntas del juego.
-
-|Question Data Service
-|Parte de la aplicación encargada de tratar con la información de las preguntas conectándose a la base de datos para almacenar esta información y eliminando las preguntas que ya han salido.
-
-|Question Service
-|Parte de la aplicación encargada de gestionar el ciclo de vida de las preguntas en la aplicación. Orquesta dos componentes internos(question-data-service y question-generator-service). Es el encargado de relacionarse con gateway y de recibir las peticiones de preguntas. Se encarga de la lógica de negocio relacionada con las preguntas.
-
-|===
-
-image::05_3_BlackBox_User_Management.png["Diagram 5.3.2: Desglose de User Management"]
-
-|===
-|Building Blocks |Description
-
-|User Service
-|Parte encargada de tratar la información del usuario: puntuación, historial, etc. Se conecta a la base de datos para almacenar esta información.
-
-|Authentication Service
-|Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
-
-|History Service
-|Parte encargada de el tratamiento de los datos de las partidas de todos los usuarios. Se conecta a la base de datos para almacenar esta información.
-
-|===
-
 ==== Black Box: API Gateway
 
 *Purpose/Responsibility*::
@@ -183,6 +150,43 @@ El API Gateway actúa como un único punto de entrada para todas las peticiones 
 - **Notas adicionales**
   - Incluye lógica de espera y reintento si no hay suficientes preguntas disponibles en la base de datos.
   - No es un microservicio autónomo en términos de almacenamiento: depende de servicios internos para la persistencia y generación.
+
+
+
+=== Nivel 3 
+image::05_3_BlackBox_Question_Management.png["Diagram 5.3.1: Desglose de Question Management"]
+
+|===
+|Building Blocks |Description
+
+|Question Generator Service
+|Parte de la aplicación encargada de conectarse a Wikidata y obtener imágenes e información para las preguntas del juego.
+
+|Question Data Service
+|Parte de la aplicación encargada de tratar con la información de las preguntas conectándose a la base de datos para almacenar esta información y eliminando las preguntas que ya han salido.
+
+|Question Service
+|Parte de la aplicación encargada de gestionar el ciclo de vida de las preguntas en la aplicación. Orquesta dos componentes internos(question-data-service y question-generator-service). Es el encargado de relacionarse con gateway y de recibir las peticiones de preguntas. Se encarga de la lógica de negocio relacionada con las preguntas.
+
+|===
+
+image::05_3_BlackBox_User_Management.png["Diagram 5.3.2: Desglose de User Management"]
+
+|===
+|Building Blocks |Description
+
+|User Service
+|Parte encargada de tratar la información del usuario: puntuación, historial, etc. Se conecta a la base de datos para almacenar esta información.
+
+|Authentication Service
+|Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
+
+|History Service
+|Parte encargada de el tratamiento de los datos de las partidas de todos los usuarios. Se conecta a la base de datos para almacenar esta información.
+
+|===
+
+
 
 ==== Black Box: History Service
 
