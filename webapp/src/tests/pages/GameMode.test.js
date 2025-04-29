@@ -37,7 +37,7 @@ describe('GameMode Page', () => {
         expect(screen.getByText('Choose a theme')).toBeInTheDocument();
 
         await waitFor(() => {
-            expect(screen.getByAltText('Países')).toBeInTheDocument();
+            expect(screen.getByAltText('Famosos')).toBeInTheDocument();
         });
     });
 
@@ -53,7 +53,7 @@ describe('GameMode Page', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByAltText('Países')).toBeInTheDocument();
+            expect(screen.getByAltText('Banderas')).toBeInTheDocument();
         });
     });
 

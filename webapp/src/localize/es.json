@@ -86,7 +86,8 @@
     },
     "GameMode": {
         "chooseTheme": "Elige una temática",
-        "countryName": "país"
+        "countryName": "país",
+        "goBack": "Volver"
     },
     "Game": {
         "totalScore": "Puntuación total",
