@@ -10,6 +10,35 @@ var repeatedAnswers = [];
 app.use(express.json());
 
 
+app.post("/validate/:id", async (req, res) =>{
+
+  try{
+    const questionId = req.params.id;
+
+    const question = await dataService.getQuestionById(questionId);
+    return question;
+
+  }catch(error){
+    res.status(500).json({ error: error.message });
+
+  }
+});
+
+app.delete("/delete/:id", async (req,res)=>{
+
+  try{
+    const questionId = req.params.id;
+
+    console.log("delete question");
+    await dataService.deleteQuestionById(questionId);
+
+  }catch(error){
+    res.status(500).json({ error: error.message });
+
+  }
+
+
+});
 app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
   try {
     const category = req.params.category;
@@ -44,7 +73,7 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     if(repeatedAnswers.includes(question.correctAnswer)){
       repeatedAnswers=[];
     }
-    await dataService.deleteQuestionById(question._id);
+    //await dataService.deleteQuestionById(question._id);
     res.json(question);
   } catch (error) {
     res.status(500).json({ error: error.message });

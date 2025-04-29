@@ -9,13 +9,13 @@ mongoose.connect(mongoUri);
 
 
 module.exports = {
-    getNumberQuestionsByCategory: async function(language, category){
-        try{
+    getNumberQuestionsByCategory: async function (language, category) {
+        try {
 
-            const numberQuestions = await Question.countDocuments({category: category, language: language});
+            const numberQuestions = await Question.countDocuments({ category: category, language: language });
             return numberQuestions;
 
-        }catch (error) {
+        } catch (error) {
             console.error("Error counting questions:", error);
             throw new Error(error.message);
 
@@ -23,13 +23,13 @@ module.exports = {
 
     },
 
-    saveQuestion: async function(question){
-        try{
+    saveQuestion: async function (question) {
+        try {
 
             const newQuestion = new Question(question);
             await newQuestion.save();
 
-        }catch (error) {
+        } catch (error) {
             console.error("Error saving question:", error);
             throw new Error(error.message);
 
@@ -40,10 +40,10 @@ module.exports = {
      * Deletes a question from the database.
      * @param {id} str - The id of the document to be removed
      */
-    deleteQuestionById : async function(id) {
+    deleteQuestionById: async function (id) {
         try {
-        await Question.findByIdAndDelete(id);
-        console.log(`Question ${id} deleted successfully`);
+            await Question.findByIdAndDelete(id);
+            console.log(`Question ${id} deleted successfully`);
 
         } catch (error) {
             console.error('Error deleting question:', error.message);
@@ -51,7 +51,18 @@ module.exports = {
         }
     },
 
-    getRandomQuestionByCategory: async function(language, categoryParam,repeatedAnswers=[]) {
+    getQuestionById: async function (id) {
+        try {
+
+            var question = await Question.findById(id);
+            return question;
+        } catch (error) {
+            throw new Error(error.message);
+
+        }
+    },
+
+    getRandomQuestionByCategory: async function (language, categoryParam, repeatedAnswers = []) {
         try {
             var question = await Question.aggregate([
                 { $match: { category: categoryParam } },
@@ -63,17 +74,17 @@ module.exports = {
                 question = await Question.aggregate([
                     { $match: { category: categoryParam } },
                     { $match: { language: language } },
-                   
+
                     { $sample: { size: 1 } } // Select a random document
                 ]);
             }
-    
-            return question.length > 0 ? question[0] : null; 
+
+            return question.length > 0 ? question[0] : null;
         } catch (error) {
             console.error("Error fetching random question:", error);
             throw new Error(error.message);
         }
     }
-    
+
 };
 

@@ -51,6 +51,26 @@ app.get('/questions/:lang/:category', async (req, res) => {
   }
 });
 
+app.post("/questions/validate", async (req,res) => {
+
+  try{
+
+    const { questionId, selectedAnswer} = req.body;
+
+    const question = await axios.post(questionServiceUrl + `/validate/${questionId}`);
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    const isCorrect = question.correctAnswer === selectedAnswer;
+    axios.get(questionServiceUrl + `/delete/${questionId}`);
+
+    res.json({isCorrect});
+  }catch(error){
+    handleErrors(res,error);
+  }
+});
+
 //-----------------------------
 
 //-----User Games History endpoint----

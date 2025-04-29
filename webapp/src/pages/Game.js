@@ -148,6 +148,20 @@ function Game() {
     }
   }, [apiEndpoint, username]);
 
+
+  const handleResponse = useCallback(async (option) => {
+    try {
+      const response = await axios.post(`${apiEndpoint}/questions/validate`, {
+        questionId: questionData.id,
+        selectedAnswer: option,
+      });
+      return response.data.isCorrect;
+    } catch (error) {
+      console.error("Error validating answer:", error);
+      return false;
+    }
+  });
+
   const handleNextRound = useCallback(() => {
     console.log("handleNextRound ejecutado");
     if (nextQuestionData) {
@@ -211,7 +225,7 @@ function Game() {
         }
       }, TRANSITION_ROUND_TIME); // Duración fija para la animación
     }, FEEDBACK_QUESTIONS_TIME);
-  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode,volumeLevel]);
+  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode, volumeLevel]);
 
   useEffect(() => {
     console.log("volumen:", volumeLevel);
@@ -224,20 +238,20 @@ function Game() {
       console.log("volumen audio:", audio.volume);
     }
 
-    if(audio !== null && audio!== undefined){
-      try{
+    if (audio !== null && audio !== undefined) {
+      try {
         audio.play()
-      }catch (error) {
+      } catch (error) {
         console.error("Error al reproducir el audio:", error);
       }
-    
-  }
+
+    }
 
     return () => {
-      if(audio){
+      if (audio) {
         audio.pause();
       }
-      
+
     };
   }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
 
@@ -284,14 +298,14 @@ function Game() {
 
       if (hurryAudioRef.current) {
         hurryAudioRef.current.currentTime = 0;
-        hurryAudioRef.current.volume = volumeLevel ; // Ajustar volumen reducido
+        hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
         hurryAudioRef.current.play();
       }
       if (audioRef.current) {
         //audioRef.current.pause();
       }
     }
-  }, [timeLeft, hurryMode,volumeLevel]);
+  }, [timeLeft, hurryMode, volumeLevel]);
 
   useEffect(() => {
     if (animationComplete && imageLoaded) {
@@ -582,11 +596,7 @@ function Game() {
         <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden" }}>
           {questionData.options?.map((option, index) => {
             const isSelected = selectedAnswer === option;
-            const isCorrect = option === questionData.correctAnswer;
-
-            const backgroundColor = "#6A0DAD";
-            const hoverColor = "#8F6BAF";
-
+            const isCorrect = option === questionData.correctAnswer; // Comparación local como fallback
 
             return (
               <Button
@@ -604,7 +614,7 @@ function Game() {
                         : "red"
                       : showFeedback && isCorrect
                         ? "green"
-                        : backgroundColor,
+                        : "#6A0DAD",
                   color: "white",
                   "&:hover": {
                     backgroundColor:
@@ -614,7 +624,7 @@ function Game() {
                           : "red"
                         : showFeedback && isCorrect
                           ? "green"
-                          : hoverColor,
+                          : "#8F6BAF",
                   },
                   "&.Mui-disabled": {
                     backgroundColor:
@@ -624,36 +634,25 @@ function Game() {
                           : "red"
                         : showFeedback && isCorrect
                           ? "green"
-                          : backgroundColor,
+                          : "#6A0DAD",
                     color: "white",
                     opacity: 1,
                   },
                   position: "relative",
                 }}
-                onClick={() => handleAnswer(isCorrect, option)}
+                onClick={() => handleAnswer(option)}
                 disabled={showFeedback}
               >
                 {showFeedback && isSelected && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      left: "1rem",
-                    }}
-                  >
+                  <Box sx={{ position: "absolute", left: "1rem" }}>
                     {isCorrect ? "\u2714" : "\u274C"}
                   </Box>
                 )}
                 {showFeedback && isCorrect && !isSelected && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      left: "1rem",
-                    }}
-                  >
+                  <Box sx={{ position: "absolute", left: "1rem" }}>
                     {"\u2714"}
                   </Box>
                 )}
-
                 {option}
               </Button>
             );
