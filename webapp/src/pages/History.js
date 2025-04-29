@@ -66,12 +66,7 @@ export default function UserHistory() {
     if (username) {
       fetchUserProfile(username); // Llamar para cargar el perfil
     }
-    if (editMode && userProfile) {
-      setName(userProfile.name || '');
-      setSurname(userProfile.surname || '');
-      setProfilePicture(userProfile.profilePicture || '');
-      setDescription(userProfile.description || '');
-    }
+    
   }, [username,editMode,userProfile,fetchUserProfile]);
 
 
