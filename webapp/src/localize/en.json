@@ -85,7 +85,9 @@
     },
     "GameMode": {
         "chooseTheme": "Choose a theme",
-        "countryName": "country"
+        "countryName": "country",
+        "goBack": "Go back"
+
     },
     "Game": {
         "totalScore": "Total score",

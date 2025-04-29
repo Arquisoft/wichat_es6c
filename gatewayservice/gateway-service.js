@@ -51,6 +51,21 @@ app.get('/questions/:lang/:category', async (req, res) => {
   }
 });
 
+
+app.post('/questions', async(req,res) =>{
+
+  try{
+
+    const questions = req.body.questions;
+    const questionResponse = await axios.post(`${questionServiceUrl}/questions`, { questions });
+    res.json(questionResponse.data);
+
+    
+  }catch(error){
+    handleErrors(res,error);
+  }
+});
+
 //-----------------------------
 
 //-----User Games History endpoint----

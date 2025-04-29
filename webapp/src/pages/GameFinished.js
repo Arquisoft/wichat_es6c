@@ -4,9 +4,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
 import { useTranslation } from "react-i18next";
 
+import { keyframes } from "@mui/system";
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+`;
+
 const GameFinished = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [score, setScore] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
@@ -14,8 +23,6 @@ const GameFinished = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
-
-  const { t } = useTranslation();
 
   const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
 
@@ -39,14 +46,20 @@ const GameFinished = () => {
 
   // Efecto para reproducir sonido si hay confeti
   useEffect(() => {
-    if (score >= maxScore / 2) {
-
+    if (maxScore > 0 && score >= (maxScore / 2)) {
+      console.log(score, maxScore / 2);
 
       const winningAudio = winningSoundRef.current;
       winningAudio.volume = 1;
-      winningAudio.play();
-
-      
+      const playPromise = winningAudio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          // Silenciosamente ignorar el error si autoplay está bloqueado
+          if (error.name !== 'AbortError') {
+            console.warn('Autoplay bloqueado:', error.message);
+          }
+        });
+      }
     }
   }, [score, maxScore]);
 
@@ -59,50 +72,105 @@ const GameFinished = () => {
   };
 
   return (
-    <Stack alignItems="center" justifyContent="center" spacing={4} sx={{ height: "100vh", textAlign: "center" }}>
-      {score >= maxScore/2 && <Confetti width={windowWidth} height={windowHeight} />}
+    <Stack
+      alignItems="center"
+      justifyContent="center"
+      spacing={{ xs: 3, md: 4 }}
+      sx={{ height: "100vh", textAlign: "center", px: 2 }}
+    >
+      {/* Confetti */}
+      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
 
-      <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative", top: "-7vw" }}>
+      {/* Title */}
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: "bold",
+          animation: `${pulse} 2s infinite`,
+          fontSize: { xs: "3rem", md: "3rem" },
+          position: "relative",
+          top: { xs: "-5vh", md: "-7vw" }
+        }}
+      >
         {t("GameFinished.gameOver")}
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, position: "relative", top: "-100px" }}>
-        <Box sx={{
-          padding: 3,
-          border: '2px solid #9b33c0',
-          borderRadius: 2,
-          backgroundColor: '#c7f28e',
-          textAlign: 'center',
-          boxShadow: 3,
-          width: '200px'
-        }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{t("GameFinished.socoreAchieved")}</Typography>
+      {/* Final score */}
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        sx={{ position: "relative", top: { xs: "-2vh", md: "-50px" } }}
+      >
+        {/* Score */}
+        <Box
+          sx={{
+            padding: 3,
+            border: '2px solid #9b33c0',
+            borderRadius: 2,
+            backgroundColor: '#c7f28e',
+            textAlign: 'center',
+            boxShadow: 3,
+            width: { xs: '80%', md: '200px' },
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
+            {t("GameFinished.socoreAchieved")}
+          </Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
             {score} / {maxScore}
           </Typography>
         </Box>
 
-        <Box sx={{
-          padding: 3,
-          border: '2px solid #9b33c0',
-          borderRadius: 2,
-          backgroundColor: '#e3f2fd',
-          textAlign: 'center',
-          boxShadow: 3,
-          width: '200px'
-        }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{t("GameFinished.totalTime")}</Typography>
+        {/* Total time */}
+        <Box
+          sx={{
+            padding: 3,
+            border: '2px solid #9b33c0',
+            borderRadius: 2,
+            backgroundColor: '#e3f2fd',
+            textAlign: 'center',
+            boxShadow: 3,
+            width: { xs: '80%', md: '200px' },
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
+            {t("GameFinished.totalTime")}
+          </Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
             {totalTime} {t("GameFinished.seconds")}
           </Typography>
         </Box>
-      </Box>
+      </Stack>
 
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
-        <Button variant="contained" sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0' }} onClick={handleRestart}>
+        <Button
+          variant="contained"
+          sx={{
+            fontSize: { xs: "1rem", md: "1.2rem" },
+            px: 4, // padding horizontal
+            py: 2, // padding vertical
+            backgroundColor: '#9b33c0',
+            minWidth: { xs: '150px', md: '200px' } // tamaño mínimo pero NO ensancha todo
+          }}
+          onClick={handleRestart}
+        >
           {t("GameFinished.playAgain")}
         </Button>
-        <Button variant="contained" sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black' }} onClick={handleGoToHistorical}>
+
+        <Button
+          variant="contained"
+          sx={{
+            fontSize: { xs: "1rem", md: "1.2rem" },
+            px: 4,
+            py: 2,
+            backgroundColor: '#e2a4f5',
+            color: 'black',
+            minWidth: { xs: '150px', md: '200px' }
+          }}
+          onClick={handleGoToHistorical}
+        >
           {t("GameFinished.viewHistory")}
         </Button>
       </Stack>

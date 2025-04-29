@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Container, Typography, TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Container, Typography, TextField, Button, CircularProgress, useMediaQuery } from "@mui/material";
 import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
 
-function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat,mode }) {
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, mode, isMobile, hideHeader }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false); // Indicador para mostrar que el bot está escribiendo
-  const messagesEndRef = useRef(null); // Ref para hacer scroll al final
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const { t } = useTranslation(); // Inicializa la traducción
+  const { t } = useTranslation();
+  const isSmallScreen = useMediaQuery("(max-width:600px)"); // Detecta pantallas pequeñas
 
   const sendMessage = async () => {
-    if (!input.trim()) return; // No enviar mensajes si ignoreChat es verdadero
+    if (!input.trim()) return;
 
     const userMessage = { role: "user", content: input };
-    console.log("Mensaje del usuario:", userMessage.content);
     setMessages((prev) => [...prev, userMessage]);
-    onUserMessage && onUserMessage(userMessage.content); // Llamar al callback con el mensaje del usuario
+    onUserMessage && onUserMessage(userMessage.content);
 
     setInput("");
     console.log(questionData);
@@ -40,63 +40,67 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat,m
       console.log("Petición al LLM:", petition);
       const response = await axios.post(
         `${apiEndpoint}/askllm`,
-        {
-          question: petition,
-          model: "empathy"
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        { question: header + input, model: "empathy" },
+        { headers: { 'Content-Type': 'application/json' } }
       );
 
-      const data = response.data;
-      const botMessage = { role: "assistant", content: "" };
-
+      const botMessage = { role: "assistant", content: response.data?.answer || t("ChatLLM.noResponse") };
       setMessages((prev) => [...prev, botMessage]);
-
-      // Usamos Typewriter para escribir el mensaje lentamente
-      const text = data.answer || t("ChatLLM.noResponse");
-      setMessages((prev) => {
-        const newMessages = [...prev];
-        newMessages[newMessages.length - 1].content = text;
-        return newMessages;
-      });
-
-      onBotResponse && onBotResponse(text); // Llamar al callback con la respuesta del bot
-      setIsTyping(false); // Terminar el estado de "escribiendo"
-
+      onBotResponse?.(botMessage.content);
+      
     } catch (error) {
       console.error("Error:", error);
+    } finally {
       setIsTyping(false);
     }
   };
 
-  // Hacer scroll al último mensaje
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <Container maxWidth="md" sx={{ height: "69vh", display: "flex", flexDirection: "column" }}>
-      <Typography variant="h4" align="center" gutterBottom sx={{ py: 2, bgcolor: "#9b33c0", color: "white", borderRadius: 2 }}>
-        {t("ChatLLM.chatTitle")}
-      </Typography>
+    <Container
+      maxWidth="md"
+      sx={{
+        height: isSmallScreen ? "85vh" : "70vh",
+        display: "flex",
+        flexDirection: "column",
+        p: isSmallScreen ? 0 : 1,
+        width: "100%",
+        ...(isSmallScreen && { maxWidth: "none" }),
+      }}
+    >
+      {/* Mostrar encabezado solo si hideHeader es falso */}
+      {!hideHeader && (
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          sx={{
+            py: 2,
+            bgcolor: "#9b33c0",
+            color: "white",
+            borderRadius: 2,
+            fontSize: isSmallScreen ? "1.2rem" : "2rem",
+          }}
+        >
+          {t("ChatLLM.chatTitle")}
+        </Typography>
+      )}
 
-      {/* Contenedor del chat */}
+
       <Box
         sx={{
           flexGrow: 1,
           borderRadius: 2,
-          padding: 2,
+          p: 2,
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
           bgcolor: "white",
           boxShadow: 3,
+          ...(isSmallScreen && { borderRadius: 0, boxShadow: "none" }),
         }}
       >
         {messages.map((msg, index) => (
@@ -109,16 +113,17 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat,m
               color: msg.role === "user" ? "white" : "black",
               padding: 1.5,
               borderRadius: 2,
-              marginBottom: 1,
+              mb: 1,
+              fontSize: isSmallScreen ? "0.9rem" : "1rem",
+              ...(isSmallScreen && { maxWidth: "85%" }),
             }}
           >
             {msg.role === "assistant" ? (
-              // Usamos Typewriter solo para los mensajes del bot
               <Typewriter
-                words={[msg.content]} // Aquí le pasamos el contenido del mensaje
+                words={[msg.content]}
                 cursor
                 cursorStyle="|"
-                typeSpeed={15} // Velocidad de escritura
+                typeSpeed={15}
               />
             ) : (
               <Typography variant="body1">{msg.content}</Typography>
@@ -129,23 +134,22 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat,m
         {isTyping && (
           <Box sx={{ alignSelf: "flex-start", padding: 1.5, borderRadius: 2, maxWidth: "40%" }}>
             <Typography variant="body1">
-              <CircularProgress size={14} sx={{ mr: 1 }} />{t("ChatLLM.typing")}
+              <CircularProgress size={14} sx={{ mr: 1 }} />
+              {t("ChatLLM.typing")}
             </Typography>
           </Box>
         )}
 
-        {/* Elemento invisible para hacer scroll hacia abajo */}
         <div ref={messagesEndRef} />
       </Box>
 
-      {/* Entrada de texto */}
       <Box
         sx={{
-          //bgcolor: "white",
-          padding: 2,
-          //borderTop: "1px solid gray",
+          p: 2,
           display: "flex",
           gap: 1,
+          bgcolor: "background.paper",
+          flexDirection: isSmallScreen ? "column" : "row",
         }}
       >
         <TextField
@@ -155,17 +159,26 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat,m
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          size={isSmallScreen ? "small" : "medium"}
         />
         <Button
           variant="contained"
-          style={{ backgroundColor: '#9b33c0', color: 'white' }}
-          onClick={sendMessage} >
+          sx={{
+            bgcolor: "#9b33c0",
+            color: "white",
+            "&:hover": { bgcolor: "#7a2a8e" },
+            width: isSmallScreen ? "100%" : "auto",
+          }}
+          onClick={sendMessage}
+          size={isSmallScreen ? "small" : "medium"}
+        >
           {t("ChatLLM.sendMessage")}
         </Button>
       </Box>
     </Container>
   );
 }
+
 Chat.propTypes = {
   questionData: PropTypes.shape({
     correctAnswer: PropTypes.string.isRequired,
@@ -176,6 +189,9 @@ Chat.propTypes = {
   onUserMessage: PropTypes.func,
   onBotResponse: PropTypes.func,
   ignoreChat: PropTypes.bool,
+  isMobile: PropTypes.bool,
+  hideHeader: PropTypes.bool,
   mode: PropTypes.string
 };
+
 export default Chat;

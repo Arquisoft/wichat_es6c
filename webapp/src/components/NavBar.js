@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { Person, Settings, Logout, MoreVert, Language } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,10 @@ const NavMenu = () => {
   const handleLanguageMenuOpen = (event) => setLanguageMenuAnchorEl(event.currentTarget);
   const handleLanguageMenuClose = () => setLanguageMenuAnchorEl(null);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+
   const { t } = useTranslation();
   //const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
 
@@ -28,16 +32,10 @@ const NavMenu = () => {
     handleLanguageMenuClose();
   }
 
-
-
-
   const logout = () => {
     destroySession();
     navigate('/', { state: { message: "Se ha cerrado sesión con éxito" } });
   };
-
-
-
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#9b33c0" }}>
@@ -53,7 +51,7 @@ const NavMenu = () => {
 
         {/* Menú de navegación */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {sessionId && (
+          {!isMobile && sessionId && (
             <>
               <Button color="inherit" startIcon={<Person />} onClick={() => navigate('/history')}>
                 {t('NavBar.profile')}
@@ -65,42 +63,55 @@ const NavMenu = () => {
           )}
 
           {/* Menú de configuración */}
-          <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
-            <MoreVert />
-          </IconButton>
-          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-            {sessionId && (
-              <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
-                <Settings sx={{ mr: 1 }} /> {t('NavBar.settings')}
+            <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
+              <MoreVert />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+              {/* Agregar opciones móviles si hay sesión iniciada */}
+              {isMobile && sessionId && (
+                <>
+                  <MenuItem onClick={() => { handleMenuClose(); navigate('/history'); }}>
+                    <Person sx={{ mr: 1 }} /> {t('NavBar.profile')}
+                  </MenuItem>
+                  <MenuItem onClick={() => { handleMenuClose(); logout(); }}>
+                    <Logout sx={{ mr: 1 }} /> {t('NavBar.logout')}
+                  </MenuItem>
+                </>
+              )}
+
+              {sessionId && (
+                <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
+                  <Settings sx={{ mr: 1 }} /> {t('NavBar.settings')}
+                </MenuItem>
+              )}
+              
+              <MenuItem onClick={handleLanguageMenuOpen}>
+                <Language sx={{ mr: 1 }} /> {t('NavBar.changeLanguage')}
               </MenuItem>
-            )}
-            <MenuItem onClick={handleLanguageMenuOpen}>
-              <Language sx={{ mr: 1 }} /> {t('NavBar.changeLanguage')}
-            </MenuItem>
-            <Menu
-              anchorEl={languageMenuAnchorEl}
-              open={Boolean(languageMenuAnchorEl)}
-              onClose={handleLanguageMenuClose}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              <MenuItem onClick={() => changeLanguage('en')}>
-                <img src="/images/flags/uk.png" alt="English" style={{ width: 20, height: 15, marginRight: 10 }} />
-                {t('NavBar.english')}
-              </MenuItem>
-              <MenuItem onClick={() => changeLanguage('es')}>
-                <img src="/images/flags/spain.png" alt="Español" style={{ width: 20, height: 15, marginRight: 10 }} />
-                {t('NavBar.spanish')}
-              </MenuItem>
+
+              <Menu
+                anchorEl={languageMenuAnchorEl}
+                open={Boolean(languageMenuAnchorEl)}
+                onClose={handleLanguageMenuClose}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={() => changeLanguage('en')}>
+                  <img src="/images/flags/uk.png" alt="English" style={{ width: 20, height: 15, marginRight: 10 }} />
+                  {t('NavBar.english')}
+                </MenuItem>
+                <MenuItem onClick={() => changeLanguage('es')}>
+                  <img src="/images/flags/spain.png" alt="Español" style={{ width: 20, height: 15, marginRight: 10 }} />
+                  {t('NavBar.spanish')}
+                </MenuItem>
+              </Menu>
             </Menu>
-           
-          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

@@ -58,13 +58,13 @@ const testOptions = {
         results: {
             bindings: [
                 {
-                    countryLabel: { value: "Rusia" }
+                    label: { value: "Rusia" }
                 },
                 {
-                    countryLabel: { value: "Australia" }
+                    label: { value: "Australia" }
                 },
                 {
-                    countryLabel: { value: "Turquía" }
+                    label: { value: "Turquía" }
                 }
             ]
         }

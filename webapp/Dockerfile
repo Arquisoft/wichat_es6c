@@ -1,10 +1,10 @@
-FROM node:22
+FROM node:22-slim
 
 COPY . /app
 WORKDIR /app
 
 #Install the dependencies
-RUN npm install --omit=dev
+RUN npm install
 
 ARG API_URI="http://localhost:8000"
 ENV REACT_APP_API_ENDPOINT=$API_URI
