@@ -48,7 +48,7 @@ function Game() {
   const [totalTime, setTotalTime] = useState(0);
 
 
-  const {  username } = useContext(SessionContext);
+  const { username } = useContext(SessionContext);
 
   const [questionData, setQuestionData] = useState(null);
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
@@ -394,97 +394,91 @@ function Game() {
       <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
         <Typography variant="h4" sx={{ marginTop: 2 }}>{t("Game-VS.loading")}</Typography>
         <CircularProgress />
-
       </Stack>
     );
   }
 
-  // Pantalla de transición
-  const TransitionScreen = ({ score, tempScore, starAnimation }) => {
-    return (
+  const TransitionScreen = ({ score, tempScore, starAnimation }) => (
+    <Box
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        zIndex: 1000,
+      }}
+    >
       <Box
         sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          position: "relative",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
-          zIndex: 1000,
+          width: "10%",
+          height: "10%",
         }}
       >
         <Box
           sx={{
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "10rem",
-            height: "10rem",
+            position: "absolute",
+            animation: starAnimation ? "pulse 1s infinite" : "none",
+            "@keyframes pulse": {
+              "0%": { transform: "scale(1)" },
+              "50%": { transform: "scale(1.5)" },
+              "100%": { transform: "scale(1)" },
+            },
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              animation: starAnimation ? "pulse 1s infinite" : "none",
-              "@keyframes pulse": {
-                "0%": { transform: "scale(1)" },
-                "50%": { transform: "scale(1.5)" },
-                "100%": { transform: "scale(1)" },
-              },
-            }}
-          >
-            <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} />
-          </Box>
-
-          {starAnimation && (
-            <motion.div
-              style={{
-                position: "absolute",
-                top: "50%", // Centrar verticalmente
-                left: "50%", // Centrar horizontalmente
-                transform: "translate(-50%, -50%)", // Ajustar para centrar completamente
-                fontSize: "2.5rem",
-                fontWeight: "bold",
-                color: "#333",
-              }}
-            >
-              +{tempScore}
-            </motion.div>
-          )}
+          <StarIcon sx={{ fontSize: "12rem", color: "#FFD700" }} />
         </Box>
 
-        {/* Puntuación total */}
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 5,
-            color: "#666",
-            textAlign: "center",
-          }}
-        >
-          {t("Game-VS.totalScore")}: {score}
-        </Typography>
+        {starAnimation && (
+          <motion.div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "2.5rem",
+              fontWeight: "bold",
+              color: "#333",
+            }}
+          >
+            +{tempScore}
+          </motion.div>
+        )}
       </Box>
-    );
-  };
 
+      <Typography variant="h5" sx={{ mt: 5, color: "#666", textAlign: "center" }}>
+        {t("Game-VS.totalScore")}: {score}
+      </Typography>
+    </Box>
+  );
 
   return (
-    <Stack alignItems="center" justifyContent="center"
+    <Stack
+      direction={{ xs: "column", md: "row" }} // Columna en móviles, fila en ordenadores
       sx={{
-        height: "93.5vh",
+        height: "100vh",
+        width: "100vw",
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center"
-      }}>
+        backgroundPosition: "center",
+        overflow: "hidden",
+        position: "relative",
+        gap: { xs: "2rem", md: "0" }, // Espaciado entre columnas en móviles
+        padding: "2%", // Padding relativo
+      }}
+    >
 
       {/* Sonido de fondo */}
-      <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
+            <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
       <audio ref={hurryAudioRef} src="sound/hurry_sound.mp3" />
       {/* Sonido de fallo */}
       <audio ref={failAudioRef} src="sound/fail.wav" />
@@ -493,130 +487,136 @@ function Game() {
       {/* Sonido de elección */}
       <audio ref={chooseAudioRef} src="sound/choose.mp3" />
 
-      {/* Pantalla de transición */}
-      {showTransition && (
-        <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
-      )}
-
-
-      {/* Contenedor principal con transparencia */}
-      <Box
+      {/* Columna izquierda: Temporizador y Pregunta */}
+      <Stack
+        direction="column"
         sx={{
-          width: "23vw",
-          minHeight: "10vh",
-          backgroundColor: "rgb(255, 255, 255)",
-          backdropFilter: "blur(10px)",
-          borderRadius: "10px",
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-evenly",
-          padding: "2rem",
-          textAlign: "center",
+          flex: { xs: 1, md: 2 }, // Ocupa más espacio en ordenadores
+          gap: "1rem",
+          padding: "1rem",
         }}
       >
-        {/* Pregunta */}
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
-          {t("Game-VS.describeMode-" + gameModeName)}
-        </Typography>
-
-        {/* Respuesta correcta */}
+        {/* Temporizador */}
         <Box
           sx={{
-            width: "60%", // Reducir el ancho de la caja
-            minHeight: "10vh", // Altura mínima de la caja
-            maxHeight: "auto", // Permitir que crezca si es necesario
-            overflow: "hidden",
-            borderRadius: "10px",
-            position: "relative",
-            backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD", // Change to red if time runs out
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "1rem", // Agregar padding para evitar que el texto toque los bordes
+            position: "relative",
+            padding: "1rem",
           }}
         >
+          <Box
+            sx={{
+              width: { xs: "6rem", md: "8rem" }, // Tamaño relativo al viewport
+              height: { xs: "6rem", md: "8rem" },
+              borderRadius: "50%",
+              backgroundColor: "orange",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: 3,
+              animation: "pulse 1.5s infinite",
+              "@keyframes pulse": {
+                "0%": { transform: "scale(1)" },
+                "50%": { transform: "scale(1.1)" },
+                "100%": { transform: "scale(1)" },
+              },
+            }}
+          >
+            <Typography
+              variant="h4"
+              color="white"
+              fontWeight="bold"
+              sx={{
+                fontSize: { xs: "2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
+              }}
+            >
+              {timeLeft}
+            </Typography>
+          </Box>
+        </Box>
+      
+        {/* Pregunta */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem",
+            backgroundColor: "rgba(255,255,255,0.8)",
+            borderRadius: "1rem",
+            textAlign: "center",
+            boxShadow: 5,
+          }}
+        >
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{
+              mb: "1rem",
+              fontSize: { xs: "1.2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
+            }}
+          >
+            {t("Game-VS.describeMode-" + gameModeName)}
+          </Typography>
+
           <Typography
             variant="h4"
             fontWeight="bold"
             sx={{
               color: "white",
-              textAlign: "center", // Centrar el texto
-              wordWrap: "break-word", // Permitir que el texto se ajuste si es muy largo
+              backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD",
+              borderRadius: "10px",
+              padding: "1rem",
+              mt: "1rem",
+              width: "100%",
+              wordWrap: "break-word",
+              fontSize: { xs: "1.5rem", md: "2rem" }, // Tamaño de fuente responsivo
             }}
           >
             {questionData.correctAnswer}
           </Typography>
         </Box>
+      </Stack>
 
-        {/* Tiempo restante */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: "20%", // Increased separation from the answer box
-            left: "-100%", // Adjusted position for better visibility
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "15vh",
-            height: "15vh",
-            borderRadius: "50%",
-            backgroundColor: "orange",
-            boxShadow: 3,
-            zIndex: 1000,
-          }}
-        >
-          <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
-            {timeLeft}
-          </Typography>
-        </Box>
-        <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
-          {t("Game-VS.rounds", { round, TOTAL_ROUNDS })}
-        </Typography>
-
-      </Box>
-
-
+      {/*Chat */}
       <Box
         sx={{
-          position: "fixed",
-          bottom: "12vh",
-          right: "5vw",
-          width: "24vw",
-          height: "70vh",
+          flex: { xs: 1, md: 1 }, // Ocupa menos espacio en pantallas grandes
           backgroundColor: "white",
-          borderRadius: "1vw",
-          boxShadow: 3,
-          overflow: "hidden",
+          borderLeft: { md: "3px solid #ccc" }, // Borde solo en pantallas grandes
           display: "flex",
           flexDirection: "column",
-          zIndex: 999,
+          height: "90%",
+          overflow: "hidden",
+          padding: "2%",
+          borderRadius: { xs: "1rem", md: "0" }, // Bordes redondeados en móviles
+          boxShadow: { xs: "0px 4px 10px rgba(0, 0, 0, 0.2)", md: "none" }, // Sombra en móviles
         }}
       >
-        <Box
-          sx={{
-            flexShrink: 0,
-            maxHeight: "100%",
-            overflowY: "auto",
-          }}
-        >
+  
           <Chat
             questionData={questionData}
             onUserMessage={handleUserMessage}
             onBotResponse={handleBotResponse}
+            hideHeader={true}
             header={
               "Tienes que adivinar un " +
-              gameModeName +
+              questionData.category +
               ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
               userMessages.join(", ")
             }
             mode="vs"
           />
-        </Box>
       </Box>
 
-
+      {/* Pantalla de Transición */}
+      {showTransition && (
+        <TransitionScreen score={score} tempScore={tempScore} starAnimation={starAnimation} />
+      )}
     </Stack>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress } from "@mui/material";
+import { IconButton, Button, Stack, Typography, Box, CircularProgress, useMediaQuery} from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat";
@@ -60,6 +60,8 @@ function Game() {
 
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
+
+  const isMobile = useMediaQuery('(max-width:1065px)');
 
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
@@ -372,7 +374,7 @@ function Game() {
 
   if (!questionData) {
     return (
-      <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+      <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
         <Typography variant="h4" sx={{ marginTop: 2 }}>{t("Game.loading")}</Typography>
         <CircularProgress />
 
@@ -459,7 +461,7 @@ function Game() {
   return (
     <Stack alignItems="center" justifyContent="center"
       sx={{
-        height: "93.5vh",
+        height: "75%",
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center"
@@ -484,8 +486,8 @@ function Game() {
       {/* Contenedor principal con transparencia */}
       <Box
         sx={{
-          width: "50vw",
-          minHeight: "60vh",
+          width: "50%",
+          height: "85%",
           backgroundColor: "rgb(255, 255, 255)",
           backdropFilter: "blur(10px)",
           borderRadius: "10px",
@@ -499,15 +501,23 @@ function Game() {
         }}
       >
         {/* Pregunta */}
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
+        <Typography 
+          variant="h5" 
+          fontWeight="bold" 
+          sx={{ 
+            mb: 2, 
+            fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' }, // Tamaño de fuente adaptable
+            textAlign: { xs: 'center', sm: 'left' } // Alineación adaptable
+          }}
+        >
           {questionData.question}
         </Typography>
 
         {/* Imagen */}
         <Box
           sx={{
-            width: "80%",
-            height: "32vh",
+            width: "80%", 
+            height: "60%", 
             overflow: "hidden",
             borderRadius: "10px",
             position: "relative",
@@ -558,28 +568,53 @@ function Game() {
         <Box
           sx={{
             position: "absolute",
-            top: "35%",
-            left: "-25%",
+            top: { xs: "5%", sm: "18%", md: "20%" }, 
+            left: { xs: "-20%", sm: "-25%", md: "-30%" }, 
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "15vh",
-            height: "15vh",
+            width: { xs: "3rem", sm: "5rem", md: "8rem" }, // Tamaño adaptable
+            height: { xs: "3rem", sm: "5rem", md: "8rem" }, // Tamaño adaptable
             borderRadius: "50%",
             backgroundColor: "orange",
-
             boxShadow: 3,
             zIndex: 1000,
+            animation: "pulse 1.5s infinite",
+            "@keyframes pulse": {
+              "0%": { transform: "scale(1)" },
+              "50%": { transform: "scale(1.05)" },
+              "100%": { transform: "scale(1)" }
+            },
+            // Ajustes adicionales para pantallas pequeñas
+            "@media (max-width: 600px)": {
+              top: "5%", // Más cerca del borde superior en pantallas muy pequeñas
+              left: "-20%", // Más centrado horizontalmente
+            }
           }}
         >
-          <Typography variant="h6" fontWeight="bold" color="white" fontSize="2rem">
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            color="white"
+            fontSize={{ xs: "1.5rem", sm: "2rem", md: "3rem" }} // Texto adaptable
+          >
             {timeLeft}
           </Typography>
         </Box>
 
-
         {/* Opciones de respuesta */}
-        <Stack direction="column" spacing={2} sx={{ width: "100%", marginTop: "1.5rem", visibility: imageLoaded ? "visible" : "hidden" }}>
+        <Stack 
+          direction="column" 
+          spacing={2} 
+          sx={{ 
+            width: "100%", 
+            height: "40%", // Ahora ocupa el 40% del espacio
+            marginTop: "1.5rem", 
+            visibility: imageLoaded ? "visible" : "hidden", 
+            alignItems: "center", // Centrar horizontalmente
+            justifyContent: "center" // Centrar verticalmente
+          }}
+        >
           {questionData.options?.map((option, index) => {
             const isSelected = selectedAnswer === option;
             const isCorrect = option === questionData.correctAnswer;
@@ -587,13 +622,14 @@ function Game() {
             const backgroundColor = "#6A0DAD";
             const hoverColor = "#8F6BAF";
 
-
             return (
               <Button
                 key={index}
                 variant="contained"
+                data-testid={`option-${index}`}
                 sx={{
-                  width: "100%",
+                  width: "80%",
+                  height: "2rem",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -660,7 +696,6 @@ function Game() {
           })}
         </Stack>
 
-
         <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
           {t("Game.rounds", { round, TOTAL_ROUNDS })}
 
@@ -669,24 +704,66 @@ function Game() {
       </Box>
 
 
-      <IconButton onClick={() => setChatOpen(!chatOpen)} aria-label={chatOpen ? 'close chat' : 'open chat'}
-        sx={{ position: "fixed", bottom: "5vh", right: "8vw", backgroundColor: "white", borderRadius: "50%", boxShadow: 3, width: "60px", height: "60px", zIndex: 10000 }}>
+      <IconButton 
+        onClick={() => setChatOpen(!chatOpen)} 
+        aria-label={chatOpen ? 'close chat' : 'open chat'}
+        sx={{ 
+          position: "fixed", 
+          bottom: "5%", 
+          right: "8%", 
+          backgroundColor: "white", 
+          borderRadius: "50%", 
+          boxShadow: 3, 
+          width: "60px", 
+          height: "60px", 
+          zIndex: 10000,
+          // Responsive
+          '@media (max-width: 1065px)': {
+            right: "20px",
+            bottom: "20px"
+          }
+        }}>
         {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
       </IconButton>
 
-      <Box sx={{ position: "fixed", bottom: "12vh", right: chatOpen ? "5vw" : "-30vw", width: "24vw", height: "70vh", backgroundColor: "white", borderRadius: "1vw", boxShadow: 3, transition: "right 0.3s ease-in-out", overflow: "hidden", display: "flex", flexDirection: "column", zIndex: 999 }}>
-        {chatOpen && (
-          <Box sx={{
-            flexShrink: 0,  // Evita que crezca
-            maxHeight: "100%",  // Asegura que el contenido no exceda la altura del contenedor
-            overflowY: "auto"  // Permite scroll si el contenido es grande
-          }}>
-            <Chat questionData={questionData} header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} />
+      <Box sx={{ 
+        position: "fixed", 
+        bottom: "12%", 
+          right: chatOpen ? "5%" : "-30%", 
+          width: "24%", 
+          height: "70%", 
+          backgroundColor: "white", 
+          borderRadius: "1%", 
+          boxShadow: 3, 
+          transition: "right 0.3s ease-in-out", 
+          overflow: "hidden", 
+          display: "flex", 
+          flexDirection: "column", 
+          zIndex: 999,
+          // Responsive
+          '@media (max-width: 1065px)': {
+            width: "90vw",
+            right: chatOpen ? "5%" : "-100%",
+            bottom: "auto",
+            top: "50%",
+            transform: "translateY(-50%)",
+            height: "70%"
+          }
+        }}>
+          {chatOpen && (
+            <Box sx={{
+              flexShrink: 0,
+              height: "100%",
+              overflowY: "auto"
+            }}>
+              <Chat questionData={questionData} 
+                    header={"Knowing that there is a picture of " + questionData.correctAnswer + " and the user thinks that is one of these " + questionData.options + ", answer vaguely to this without revealing the answer in a short phrase:"} 
+                    isMobile={isMobile}
+                    hideHeader={false}
+              />
+            </Box>
+          )}
           </Box>
-        )}
-      </Box>
-
-
     </Stack>
   );
 }
