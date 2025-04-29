@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,useRef, useEffect } from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
@@ -23,6 +23,7 @@ const GameFinished = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
+  const videoRef = useRef(null);
 
   useEffect(() => {
     if (location.state) {
@@ -49,6 +50,16 @@ const GameFinished = () => {
     navigate('/history');
   };
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      video.play().catch(error => {
+        console.log("Auto-play was prevented:", error);
+      });
+    }
+  }, []);
+
   return (
     <Stack
       alignItems="center"
@@ -67,6 +78,9 @@ const GameFinished = () => {
           animation: `${pulse} 2s infinite`,
           fontSize: { xs: "3rem", md: "3rem" },
           position: "relative",
+          color:'white',
+          borderRadius:'11px',
+          backgroundColor: '#6A0DAD',
           top: { xs: "-5vh", md: "-7vw" }
         }}
       >
@@ -80,7 +94,45 @@ const GameFinished = () => {
         justifyContent="center"
         alignItems="center"
         sx={{ position: "relative", top: { xs: "-2vh", md: "-50px" } }}
-      >
+      >,
+        {/* Video de fondo - Configuración idéntica a HomePage */}
+        <Box
+          component="video"
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            minWidth: "100%",
+            minHeight: "100%",
+            width: "auto",
+            height: "auto",
+            transform: "translate(-50%, -50%)",
+            zIndex: -1,
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/videos/background_white_small.mp4" type="video/mp4" />
+        </Box>
+
+        {/* Capa oscura para mejorar legibilidad - Configuración idéntica */}
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.09)",
+            zIndex: -1,
+          }}
+        />
+
         {/* Score */}
         <Box
           sx={{

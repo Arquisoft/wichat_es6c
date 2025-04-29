@@ -11,7 +11,13 @@
         "changeLanguage": "Cambiar idioma",
         "APIDocs": "API Docs",
         "spanish": "Español",
-        "english": "Inglés"
+        "english": "Inglés",
+        "howToPlay": "¿Cómo jugar?",
+        "close": "Cerrar",
+        "normalType": "Modo Normal: Desafío de Conocimiento",
+        "vsIAType": "Modo VS IA: El Juego de las pistas",
+        "normalTypeDescription": "Adivina el país correcto basado en imágenes. Elige entre las opciones antes de que se agote el tiempo. ¡Respuestas rápidas dan más puntos!",
+        "vsIATypeDescription": "Describe imágenes a la IA sin decir la respuesta. Gana puntos cuando adivine gracias a tus pistas creativas."
     },
     "Register": {
         "signUp": "Registrarse",
@@ -79,7 +85,6 @@
         "percentageHits": "% Aciertos",
         "games": "Partidas",
         "ex": "Ejemplo:"
-
     },
     "GameType": {
         "chooseGame": "Elige un modo de juego",
@@ -91,7 +96,7 @@
     "GameMode": {
         "chooseTheme": "Elige una temática",
         "countryName": "país",
-         "countryText": "Países",
+        "countryText": "Países",
         "flagText": "Banderas"
     },
     "Game": {
@@ -123,12 +128,10 @@
         "totalTime": "Tiempo total"
     },
     "AIGreeting": {
-        "message": "Da la bienvenida al usuario de manera cálida, amigable y motivadora máximo ocho palabras. Usa emojis atractivos como 😊, 🎮, 📜 y 🎉 para hacerlo animado. ¡Anímalo a divertirse y pregúntale si está listo para empezar a jugar!", 
+        "message": "Da la bienvenida al usuario de manera cálida, amigable y motivadora máximo ocho palabras. Usa emojis atractivos como 😊, 🎮, 📜 y 🎉 para hacerlo animado. ¡Anímalo a divertirse y pregúntale si está listo para empezar a jugar!",
         "messageFail": "¡Hola! ¡Espero que tengas un gran día!"
-
     },
-    "Footer":{
-
+    "Footer": {
         "title": "Wichat",
         "github": "GitHub",
         "apiDocs": "API Docs"

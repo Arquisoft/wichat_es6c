@@ -12,7 +12,14 @@
         "changeLanguage": "Change language",
         "APIDocs": "API Docs",
         "spanish": "Spanish",
-        "english": "English"
+        "english": "English",
+        "howToPlay": "How to play?",
+        "close": "Close",
+        "normalType": "Normal Mode: Knowledge Challenge",
+        "vsIAType": "VS IA Mode: The Clue Game",
+        "normalTypeDescription": "Guess the correct country based on pictures. Choose from the options before time runs out. Quick answers give more points!",
+        "vsIATypeDescription": "Describe pictures to the AI ​​without saying the answer. Earn points when it guesses thanks to your creative clues."
+
     },
     "Register": {
         "signUp": "Sign Up",
