@@ -10,29 +10,47 @@ var repeatedAnswers = [];
 app.use(express.json());
 
 
-app.post("/validate/:id", async (req, res) =>{
+app.post("/validate", async (req, res) => {
 
-  try{
-    const questionId = req.params.id;
+  try {
 
+    let questionId = req.body.questionId;
+    let selectedAnswer = req.body.selectedAnswer;
+    
+    console.log("id " + questionId);
+    console.log("selected " + selectedAnswer);
     const question = await dataService.getQuestionById(questionId);
-    return question;
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
 
-  }catch(error){
+    console.log("respuesta correcta " + question.enAnswer);
+    console.log("respuesta correcta " + question.esAnswer);
+
+    let isCorrect = question.enAnswer === selectedAnswer;
+    let correct = question.enAnswer;
+    if(question.language === 'es'){
+     isCorrect =  question.esAnswer === selectedAnswer;
+     correct = question.esAnswer;
+    }
+    res.json({
+      isCorrect,
+      correct
+    });
+  } catch (error) {
     res.status(500).json({ error: error.message });
 
   }
 });
 
-app.delete("/delete/:id", async (req,res)=>{
+app.delete("/delete/:id", async (req, res) => {
 
-  try{
+  try {
     const questionId = req.params.id;
 
-    console.log("delete question");
     await dataService.deleteQuestionById(questionId);
 
-  }catch(error){
+  } catch (error) {
     res.status(500).json({ error: error.message });
 
   }
@@ -65,13 +83,13 @@ app.get('/getQuestionsDb/:lang/:category', async (req, res) => {
     }
 
     const question = await dataService.getRandomQuestionByCategory(language, category, repeatedAnswers);
-    
+
     if (!question) {
       return res.status(404).json({ message: "There are no more questions available." });
     }
     repeatedAnswers.push(question.correctAnswer);
-    if(repeatedAnswers.includes(question.correctAnswer)){
-      repeatedAnswers=[];
+    if (repeatedAnswers.includes(question.correctAnswer)) {
+      repeatedAnswers = [];
     }
     //await dataService.deleteQuestionById(question._id);
     res.json(question);

@@ -68,14 +68,21 @@ module.exports = {
                 { $match: { category: categoryParam } },
                 { $match: { language: language } },
                 { $match: { correctAnswer: { $nin: repeatedAnswers } } }, // Exclude repeated answers
-                { $sample: { size: 1 } } // Select a random document
+                { $sample: { size: 1 } },
+                { $project: {
+                    enAnswer: 0, // Excluye el campo correctAnswer
+                    esAnswer:0
+                }} // Select a random document
             ]);
             if (question.length === 0) {
                 question = await Question.aggregate([
                     { $match: { category: categoryParam } },
                     { $match: { language: language } },
 
-                    { $sample: { size: 1 } } // Select a random document
+                    { $sample: { size: 1 } }, // Select a random document
+                    { $project: {
+                        correctAnswer: 0 // Excluye el campo correctAnswer
+                    }}
                 ]);
             }
 

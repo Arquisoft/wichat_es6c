@@ -3,7 +3,7 @@ const axios = require('axios');
 const cors = require('cors');
 const promBundle = require('express-prom-bundle');
 //libraries required for OpenAPI-Swagger
-const swaggerUi = require('swagger-ui-express'); 
+const swaggerUi = require('swagger-ui-express');
 const fs = require("fs")
 const YAML = require('yaml')
 
@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 //Prometheus configuration
-const metricsMiddleware = promBundle({includeMethod: true});
+const metricsMiddleware = promBundle({ includeMethod: true });
 app.use(metricsMiddleware);
 
 const handleErrors = (res, error) => {
@@ -41,33 +41,42 @@ app.get('/health', (req, res) => {
 //-----Questions WIKIDATA endpoint----
 
 app.get('/questions/:lang/:category', async (req, res) => {
-  try{
-      const category = req.params.category;
-      const lang = req.params.lang;
-      const questionResponse = await axios.get(questionServiceUrl+`/getQuestionsDb/${lang}/${category}`);
-      res.json(questionResponse.data);
-  }catch (error) {
+  try {
+    const category = req.params.category;
+    const lang = req.params.lang;
+    const questionResponse = await axios.get(questionServiceUrl + `/getQuestionsDb/${lang}/${category}`);
+    res.json(questionResponse.data);
+  } catch (error) {
     handleErrors(res, error);
   }
 });
 
-app.post("/questions/validate", async (req,res) => {
+app.post("/questions/validate", async (req, res) => {
 
-  try{
+  try {
 
-    const { questionId, selectedAnswer} = req.body;
+    const { questionId, selectedAnswer } = req.body; // Extrae ambos campos necesarios
 
-    const question = await axios.post(questionServiceUrl + `/validate/${questionId}`);
-    if (!question) {
-      return res.status(404).json({ error: "Question not found" });
+    if (!questionId || !selectedAnswer) {
+      handleErrors(res, new Error("questionId and selectedAnswer are required" ));
     }
 
-    const isCorrect = question.correctAnswer === selectedAnswer;
-    axios.get(questionServiceUrl + `/delete/${questionId}`);
+    const validationResponse = await axios.post(`${questionServiceUrl}/validate`, {
+      questionId,
+      selectedAnswer,
+    });
+    console.log("SE VALIDA " + validationResponse.data.isCorrect);
+    try {
+      await axios.delete(questionServiceUrl + `/delete/${questionId}`);
+    } catch (deleteError) {
+      handleErrors(res, new Error("Error deleting question"));
+    }
 
-    res.json({isCorrect});
-  }catch(error){
-    handleErrors(res,error);
+    res.json({
+      isCorrect: validationResponse.data.isCorrect
+    });
+  } catch (error) {
+    handleErrors(res, error);
   }
 });
 
@@ -77,12 +86,12 @@ app.post("/questions/validate", async (req,res) => {
 
 app.post('/createUserHistory', async (req, res) => {
   try {
-    console.log("Datos recibidos:", req.body); 
-      // Reenviar la solicitud POST al servicio de ranking para crear un ranking para el usuario
-      const historyResponse = await axios.post(historyServiceUrl+'/createUserHistory', req.body);
-      res.json(historyResponse.data);
+    console.log("Datos recibidos:", req.body);
+    // Reenviar la solicitud POST al servicio de ranking para crear un ranking para el usuario
+    const historyResponse = await axios.post(historyServiceUrl + '/createUserHistory', req.body);
+    res.json(historyResponse.data);
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Ha fallado algo en el servidor',
       details: error.message,
     });
@@ -91,7 +100,7 @@ app.post('/createUserHistory', async (req, res) => {
 
 app.get("/getUserHistory", async (req, res) => {
   try {
-    console.log("Datos recibidos:", req.query); 
+    console.log("Datos recibidos:", req.query);
     const { username } = req.query; // Obtener el parámetro de la URL
     if (!username) {
       return res.status(400).json({ error: "Se requiere un username" });
@@ -114,7 +123,7 @@ app.get('/getUserStats', async (req, res) => {
   try {
     const { username } = req.query;
     if (!username) return res.status(400).json({ error: "Se requiere un username" });
-    
+
     const response = await axios.get(`${historyServiceUrl}/getUserStats`, { params: { username } });
     res.json(response.data);
   } catch (error) {
@@ -127,7 +136,7 @@ app.get('/getLeaderboard', async (req, res) => {
   try {
     const { sortBy, username } = req.query;
     const response = await axios.get(`${historyServiceUrl}/getLeaderboard`, {
-      params: { 
+      params: {
         sortBy,
         username
       }
@@ -135,9 +144,9 @@ app.get('/getLeaderboard', async (req, res) => {
     res.json(response.data);
   } catch (error) {
     console.error('Error en gateway /getLeaderboard:', error.response?.data || error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error al obtener ranking",
-      details: error.response?.data?.error || error.message 
+      details: error.response?.data?.error || error.message
     });
   }
 });
@@ -180,7 +189,7 @@ app.put('/user/update/profile/:username', async (req, res) => {
 app.post('/login', async (req, res) => {
   try {
     // Forward the login request to the authentication service
-    const authResponse = await axios.post(authServiceUrl+'/login', req.body);
+    const authResponse = await axios.post(authServiceUrl + '/login', req.body);
     res.json(authResponse.data);
   } catch (error) {
     handleErrors(res, error);
@@ -201,7 +210,7 @@ app.post('/user', async (req, res) => {
 app.post('/askllm', async (req, res) => {
   try {
     // Forward the add user request to the user service
-    const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
+    const llmResponse = await axios.post(llmServiceUrl + '/ask', req.body);
     res.json(llmResponse.data);
   } catch (error) {
     res.status(error.response.status).json({ error: error.response.data.error });
@@ -209,7 +218,7 @@ app.post('/askllm', async (req, res) => {
 });
 
 // Read the OpenAPI YAML file synchronously
-openapiPath='./openapi.yaml'
+openapiPath = './openapi.yaml'
 if (fs.existsSync(openapiPath)) {
   const file = fs.readFileSync(openapiPath, 'utf8');
 
