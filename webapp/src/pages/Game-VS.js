@@ -590,6 +590,11 @@ function Game() {
           >
             {questionData.correctAnswer}
           </Typography>
+          <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
+                    {t("Game.rounds", { round, TOTAL_ROUNDS })}
+          
+                  </Typography>
+          
         </Box>
       </Stack>
 

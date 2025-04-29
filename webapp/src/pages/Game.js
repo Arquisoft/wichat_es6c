@@ -596,7 +596,7 @@ function Game() {
             animation: "pulse 1.5s infinite",
             "@keyframes pulse": {
               "0%": { transform: "scale(1)" },
-              "50%": { transform: "scale(1.05)" },
+              "50%": { transform: "scale(1.1)" },
               "100%": { transform: "scale(1)" }
             },
             // Ajustes adicionales para pantallas pequeñas
