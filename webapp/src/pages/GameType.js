@@ -1,8 +1,9 @@
-import { React, useRef, useEffect } from 'react';
+import React from 'react';
 import { Button, Stack, Typography, Box, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function GameType() {
   const { t } = useTranslation();
@@ -87,6 +88,36 @@ function GameType() {
           overflow: 'auto',
         }}
       >
+
+        <Button
+          variant="outlined"
+          onClick={handleGoBack}
+          startIcon={<ArrowBackIcon />}
+          sx={{
+            position: "absolute",
+            top: "4%",
+            left: "5%",
+            width: { xs: "40%", sm: "20%" },
+            fontSize: { xs: "0.8rem", sm: "1rem" },
+            textTransform: "none",
+            color: "#ffffff",
+            border: "0.1rem solid rgba(255, 255, 255, 0.4)",
+            borderRadius: "1rem",
+            fontWeight: "bold",
+            background: "rgba(128, 0, 128, 0.48)",
+            boxShadow: "0 0.5rem 1.5rem rgba(106, 13, 173, 0.53)",
+            transition: "all 0.4s ease",
+            "&:hover": {
+              background: "rgba(128, 0, 128, 0.4)",
+              borderColor: "rgba(255, 255, 255, 0.6)",
+              transform: "scale(1.08)",
+              boxShadow: "0 0.6rem 1.8rem rgba(75, 0, 130, 0.5)",
+            },
+          }}
+        >
+          {t("GameMode.goBack")}
+        </Button>
+
         <Typography
           variant="h4"
           sx={{

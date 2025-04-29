@@ -3,6 +3,7 @@ import { Button, Stack, Typography, Box, useMediaQuery } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function GameMode() {
   const [gameType, setGameType] = useState('');
@@ -16,13 +17,15 @@ function GameMode() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const isVerySmallScreen = useMediaQuery('(max-width:400px)');
   const normalButtonList = useMemo(() => [
-    { text: t('GameMode.countryText'), path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
-    { text: t('GameMode.flagText'), path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
-  ], [t]);
+    { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text: 'Famosos', path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
+  ], []);
 
   const vsButtonList = useMemo(() => [
-    { text: t('GameMode.countryText'), path: '/game-vs', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
-  ], [t]);
+    { text: 'Famosos', path: '/game', mode: 'famous_people', name: "famous people", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: 'Banderas', path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+  ], []);
 
   useEffect(() => {
     if (location.state?.type) {
@@ -53,6 +56,11 @@ function GameMode() {
   const handleGameMode = (item) => {
     navigate(item.path, { state: { mode: item.mode, name: item.name } });
   };
+  const handleGoBack = () => {
+    navigate('/game-type');
+  };
+
+  
   return (
     <Stack
       direction="column"
@@ -107,6 +115,37 @@ function GameMode() {
           zIndex: -1,
         }}
       />
+
+      <Button
+        variant="outlined"
+        onClick={handleGoBack}
+        startIcon={<ArrowBackIcon />}
+        sx={{
+          position: "absolute",
+          top: "4%", 
+          left: "5%", 
+          width: { xs: "40%", sm: "20%" }, 
+          fontSize: { xs: "0.8rem", sm: "1rem" },
+          textTransform: "none",
+          color: "#ffffff",
+          border: "0.1rem solid rgba(255, 255, 255, 0.4)",
+          borderRadius: "1rem", 
+          fontWeight: "bold",
+          background: "rgba(128, 0, 128, 0.48)",
+          boxShadow: "0 0.5rem 1.5rem rgba(106, 13, 173, 0.53)", 
+          transition: "all 0.4s ease",
+          "&:hover": {
+            background: "rgba(128, 0, 128, 0.4)",
+            borderColor: "rgba(255, 255, 255, 0.6)",
+            transform: "scale(1.08)", 
+            boxShadow: "0 0.6rem 1.8rem rgba(75, 0, 130, 0.5)", 
+          },
+        }}
+      >
+        {t("GameMode.goBack")}
+      </Button>
+
+
       <Typography
         variant="h4"
         sx={{

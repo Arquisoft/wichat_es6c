@@ -16,7 +16,7 @@ describe('Home Page', () => {
     }));
 
 
-    it('should render the Login component by default', async () => {
+    it('should render the / component by default', async () => {
         render(
             <BrowserRouter>
                 <SessionContext.Provider value={{ sessionId: null }}>
@@ -25,7 +25,7 @@ describe('Home Page', () => {
             </BrowserRouter>
         );
         expect(screen.getByText('Sign in to Wichat')).toBeInTheDocument();
-        expect(window.location.pathname).toBe('/login');
+        expect(window.location.pathname).toBe('/');
     });
 
     it('should toggle to the Register component when the toggle button is clicked', () => {

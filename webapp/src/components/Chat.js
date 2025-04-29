@@ -5,7 +5,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, isMobile }) {
+
+function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, mode, isMobile, hideHeader }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -22,8 +23,15 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
     onUserMessage && onUserMessage(userMessage.content);
 
     setInput("");
-    if (userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) return;
-    setIsTyping(true);
+    console.log(questionData);
+    if(mode && mode==="vs"){
+    if (
+      userMessage.content.toLowerCase().includes(questionData.correctAnswer.toLowerCase()) || 
+      (questionData.enAnswer && userMessage.content.toLowerCase().includes(questionData.enAnswer.toLowerCase())) || 
+      (questionData.esAnswer && userMessage.content.toLowerCase().includes(questionData.esAnswer.toLowerCase()))
+    ) return;
+  }
+    setIsTyping(true); // Activar indicador de que el bot está escribiendo
 
     const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -63,20 +71,24 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
         ...(isSmallScreen && { maxWidth: "none" }),
       }}
     >
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{
-          py: 2,
-          bgcolor: "#9b33c0",
-          color: "white",
-          borderRadius: 2,
-          fontSize: isSmallScreen ? "1.2rem" : "2rem",
-        }}
-      >
-        {t("ChatLLM.chatTitle")}
-      </Typography>
+      {/* Mostrar encabezado solo si hideHeader es falso */}
+      {!hideHeader && (
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          sx={{
+            py: 2,
+            bgcolor: "#9b33c0",
+            color: "white",
+            borderRadius: 2,
+            fontSize: isSmallScreen ? "1.2rem" : "2rem",
+          }}
+        >
+          {t("ChatLLM.chatTitle")}
+        </Typography>
+      )}
+
 
       <Box
         sx={{
@@ -170,12 +182,16 @@ function Chat({ questionData, header, onUserMessage, onBotResponse, ignoreChat, 
 Chat.propTypes = {
   questionData: PropTypes.shape({
     correctAnswer: PropTypes.string.isRequired,
+    enAnswer: PropTypes.string,  // Propiedad opcional
+    esAnswer: PropTypes.string   // Propiedad opcional
   }).isRequired,
   header: PropTypes.string.isRequired,
   onUserMessage: PropTypes.func,
   onBotResponse: PropTypes.func,
   ignoreChat: PropTypes.bool,
   isMobile: PropTypes.bool,
+  hideHeader: PropTypes.bool,
+  mode: PropTypes.string
 };
 
 export default Chat;

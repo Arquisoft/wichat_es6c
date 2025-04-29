@@ -97,7 +97,9 @@
         "chooseTheme": "Elige una temática",
         "countryName": "país",
         "countryText": "Países",
-        "flagText": "Banderas"
+        "flagText": "Banderas",
+        "goBack": "Volver atrás"
+
     },
     "Game": {
         "totalScore": "Puntuación total",
@@ -134,6 +136,11 @@
     "Footer": {
         "title": "Wichat",
         "github": "GitHub",
-        "apiDocs": "API Docs"
+        "apiDocs": "API Docs",
+        "appMovil": "App Android"
+    },
+    "NotFound":{
+        "title": "Página no encontrada",
+        "button_msg": "Volver al inicio"
     }
 }

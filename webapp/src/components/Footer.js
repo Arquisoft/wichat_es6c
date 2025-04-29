@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, Typography, Link, Divider } from '@mui/material';
-import { GitHub, Description } from '@mui/icons-material';
+import { GitHub, Description, AndroidSharp } from '@mui/icons-material';
 import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const { t } = useTranslation();
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
   return (
     <Box
@@ -45,7 +46,7 @@ const Footer = () => {
           <GitHub sx={{ mr: 1 }} /> {t('Footer.github')}
         </Link>
         <Link
-          href="http://localhost:8000/api-doc"
+          href={apiEndpoint+"/api-doc"}
           target="_blank"
           rel="noopener noreferrer"
           sx={{
@@ -56,6 +57,19 @@ const Footer = () => {
           }}
         >
           <Description sx={{ mr: 1 }} /> {t('Footer.apiDocs')}
+        </Link>
+        <Link
+          href="https://mega.nz/file/FNJjkBRR#nJWkNnFYPI3MOagahFg-U02UnW_vbEl_RkjvmR9zJ1E"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+          }}
+        >
+          <AndroidSharp sx={{ mr: 1 }} /> {t('Footer.appMovil')}
         </Link>
       </Box>
     </Box>

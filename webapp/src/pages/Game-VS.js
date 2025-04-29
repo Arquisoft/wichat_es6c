@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback,useRef } from "react";
 import { Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ function Game() {
   const QUESTION_TIME = 60;
   const TOTAL_ROUNDS = 10;
   const BASE_SCORE = 10;
-  const FEEDBACK_QUESTIONS_TIME = 1; // 1 segundo (1000 ms)
+  const FEEDBACK_QUESTIONS_TIME = 500; // 1 segundo (1000 ms)
   const TRANSITION_ROUND_TIME = 2000; // 3 segundos (3000 ms)
 
 
@@ -32,6 +32,15 @@ function Game() {
 
   const { t } = useTranslation();
 
+  const audioRef = useRef(null); // Referencia para el audio
+  const hurryAudioRef = useRef(null);
+  const failAudioRef = useRef(null); // Referencia para el sonido de fallo
+  const correctAudioRef = useRef(null); // Referencia para el sonido de respuesta correcta
+  const chooseAudioRef = useRef(null); // Referencia para el sonido de elección
+  const failSoundPlayedRef = useRef(false);
+  //const [volumeLevel, setVolumeLevel] = useState(0.3); // Ajusta el nivel de volumen entre 0.0 y 1.0
+  const volumeLevel = 0.3; // Ajusta el nivel de volumen entre 0.0 y 1.0
+  const [hurryMode, setHurryMode] = useState(false);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [gameMode, setGameMode] = useState('');
@@ -40,7 +49,7 @@ function Game() {
   const [totalTime, setTotalTime] = useState(0);
 
 
-  const {  username } = useContext(SessionContext);
+  const { username } = useContext(SessionContext);
 
   const [questionData, setQuestionData] = useState(null);
   const [nextQuestionData, setNextQuestionData] = useState(null); // Estado para la pregunta precargada
@@ -143,14 +152,17 @@ function Game() {
 
     setRound((prevRound) => prevRound + 1); // Incrementar la ronda
     setTimeLeft(QUESTION_TIME); // Reiniciar el tiempo
-
-
-  }, [nextQuestionData, fetchQuestion, preloadNextQuestion]);
+    setHurryMode(false);
+    if (hurryAudioRef.current) hurryAudioRef.current.pause();
+    failSoundPlayedRef.current = false;
+  }, [nextQuestionData, fetchQuestion, preloadNextQuestion,failSoundPlayedRef]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
+    
     setShowFeedback(true);
-
+    
+    
     setTempScore(0);
     setTimeout(() => {
       setShowFeedback(false);
@@ -178,6 +190,53 @@ function Game() {
   }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
 
   useEffect(() => {
+      if (timeLeft === 12 && !hurryMode) {
+        setHurryMode(true);
+  
+        if (hurryAudioRef.current) {
+          hurryAudioRef.current.currentTime = 0;
+          hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+          const playPromise = hurryAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de prisa:", error);
+            });
+          }
+        }
+        if (audioRef.current) {
+          //audioRef.current.pause();
+        }
+      }
+    }, [timeLeft, hurryMode,volumeLevel]);
+
+   useEffect(() => {
+      console.log("volumen:", volumeLevel);
+      if (!audioRef.current) return; // Asegurarse de que la referencia del audio esté disponible
+      const audio = audioRef.current;
+      audio.volume = volumeLevel; // Ajustar volumen normal
+      if (hurryMode || starAnimation || showFeedback || showTransition) {
+        console.log(hurryMode, starAnimation, showFeedback, showTransition);
+        audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
+      } else {
+        audio.volume = 1; // Ajustar volumen normal
+        console.log("volumen audio:", audio.volume);
+      }
+  
+      console.log(hurryMode, starAnimation, showFeedback, showTransition);
+      const playPromise = audio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de fondo:", error);
+        });
+      }
+  
+      return () => {
+  
+        audio.pause();
+      };
+    }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
+
+  useEffect(() => {
     if (location.state?.mode) {
       setGameMode(location.state.mode);
       setGameModeName(location.state.name); // Guardar el nombre del modo de juego
@@ -200,6 +259,17 @@ function Game() {
         if (prevTime <= 1) {
           if (!timeUpTriggered) {
             timeUpTriggered = true;
+            if (failAudioRef.current && failAudioRef.current.paused && !failSoundPlayedRef.current) {
+              failSoundPlayedRef.current = true;
+              failAudioRef.current.currentTime = 0;
+              failAudioRef.current.volume = volumeLevel;
+              const playPromise = failAudioRef.current.play();
+              if (playPromise !== null && playPromise !== undefined) {
+                playPromise.catch((error) => {
+                  console.error("Error reproduciendo el sonido de fallo:", error);
+                });
+              }
+            }
             handleTimeUp();
           }
           clearInterval(timer);
@@ -224,6 +294,16 @@ function Game() {
 
   const handleAnswer = (isCorrect, selectedOption) => {
 
+    if (chooseAudioRef.current) {
+      chooseAudioRef.current.currentTime = 0;
+      chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+      const playPromise = chooseAudioRef.current.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error reproduciendo el sonido de elección:", error);
+        });
+      }
+    }
     setShowFeedback(true);
     let correct = corectAnswers;
     let thisScore = score;
@@ -246,6 +326,18 @@ function Game() {
 
       // Activar la animación de la estrella solo si no está ya activa
       if (!starAnimation) {
+        if (isCorrect && correctAudioRef.current) {
+          correctAudioRef.current.currentTime = 0;
+          correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+          const playPromise = correctAudioRef.current.play();
+          if (playPromise !== null && playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.error("Error reproduciendo el sonido de acierto:", error);
+            });
+          }
+        } else {
+          
+        }
         setStarAnimation(true);
       }
 
@@ -274,17 +366,53 @@ function Game() {
 
   const handleUserMessage = (message) => {
     console.log("Mensaje:", message);
-    setUserMessages((prevMessages) => [...prevMessages, message]); // Agregar el mensaje al historial de la ronda
-    if (message.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
-      console.log("El usuario eligió la opción incorrecta según la respuesta del chat.");
+
+    console.log(questionData);
+    setUserMessages((prevMessages) => [...prevMessages, message]);
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const messageLower = message.toLowerCase();
+    
+    if (
+      messageLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && messageLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && messageLower.includes(esAnswer.toLowerCase()))
+    ) {
+      if (failAudioRef.current && failAudioRef.current.paused && !failSoundPlayedRef.current) {
+        failSoundPlayedRef.current = true;
+        failAudioRef.current.currentTime = 0;
+        failAudioRef.current.volume = volumeLevel;
+        const playPromise = failAudioRef.current.play();
+        if (playPromise !== null && playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Error reproduciendo el sonido de fallo:", error);
+          });
+        }
+      }
+
+
       setTimeLeft(0);
+      
     }
   };
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-
-    if (questionData !== null && response.toLowerCase().includes(questionData.correctAnswer.toLowerCase())) {
+    
+    if (!questionData) return; // Asegurar que questionData existe
+    
+    // Desestructurar con valores por defecto
+    const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
+    const responseLower = response.toLowerCase();
+    
+    if (
+      responseLower.includes(correctAnswer.toLowerCase()) ||
+      (enAnswer && responseLower.includes(enAnswer.toLowerCase())) ||
+      (esAnswer && responseLower.includes(esAnswer.toLowerCase()))
+    ) {
       console.log("El usuario eligió la opción correcta según la respuesta del chat.");
       handleAnswer(true);
     }
@@ -364,7 +492,7 @@ function Game() {
 
   return (
     <Stack
-      direction={{ xs: "row", md: "row" }} // Mantener las columnas en fila
+      direction={{ xs: "column", md: "row" }} // Columna en móviles, fila en ordenadores
       sx={{
         height: "100vh",
         width: "100vw",
@@ -373,15 +501,27 @@ function Game() {
         backgroundPosition: "center",
         overflow: "hidden",
         position: "relative",
-        gap: { xs: 2, md: 0 }, // Espaciado entre columnas en pantallas pequeñas
+        gap: { xs: "2rem", md: "0" }, // Espaciado entre columnas en móviles
+        padding: "2%", // Padding relativo
       }}
     >
+
+      {/* Sonido de fondo */}
+            <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
+      <audio ref={hurryAudioRef} src="sound/hurry_sound.mp3" />
+      {/* Sonido de fallo */}
+      <audio ref={failAudioRef} src="sound/fail.wav" />
+      {/* Sonido de acierto */}
+      <audio ref={correctAudioRef} src="sound/correct.mp3" />
+      {/* Sonido de elección */}
+      <audio ref={chooseAudioRef} src="sound/choose.mp3" />
+
       {/* Columna izquierda: Temporizador y Pregunta */}
       <Stack
-        direction={{ xs: "column", md: "row" }} // Apilar verticalmente en pantallas pequeñas
+        direction="column"
         sx={{
-          flex: { xs: 2, md: 3 },
-          gap: 1, 
+          flex: { xs: 1, md: 2 }, // Ocupa más espacio en ordenadores
+          gap: "1rem",
           padding: "1rem",
         }}
       >
@@ -393,13 +533,12 @@ function Game() {
             justifyContent: "center",
             position: "relative",
             padding: "1rem",
-            flex: { xs: 2, md: 1 }, // Crece más en pantallas pequeñas
           }}
         >
           <Box
             sx={{
-              width: { xs: "8rem", md: "6rem" }, // Crece en pantallas pequeñas
-              height: { xs: "8rem", md: "6rem" },
+              width: { xs: "6rem", md: "8rem" }, // Tamaño relativo al viewport
+              height: { xs: "6rem", md: "8rem" },
               borderRadius: "50%",
               backgroundColor: "orange",
               display: "flex",
@@ -414,12 +553,17 @@ function Game() {
               },
             }}
           >
-            <Typography variant="h4" color="white" fontWeight="bold">
+            <Typography
+              variant="h4"
+              color="white"
+              fontWeight="bold"
+              fontSize={{ xs: "1.5rem", sm: "2rem", md: "3rem" }} // Texto adaptable
+            >
               {timeLeft}
             </Typography>
           </Box>
         </Box>
-
+      
         {/* Pregunta */}
         <Box
           sx={{
@@ -427,7 +571,7 @@ function Game() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center", // Centrar la pregunta verticalmente
+            justifyContent: "center",
             padding: "2rem",
             backgroundColor: "rgba(255,255,255,0.8)",
             borderRadius: "1rem",
@@ -438,7 +582,10 @@ function Game() {
           <Typography
             variant="h5"
             fontWeight="bold"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: "1rem",
+              fontSize: { xs: "1.2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
+            }}
           >
             {t("Game-VS.describeMode-" + gameModeName)}
           </Typography>
@@ -451,41 +598,51 @@ function Game() {
               backgroundColor: timeLeft === 0 ? "red" : "#6A0DAD",
               borderRadius: "10px",
               padding: "1rem",
-              mt: 3,
+              mt: "1rem",
               width: "100%",
               wordWrap: "break-word",
-              fontSize: { xs: "1.5rem", md: "2rem" },
+              fontSize: { xs: "1.5rem", md: "2rem" }, // Tamaño de fuente responsivo
             }}
           >
             {questionData.correctAnswer}
           </Typography>
+          <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
+                    {t("Game.rounds", { round, TOTAL_ROUNDS })}
+          
+                  </Typography>
+          
         </Box>
       </Stack>
 
-      {/* Columna derecha: Chat */}
+      {/*Chat */}
       <Box
         sx={{
-          flex: { xs: 5, md: 3 }, // Ocupa más espacio en pantallas grandes
+          flex: { xs: 1, md: 1 }, // Ocupa menos espacio en pantallas grandes
           backgroundColor: "white",
-          borderLeft: "3px solid #ccc",
+          borderLeft: { md: "3px solid #ccc" }, // Borde solo en pantallas grandes
           display: "flex",
           flexDirection: "column",
           height: "90%",
           overflow: "hidden",
-          padding: "2rem",
+          padding: "2%",
+          borderRadius: { xs: "1rem", md: "0" }, // Bordes redondeados en móviles
+          boxShadow: { xs: "0px 4px 10px rgba(0, 0, 0, 0.2)", md: "none" }, // Sombra en móviles
         }}
       >
-        <Chat
-          questionData={questionData}
-          onUserMessage={handleUserMessage}
-          onBotResponse={handleBotResponse}
-          header={
-            "Tienes que adivinar un " +
-            questionData.category +
-            ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
-            userMessages.join(", ")
-          }
-        />
+  
+          <Chat
+            questionData={questionData}
+            onUserMessage={handleUserMessage}
+            onBotResponse={handleBotResponse}
+            hideHeader={true}
+            header={
+              "Tienes que adivinar un " +
+              gameModeName +
+              ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
+              userMessages.join(", ")
+            }
+            mode="vs"
+          />
       </Box>
 
       {/* Pantalla de Transición */}

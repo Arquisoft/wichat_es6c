@@ -99,7 +99,9 @@
         "chooseTheme": "Choose a theme",
         "countryName": "country",
         "countryText": "Countries",
-        "flagText": "Flags"
+        "flagText": "Flags",
+        "goBack": "Go back"
+
     },
     "Game": {
         "totalScore": "Total score",
@@ -139,6 +141,11 @@
 
         "title": "Wichat",
         "github": "GitHub",
-        "apiDocs": "API Docs"
+        "apiDocs": "API Docs",
+        "appMovil": "App Android"
+    },
+    "NotFound":{
+        "title": "Page not found",
+        "button_msg": "Home page"
     }
 }

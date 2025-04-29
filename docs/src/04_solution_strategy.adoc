@@ -37,15 +37,15 @@ endif::arc42help[]
 Para el desarrollo de la aplicación se decidió utilizar las siguientes tecnologías:
 
 * JavaScript será el lenguaje de programación principal.
-    - Se ha tomado esta decisión debido a la facilidad de integración con las tecnologías seleccionadas para el desarrollo de la aplicación.
+    - Se ha tomado esta decisión debido a la facilidad de integración con las tecnologías seleccionadas para el desarrollo de la aplicación así hacemos que todo esté en el mismo lenguaje y favorecemos a todos los desarrolladores.
 * React.js para construir interfaces de usuario.
-    - Se ha seleccionado React.js por su facilidad de uso y su capacidad para crear interfaces de usuario interactivas y usables.
+    - Se ha seleccionado React.js por su facilidad de uso y su capacidad para crear interfaces de usuario interactivas y usables. Además, hay una comunidad muy activa y una gran cantidad de recursos disponibles para aprender y resolver problemas.
 * Node.js para construir el back-end.   
-    - Se ha seleccionado Node.js por su capacidad para manejar múltiples conexiones simultáneas y su facilidad de integración con otras tecnologías.
+    - Se ha seleccionado Node.js por su capacidad para manejar múltiples conexiones simultáneas y su facilidad de integración con otras tecnologías. Además, hay una comunidad muy activa y una gran cantidad de recursos disponibles para aprender y resolver problemas.
 * GitHub para el control de versiones.
-    - Se ha seleccionado GitHub por su facilidad de uso y su capacidad para gestionar proyectos de software de forma colaborativa.
+    - Se ha seleccionado GitHub por su facilidad de uso y su capacidad para gestionar proyectos de software de forma colaborativa y segura. 
 * Docker para la contenerización de la aplicación.
-    - Se ha seleccionado Docker por su capacidad para crear contenedores ligeros y portátiles que pueden ejecutarse en cualquier entorno.
+    - Se ha seleccionado Docker por su capacidad para crear contenedores ligeros y portátiles que pueden ejecutarse en cualquier entorno y que facilitan el mantenimiento y el arreglo e problemas.
 * Azure para el despliegue de la aplicación.
     - Se ha seleccionado Azure por su capacidad para escalar la aplicación de forma automática y su facilidad de integración con otras tecnologías.
 * Wikidata API.
@@ -53,7 +53,7 @@ Para el desarrollo de la aplicación se decidió utilizar las siguientes tecnolo
 * Empathy API. 
     - Modelo largo de lenguaje (LLM) para ofrecer la posibilidad de obtener pistas de las imagenes de forma conversacional.
 
-Se han considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js.
+Se han considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js ya que todo trabaja con javascript.
 
 === Descomposición de alto nivel
 
@@ -62,17 +62,17 @@ Se han considerado otras tecnologías para el desarrollo back-end como Spting Bo
 |===
 |Objetivo de calidad | Decisión 
 |Seguridad| Se ha decidido seguir las mejores prácticas de seguridad en el desarrollo de la aplicación, como la validación de datos de entrada y la protección contra ataques de inyección de código.
-|Usabilidad| Se realizaran pruebas de usabilidad con usuarios reales. Serán al menos 4 tandas de 3 usuarios cada una, teniendo en cuenta qe se aborden diferentes intervalos de edad y de con diferente manejo de la informática. 
+|Usabilidad| Se realizarán pruebas de usabilidad con usuarios reales. Serán al menos 4 tandas de 3 usuarios cada una, teniendo en cuenta que se aborden diferentes intervalos de edad y con diferente manejo de la informática. 
 |Fiabilidad| Se ha tomado la decisión de realizar pruebas de regresión y pruebas de integración para garantizar la fiabilidad de la aplicación.
 |Rendimiento| Se realizarán pruebas de carga para garantizar el rendimiento de la aplicación para poder tener al menos 100 usuarios a la vez.
-|Mantenibilidad| Se utilizarán patrones de diseño y  buenas prácticas de programación para garantizar la mantenibilidad de la aplicación.
+|Mantenibilidad| Se utilizarán patrones de diseño y buenas prácticas de programación para garantizar la mantenibilidad de la aplicación.
 |Eficiencia| Se optimizará el uso de recursos para garantizar que la aplicación funcione de manera eficiente donde se despliegue, además de usar los recursos externos también de manera eficiente.
 |Portabilidad| La aplicación se desarrollará utilizando tecnologías y frameworks multiplataforma, asegurando que pueda desplegarse en diferentes entornos (Windows, Linux, macOS) sin generar problemas.
 |===
 
 === Decisiones de organización relevantes
 El flujo de trabajo se organizará en reuniones semanales, que se llevarán a cabo según sea necesario.
-Una de las reuniones se realizará durante la clase de laboratorio y se centrará en decisiones y tareas menores. Las reuniones posteriores se relaizarán de manera remota y estarán dedicadas a deciones mas detalladas y exhaustivas.
+Una de las reuniones se realizará durante la clase de laboratorio y se centrará en decisiones y tareas menores. Las reuniones posteriores se realizarán de manera remota y estarán dedicadas a decisiones más detalladas y exhaustivas. En estas reuniones será necesaria la asistencia de todos los miembros del equipo para evitar problemas.
 
-Cada tarea asignada, así como problemas encontrados, se documentará como un Issue en GitHub. Además se utilizará GitHub Projects para la organización de las tareas del equipo. 
-No habrá una división estricta entre front-end y back-end, todos los miembros del equipo trabajarán en ambas áreas. Para cada tarea asiganada, se creará una rama específica, y el trabajo realizado se volcará una rama develop mediante pull requests. Una vez que se haya completado una funcionalidad, se fusionará la rama develop con la rama master.
+Cada tarea asignada, así como problemas encontrados, se documentará como un Issue en GitHub. Además, se utilizará GitHub Projects para la organización de las tareas del equipo. 
+No habrá una división estricta entre front-end y back-end, todos los miembros del equipo trabajarán en ambas áreas. Para cada tarea asignada, se creará una rama específica, y el trabajo realizado se volcará en una rama develop mediante pull requests. Una vez que se haya completado una funcionalidad y se sepa que todo va bien, se fusionará la rama develop con la rama master.
