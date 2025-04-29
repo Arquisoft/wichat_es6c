@@ -557,9 +557,7 @@ function Game() {
               variant="h4"
               color="white"
               fontWeight="bold"
-              sx={{
-                fontSize: { xs: "2rem", md: "1.5rem" }, // Tamaño de fuente responsivo
-              }}
+              fontSize={{ xs: "1.5rem", sm: "2rem", md: "3rem" }} // Texto adaptable
             >
               {timeLeft}
             </Typography>
