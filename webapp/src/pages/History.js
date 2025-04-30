@@ -352,19 +352,39 @@ export default function UserHistory() {
 
         {/* Formulario de edición de perfil */}
         {editMode && (
-          <Card sx={{ mb: 3, p: 3, backgroundColor: '#f9f9f9', boxShadow: 3, borderRadius: 2 }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
+          <Card sx={{ 
+            mb: 3, 
+            p: { xs: 2, sm: 3 }, // Padding responsive
+            backgroundColor: '#f9f9f9', 
+            boxShadow: 3, 
+            borderRadius: 2,
+            width: '90%', // Ocupa todo el ancho disponible
+            maxWidth: '800px', // Máximo ancho para pantallas grandes
+            mx: 'auto' // Centrado horizontal
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ 
+              fontWeight: 'bold', 
+              color: '#333',
+              fontSize: { xs: '1.1rem', sm: '1.25rem' } // Tamaño de fuente responsive
+            }}>
               {t('History.editProfile')}
             </Typography>
 
             {successMessage && (
-              <Alert severity="success" sx={{ mb: 2 }}>
+              <Alert severity="success" sx={{ 
+                mb: 2,
+                fontSize: { xs: '0.8rem', sm: '0.875rem' } // Tamaño de fuente responsive
+              }}>
                 {successMessage}
               </Alert>
             )}
 
             <form onSubmit={updateUserInfo}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: { xs: 1.5, sm: 2 } // Espaciado responsive
+              }}>
                 <TextField
                   label={t('History.name')}
                   variant="outlined"
@@ -373,6 +393,12 @@ export default function UserHistory() {
                   onChange={(e) => setName(e.target.value)}
                   error={!!errors.name}
                   helperText={errors.name}
+                  size="small" // Tamaño más compacto en móviles
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      height: { xs: 40, sm: 56 } // Altura responsive
+                    }
+                  }}
                 />
 
                 <TextField
@@ -383,6 +409,12 @@ export default function UserHistory() {
                   onChange={(e) => setSurname(e.target.value)}
                   error={!!errors.surname}
                   helperText={errors.surname}
+                  size="small"
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      height: { xs: 40, sm: 56 }
+                    }
+                  }}
                 />
 
                 <TextField
@@ -393,6 +425,12 @@ export default function UserHistory() {
                   onChange={(e) => setProfilePicture(e.target.value)}
                   error={!!errors.profilePicture}
                   helperText={errors.profilePicture || `${t('History.ex')} https://ejemplo.com/imagen.jpg`}
+                  size="small"
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      height: { xs: 40, sm: 56 }
+                    }
+                  }}
                 />
 
                 <TextField
@@ -400,16 +438,22 @@ export default function UserHistory() {
                   variant="outlined"
                   fullWidth
                   multiline
-                  rows={4}
+                  rows={{ xs: 3, sm: 4 }} // Filas responsive
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   error={!!errors.description}
                   helperText={errors.description || `${description.length}/200`}
                   inputProps={{ maxLength: 200 }}
+                  size="small"
                 />
               </Box>
 
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'flex-end', 
+                gap: { xs: 1, sm: 2 }, // Espaciado responsive
+                mt: { xs: 2, sm: 3 } // Margen superior responsive
+              }}>
                 <Button
                   variant="outlined"
                   color="error"
@@ -417,6 +461,11 @@ export default function UserHistory() {
                     setEditMode(false);
                     setErrors({});
                     setSuccessMessage('');
+                  }}
+                  size="small" // Tamaño más compacto en móviles
+                  sx={{
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' }, // Tamaño de fuente responsive
+                    px: { xs: 1, sm: 2 } // Padding horizontal responsive
                   }}
                 >
                   {t('History.cancel')}
@@ -428,10 +477,13 @@ export default function UserHistory() {
                   type="submit"
                   disabled={loading}
                   startIcon={loading && <CircularProgress size={20} />}
+                  size="small"
                   sx={{
                     backgroundColor: '#6200ea',
                     '&:hover': { backgroundColor: '#5a00d6' },
-                    minWidth: 150
+                    minWidth: { xs: 100, sm: 150 }, // Ancho mínimo responsive
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    px: { xs: 1, sm: 2 }
                   }}
                 >
                   {loading ? t("History.updating") : t("History.saveChanges")}
@@ -442,39 +494,77 @@ export default function UserHistory() {
         )}
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}>
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "#6200ea", color: "#fff", "&:hover": { backgroundColor: "#5a00d6" } }}
-          onClick={fetchHistory}
-          disabled={loading}
-        >
-          {t("History.viewHistory")}
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "#ff9800", color: "#fff", "&:hover": { backgroundColor: "#e68900" } }}
-          onClick={fetchStats}
-          disabled={loading}
-        >
-          {t("History.viewStats")}
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "#4caf50", color: "#fff", "&:hover": { backgroundColor: "#43a047" } }}
-          onClick={() => fetchLeaderboard()}
-          disabled={loading}
-        >
-          {t("History.viewRanking")}
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "#bdbdbd", color: "black", "&:hover": { backgroundColor: "#9e9e9e" } }}
-          onClick={goToHomepage}
-        >
-          {t("History.mainPage")}
-        </Button>
-      </Box>
+      <Box sx={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      gap: { xs: 1, sm: 2 }, // Espaciado responsive
+      mb: 3,
+      flexWrap: 'wrap' // Permite que los botones se envuelvan en pantallas pequeñas
+    }}>
+      <Button
+        variant="contained"
+        sx={{ 
+          backgroundColor: "#6200ea", 
+          color: "#fff", 
+          "&:hover": { backgroundColor: "#5a00d6" },
+          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9375rem' }, // Tamaño de fuente responsive
+          px: { xs: 1.5, sm: 2, md: 3 }, // Padding horizontal responsive
+          py: { xs: 0.5, sm: 1 }, // Padding vertical responsive
+          minWidth: { xs: '100px', sm: '120px', md: '140px' } // Ancho mínimo responsive
+        }}
+        onClick={fetchHistory}
+        disabled={loading}
+      >
+        {t("History.viewHistory")}
+      </Button>
+      <Button
+        variant="contained"
+        sx={{ 
+          backgroundColor: "#ff9800", 
+          color: "#fff", 
+          "&:hover": { backgroundColor: "#e68900" },
+          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9375rem' },
+          px: { xs: 1.5, sm: 2, md: 3 },
+          py: { xs: 0.5, sm: 1 },
+          minWidth: { xs: '100px', sm: '120px', md: '140px' }
+        }}
+        onClick={fetchStats}
+        disabled={loading}
+      >
+        {t("History.viewStats")}
+      </Button>
+      <Button
+        variant="contained"
+        sx={{ 
+          backgroundColor: "#4caf50", 
+          color: "#fff", 
+          "&:hover": { backgroundColor: "#43a047" },
+          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9375rem' },
+          px: { xs: 1.5, sm: 2, md: 3 },
+          py: { xs: 0.5, sm: 1 },
+          minWidth: { xs: '100px', sm: '120px', md: '140px' }
+        }}
+        onClick={() => fetchLeaderboard()}
+        disabled={loading}
+      >
+        {t("History.viewRanking")}
+      </Button>
+      <Button
+        variant="contained"
+        sx={{ 
+          backgroundColor: "#bdbdbd", 
+          color: "black", 
+          "&:hover": { backgroundColor: "#9e9e9e" },
+          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9375rem' },
+          px: { xs: 1.5, sm: 2, md: 3 },
+          py: { xs: 0.5, sm: 1 },
+          minWidth: { xs: '100px', sm: '120px', md: '140px' }
+        }}
+        onClick={goToHomepage}
+      >
+        {t("History.mainPage")}
+      </Button>
+    </Box>
 
       {loading && <CircularProgress sx={{ display: "block", margin: "auto", mt: 2 }} />}
 
@@ -551,181 +641,180 @@ export default function UserHistory() {
           </Typography>
         )}
 
-        {history.length > 0 && (
-          <TableContainer component={Paper} sx={{ mt: 3, maxHeight: '400px', overflow: 'auto' }}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center"><strong>{t('History.correct')}</strong></TableCell>
-                  <TableCell align="center"><strong>{t('History.incorrect')}</strong></TableCell>
-                  <TableCell align="center"><strong>{t('History.time')}</strong></TableCell>
-                  <TableCell align="center"><strong>{t('History.score')}</strong></TableCell>
-                  <TableCell align="center"><strong>{t('History.gameMode')}</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {history.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{item.correctAnswers}</TableCell>
-                    <TableCell align="center">{item.wrongAnswers}</TableCell>
-                    <TableCell align="center">{item.time}</TableCell>
-                    <TableCell align="center">{item.score}</TableCell>
-                    <TableCell align="center">{item.gameMode}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-
-        {leaderboard.topPlayers.length === 0 && !loading && !rankingAccessed && (
-          <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
-            {t("History.nonRanking")}
-          </Typography>
-        )}
-
-        {leaderboard.topPlayers.length > 0 && (
-          <Box sx={{ mt: 3 }}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{
-                backgroundColor: 'white',
-                color: 'black',
-                padding: '0.5rem',
-                borderRadius: '8px',
-                textAlign: 'center',
-                boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)'
+        {/* Historia del usuario */}
+{history.length > 0 && (
+  <Box sx={{ mt: 3 }}>
+    <Typography
+      variant="h5"
+      gutterBottom
+      sx={{
+        backgroundColor: 'white',
+        color: 'black',
+        padding: '0.5rem',
+        borderRadius: '8px',
+        textAlign: 'center',
+        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+        mb: 2
+      }}
+    >
+      {t('History.yourHistory')}
+    </Typography>
+    <TableContainer component={Paper} sx={{ maxHeight: '400px', overflow: 'auto' }}>
+      <Table stickyHeader>
+        <TableHead>
+          <TableRow sx={{
+            backgroundColor: 'background.default',
+            '& th': {
+              fontWeight: 'fontWeightBold',
+              padding: { xs: '0.5rem', sm: '0.75rem', md: '1rem' },
+              fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' },
+              textAlign: 'center',
+              verticalAlign: 'bottom',
+              borderBottom: '2px solid',
+              borderColor: 'divider'
+            }
+          }}>
+            <TableCell align="center"><strong>{t('History.correct')}</strong></TableCell>
+            <TableCell align="center"><strong>{t('History.incorrect')}</strong></TableCell>
+            <TableCell align="center"><strong>{t('History.time')}</strong></TableCell>
+            <TableCell align="center"><strong>{t('History.score')}</strong></TableCell>
+            <TableCell align="center"><strong>{t('History.gameMode')}</strong></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {history.map((item, index) => (
+            <TableRow 
+              key={index} 
+              hover 
+              sx={{ 
+                '&:hover': { 
+                  transform: 'scale(1.01)',
+                  transition: 'all 0.2s ease'
+                } 
               }}
             >
-              {t('History.globalRanking')}
-            </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: '400px', overflow: 'auto' }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow sx={{
-                    backgroundColor: 'background.default',
-                    '& th': {
-                      fontWeight: 'fontWeightBold',
-                      padding: { xs: '0.5rem', sm: '0.75rem', md: '1rem' },
-                      fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' },
-                      textAlign: 'left',
-                      verticalAlign: 'bottom',
-                      borderBottom: '2px solid',
-                      borderColor: 'divider'
-                    }
-                  }}>
-                    <TableCell sx={{
-                      width: { xs: '3em', md: '5em' },
-                      pl: { xs: 1, md: 2 }
-                    }}>
-                      {t('History.position')}
-                    </TableCell>
+              <TableCell align="center">{item.correctAnswers}</TableCell>
+              <TableCell align="center">{item.wrongAnswers}</TableCell>
+              <TableCell align="center">{item.time}</TableCell>
+              <TableCell align="center">{item.score}</TableCell>
+              <TableCell align="center">{item.gameMode}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+)}
 
-                    <TableCell
-                      onClick={() => handleSort('_id')}
-                      sx={{
-                        cursor: 'pointer',
-                        '&:hover': { backgroundColor: 'action.hover' }
-                      }}
-                    >
-                      {t('History.user')}
-                    </TableCell>
 
-                    <TableCell
-                      onClick={() => handleSort('totalScore')}
-                      sx={{
-                        cursor: 'pointer',
-                        '&:hover': { backgroundColor: 'action.hover' }
-                      }}
-                    >
-                      {t('History.score')}
-                    </TableCell>
 
-                    <TableCell
-                      onClick={() => handleSort('accuracy')}
-                      sx={{
-                        cursor: 'pointer',
-                        '&:hover': { backgroundColor: 'action.hover' }
-                      }}
-                    >
-                      {t('History.percentageHits')}
-                    </TableCell>
+{/* Tabla de clasificación global compacta */}
+{leaderboard.topPlayers.length > 0 && (
+  <Box sx={{ mt: 2 }}>
+    {leaderboard.topPlayers.length === 0 && !loading && !rankingAccessed && (
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        {t("History.nonRanking")}
+      </Typography>
+    )}
+    
+    <Typography
+      variant="h6"
+      sx={{
+        bgcolor: 'background.paper',
+        p: '0.25rem',
+        borderRadius: '4px',
+        textAlign: 'center',
+        boxShadow: 1,
+        mb: 1,
+        fontSize: { xs: '1rem', sm: '1.1rem' }
+      }}
+    >
+      {t('History.globalRanking')}
+    </Typography>
+    
+    <TableContainer component={Paper} sx={{ maxHeight: '320px', overflow: 'auto' }}>
+      <Table size="small" stickyHeader>
+        <TableHead>
+          <TableRow sx={{
+            '& th': {
+              p: { xs: '0.25rem', sm: '0.5rem' },
+              fontSize: { xs: '0.7rem', sm: '0.75rem' },
+              fontWeight: 'bold',
+              borderBottom: '2px solid',
+              borderColor: 'divider'
+            }
+          }}>
+            <TableCell sx={{ width: '40px', p: '0.25rem !important' }}>
+              {t('History.position')}
+            </TableCell>
 
-                    <TableCell
-                      onClick={() => handleSort('totalCorrect')}
-                      sx={{
-                        cursor: 'pointer',
-                        '&:hover': { backgroundColor: 'action.hover' }
-                      }}
-                    >
-                      {t('History.correct')}
-                    </TableCell>
+            {['_id', 'totalScore', 'accuracy', 'totalCorrect', 'totalGames'].map((field) => (
+              <TableCell
+                key={field}
+                onClick={() => handleSort(field)}
+                sx={{
+                  p: '0.25rem !important',
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'action.hover' }
+                }}
+              >
+                {t(`History.${field === '_id' ? 'user' : 
+                    field === 'accuracy' ? 'percentageHits' : 
+                    field.replace('total', '').toLowerCase()}`)}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        
+        <TableBody>
+          {leaderboard.topPlayers.map((user) => (
+            <TableRow 
+              key={user._id}
+              sx={{
+                '& td': { p: '0.25rem !important', fontSize: '0.75rem' },
+                bgcolor: getRankColor(user.globalRank).bg,
+                border: getRankColor(user.globalRank).border,
+                '&:hover': { bgcolor: getRankColor(user.globalRank).bg.replace('0.3', '0.5') }
+              }}
+            >
+              <TableCell>{user.globalRank}</TableCell>
+              <TableCell sx={{ whiteSpace: 'nowrap' }}>{user._id}</TableCell>
+              <TableCell>{user.totalScore}</TableCell>
+              <TableCell>{user.accuracy?.toFixed(2)}%</TableCell>
+              <TableCell>{user.totalCorrect}</TableCell>
+              <TableCell>{user.totalGames}</TableCell>
+            </TableRow>
+          ))}
 
-                    <TableCell
-                      onClick={() => handleSort('totalGames')}
-                      sx={{
-                        cursor: 'pointer',
-                        '&:hover': { backgroundColor: 'action.hover' }
-                      }}
-                    >
-                      {t('History.games')}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {leaderboard.topPlayers.map((user, index) => (
-                    <TableRow key={user._id}
-                      sx={{
-                        backgroundColor: getRankColor(user.globalRank).bg,
-                        border: getRankColor(user.globalRank).border,
-                        '&:hover': {
-                          backgroundColor: getRankColor(user.globalRank).bg.replace('0.3', '0.5'),
-                          transform: 'scale(1.03)'
-                        },
-                      }}
-                    >
-                      <TableCell>{user.globalRank}</TableCell>
-                      <TableCell>{user._id}</TableCell>
-                      <TableCell>{user.totalScore}</TableCell>
-                      <TableCell>{user.accuracy?.toFixed(2)}%</TableCell>
-                      <TableCell>{user.totalCorrect}</TableCell>
-                      <TableCell>{user.totalGames}</TableCell>
-                    </TableRow>
-                  ))}
-
-                  {leaderboard.userPosition && (
-                    <TableRow sx={{
-                      backgroundColor: getRankColor(leaderboard.userPosition.globalRank).bg,
-                      border: getRankColor(leaderboard.userPosition.globalRank).border,
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                        transform: 'scale(1.01)'
-                      },
-                      position: 'relative',
-                      '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: '2px',
-                        backgroundColor: '#ff9800'
-                      }
-                    }}>
-                      <TableCell>{leaderboard.userPosition.globalRank}</TableCell>
-                      <TableCell>{leaderboard.userPosition._id} (Tú)</TableCell>
-                      <TableCell>{leaderboard.userPosition.totalScore}</TableCell>
-                      <TableCell>{leaderboard.userPosition.accuracy?.toFixed(2) ?? '0.00'}%</TableCell>
-                      <TableCell>{leaderboard.userPosition.totalCorrect || 0}</TableCell>
-                      <TableCell>{leaderboard.userPosition.totalGames || 0}</TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        )}
+          {leaderboard.userPosition && (
+            <TableRow sx={{
+              '& td': { p: '0.25rem !important', fontSize: '0.75rem' },
+              bgcolor: getRankColor(leaderboard.userPosition.globalRank).bg,
+              border: getRankColor(leaderboard.userPosition.globalRank).border,
+              position: 'relative',
+              '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '1px',
+                bgcolor: 'warning.main'
+              }
+            }}>
+              <TableCell>{leaderboard.userPosition.globalRank}</TableCell>
+              <TableCell sx={{ whiteSpace: 'nowrap' }}>{leaderboard.userPosition._id} (Tú)</TableCell>
+              <TableCell>{leaderboard.userPosition.totalScore}</TableCell>
+              <TableCell>{leaderboard.userPosition.accuracy?.toFixed(2) ?? '0.00'}%</TableCell>
+              <TableCell>{leaderboard.userPosition.totalCorrect || 0}</TableCell>
+              <TableCell>{leaderboard.userPosition.totalGames || 0}</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+)}
       </Box>
     </Container>
   );
