@@ -21,11 +21,12 @@ const Login = () => {
     const video = videoRef.current;
     if (video) {
       video.playbackRate = 0.5; // Reduce la velocidad si es necesario
-      if (video.play()) {
-        video.play().catch(error => {
-          console.log("Auto-play was prevented:", error);
-        });
-      }
+      const playPromise = video.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(error => {
+        console.warn("Auto-play was prevented:", error);
+      });
+    }
     }
   }, []);
 
