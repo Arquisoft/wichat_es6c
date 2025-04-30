@@ -36,6 +36,86 @@ Se han utilizado las siguientes tecnologías:
 
 === _Pruebas de carga_
 
+Hemos realizado pruebas de carga sobre toda la aplicación. Para ello hemos utilizado la herramienta Artillery, que permite simular múltiples usuarios realizando peticiones al servicio con una interfáz muy buena.
+
+En el desarrollo de las pruebas hemos hecho 2 tipos de pruebas:
+
+Esto ha sido así para favorecer la calidad de las pruebas y entender lo mejor posible el funcionamiento de la aplicación ya que la máquina virtual está más limitada que la máquina local.
+
+- Pruebas locales:
+
+image::PruebaCargaLocalExtrema.png["Table 13.2.1: Prueba de carga local más potente"]
+
+Esta prueba se han simulado varias fases:
+
+[source,yaml]
+----
+phases:
+  - name: Calentamiento rápido
+    rampTo: 20
+    duration: 30
+    arrivalRate: 5
+  - name: Carga pesada
+    rampTo: 100
+    duration: 180
+    arrivalRate: 20
+  - name: Estres máximo
+    rampTo: 250
+    duration: 300
+    arrivalRate: 100
+  - name: Descenso controlado
+    rampTo: 0
+    duration: 60
+    arrivalRate: 250
+----
+* **Calentamiento rápido**: Incrementa gradualmente las peticiones para preparar el sistema.
+* **Carga pesada**: Simula un alto volumen de usuarios durante un tiempo prolongado.
+* **Estrés máximo**: Lleva el sistema al límite para identificar su capacidad máxima.
+* **Descenso controlado**: Reduce las peticiones para observar cómo el sistema se recupera.
+
+Con esta prueba en la que buscábamos ver el rendimiento de la aplicación para conocer los límites que podía tener hemos visto lo siguiente:
+* La aplicación se ha comportado de manera correcta y sin apenas errores hasta las 50 peticiones por segundo y 600 vistas simultáneas.
+* A partir de 50 peticiones por segundo la aplicación ha empezado a dar errores de time out porque los servicios externos que utilzabamos para el LLM y de wikidata han empezado a dejar de contestar porque no estaban preparados para tantas peticiones.
+
+La información de las peticiones que han sido respondidas ha sido esta:
+
+image::PruebaCargaLocalExtrema-info.png["Table 13.2.2: Información de la prueba de carga local extrema"]
+
+Aquí podemosinterpretar que los mayores tiempos de respuesta vienen por parte del llm y de questions siendo estos dos cuellos de botella en la aplicación.
+También se pueden ver algunos errores 500 de algunos servicios que se ven saturados en los momentos donde hay mayor cantidad de peticiones. Lo que indoca nuevos puntos de mejora en la aplicación.
+
+- Pruebas de la página desplegada:
+
+[source,yaml]
+----
+target: http://48.209.11.56:8000
+phases:
+  - name: Preparación
+    duration: 10
+    arrivalRate: 1
+  - name: Fase inicial
+    rampTo: 12
+    duration: 60
+    arrivalRate: 1
+  - name: Carga sostenida
+    rampTo: 19
+    duration: 120
+    arrivalRate: 5
+----
+* **Preparación**: Inicia con una baja tasa de peticiones para estabilizar el sistema.
+* **Fase inicial**: Incrementa gradualmente las peticiones para simular un aumento de usuarios.
+* **Carga sostenida**: Mantiene una carga constante para evaluar el rendimiento en condiciones normales.
+
+En estas pruebas ya no se buscaba hacer una prueba de carga extrema, sino ver el rendimiento de la aplicación en un entorno real. En esta prueba hemos visto que la aplicación se comporta de manera correcta y no ha dado errores.
+
+image::PruebaCargaDeploy.png["Table 13.2.1: Prueba de carga deploy "]
+
+Se puede ver que ha rendido adecuadamene para los usuarios esperados que se marcaron en la documentación, aguantando a 50 a la vez sin problemas.
+
+image::PruebaCargaDeploy-info.png["Table 13.2.1: Información de la prueba de carga deploy"]
+
+Aquí se puede apreciar algún time out también en el llm y en el servicio de preguntas, pero no ha sido un problema para la aplicación ya que ha sido un porcentaje ínfimo comparado con todas las peticiones que se han hecho. En esta prueba se han simulado aproximadamente 50 usuarios a la vez y ha aguantado sin problemas.
+
 === _Monitorización_
 
 
