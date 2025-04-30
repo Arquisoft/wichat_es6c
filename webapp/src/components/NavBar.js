@@ -182,6 +182,51 @@ const NavMenu = () => {
     >
       <MoreVert />
     </IconButton>
+    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+              {/* Agregar opciones móviles si hay sesión iniciada */}
+              {isMobile && sessionId && (
+                <>
+                  <MenuItem onClick={() => { handleMenuClose(); navigate('/history'); }}>
+                    <Person sx={{ mr: 1 }} /> {t('NavBar.profile')}
+                  </MenuItem>
+                  <MenuItem onClick={() => { handleMenuClose(); handleHelpOpen(); }}>
+                    <HelpOutline sx={{ mr: 1 }} /> {t('NavBar.howToPlay')}
+                  </MenuItem>
+                  <MenuItem onClick={() => { handleMenuClose(); logout(); }}>
+                    <Logout sx={{ mr: 1 }} /> {t('NavBar.logout')}
+                  </MenuItem>
+                </>
+              )}
+
+
+              <MenuItem onClick={handleLanguageMenuOpen}>
+                <Language sx={{ mr: 1 }} /> {t('NavBar.changeLanguage')}
+              </MenuItem>
+
+              <Menu
+                anchorEl={languageMenuAnchorEl}
+                open={Boolean(languageMenuAnchorEl)}
+                onClose={handleLanguageMenuClose}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={() => changeLanguage('en')}>
+                  <img src="/images/flags/uk.png" alt="English" style={{ width: 20, height: 15, marginRight: 10 }} />
+                  {t('NavBar.english')}
+                </MenuItem>
+                <MenuItem onClick={() => changeLanguage('es')}>
+                  <img src="/images/flags/spain.png" alt="Español" style={{ width: 20, height: 15, marginRight: 10 }} />
+                  {t('NavBar.spanish')}
+                </MenuItem>
+              </Menu>
+            </Menu>
+
   </Box>
 </Toolbar>
       </AppBar>
