@@ -6,9 +6,7 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 === Introducción
 
-La vista de despliegue describe la infraestructura técnica utilizada para ejecutar el sistema, incluyendo ubicaciones geográficas, entornos, computadoras, procesadores, canales y topologías de red. También detalla la asignación de los bloques de construcción (software) a los elementos de infraestructura.
-
-Esta sección es especialmente relevante para sistemas distribuidos que operan en múltiples computadoras, servidores o contenedores, o cuando se diseñan y construyen componentes de hardware personalizados.
+La vista de despliegue describe cómo se implementa el sistema en la infraestructura de hardware y software. Esta sección incluye un diagrama de infraestructura, una descripción de los componentes y su asignación a bloques de construcción, así como las características de calidad y rendimiento que se esperan del sistema.
 
 === Nivel de Infraestructura 1
 
@@ -50,18 +48,7 @@ Docker se utiliza para empaquetar y desplegar los microservicios. Cada contenedo
 * **Volúmenes:** Persistencia de datos como logs y archivos temporales.
 * **Redes Docker:** Comunicación entre contenedores.
 
-==== Azure API Management
-
-**Explicación:**
-
-Azure API Management actúa como punto de entrada único para las solicitudes de los usuarios. Proporciona:
-
-* **Gestión de APIs:** Control de acceso, monitoreo y análisis.
-* **Seguridad:** Autenticación y autorización de solicitudes.
-* **Escalabilidad:** Integración con balanceadores de carga para manejar grandes volúmenes de tráfico.
-
 ==== MongoDB (Base de Datos)
-image:DiagramaMongoDB.png["Diagram 7.4: MongoDB"]
 
 **Explicación:**
 
