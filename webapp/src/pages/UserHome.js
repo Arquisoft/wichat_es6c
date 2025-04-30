@@ -95,7 +95,7 @@ const HomePage = () => {
         })
         .finally(() => setLoadingStats(false));
     }
-  }, [username]);
+  }, [username,apiEndpoint]);
 
   // Efecto para manejar la reproducción del video
   useEffect(() => {
