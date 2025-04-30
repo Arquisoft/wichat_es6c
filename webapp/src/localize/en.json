@@ -122,7 +122,8 @@
         "totalScore": "Total score",
         "loading": "Loading round...",
         "rounds": "{{round}} of {{TOTAL_ROUNDS}} rounds",
-        "describeMode-country": "Describe the following country"
+        "describeMode-country": "Describe the following country",
+        "describeMode-celebrity": "Describe the following celebrity"
     },
     "GameFinished": {
         "gameOver": "Game over!",
