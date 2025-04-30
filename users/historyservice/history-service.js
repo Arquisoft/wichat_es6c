@@ -75,8 +75,7 @@ app.get('/getUserStats', async (req, res) => {
     if (!username) return res.status(400).json({ error: "Se requiere un username" });
     
     const history = await UserHistory.find({ username });
-    if (!history.length) return res.status(404).json({ error: "No hay datos para este usuario" });
-  
+    if (history.length==0) return res.json({ totalGames:0, totalCorrect:0, totalWrong:0, totalTime:0, averageScore:0 });
     const totalGames = history.length;
     const totalCorrect = history.reduce((sum, game) => sum + game.correctAnswers, 0);
     const totalWrong = history.reduce((sum, game) => sum + game.wrongAnswers, 0);

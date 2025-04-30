@@ -116,13 +116,13 @@ const testOptions = {
         results: {
             bindings: [
                 {
-                    countryLabel: { value: "Rusia" }
+                    label: { value: "Rusia" }
                 },
                 {
-                    countryLabel: { value: "Australia" }
+                    label: { value: "Australia" }
                 },
                 {
-                    countryLabel: { value: "Turquía" }
+                    label: { value: "Turquía" }
                 }
             ]
         }
@@ -149,9 +149,9 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
-  await app.close();
+    await mongoose.disconnect();
+    await mongoServer.stop();
+    await app.close();
 });
 
 afterEach(async () => {
@@ -188,43 +188,75 @@ describe('Question Generate Service', () => {
         for (const key in collections) {
             await collections[key].deleteMany({});
         }
-        var countries=["Italia","Reino Unido","Polonia","Australia","Turquía"];
+        var countries = ["Italia", "Reino Unido", "Polonia", "Australia", "Turquía"];
         for (const question of fullQuestions) {
             let newQuestion = new Question(question); // Crea una nueva instancia de la pregunta
             // Guarda la pregunta en la base de datos
             await newQuestion.save();
         }
 
-        
+
         const response = await request(app)
             .get('/getQuestionsDb/es/country')
             ;
 
         expect(response.statusCode).toBe(200);
-        
+
         expect(countries).toContainEqual(response.body.correctAnswer);
         const questionCount = await Question.countDocuments();
-        expect(questionCount).toBe(4); 
+        expect(questionCount).toBe(4);
     });
 
-    it('should add questions from wikidata if the databse is empty, return a random question and then delete one', async () => {
+    it('should add questions from wikidata if the database is empty, return a random question and then delete one', async () => {
         const collections = mongoose.connection.collections;
         for (const key in collections) {
             await collections[key].deleteMany({});
         }
-        var countries=["España","Francia","Japon","China","Estados Unidos"];
+        var countries = ["España", "Francia", "Japon", "China", "Estados Unidos"];
 
-        
+
         const response = await request(app)
             .get('/getQuestionsDb/es/country')
             ;
 
         expect(response.statusCode).toBe(200);
-        
+
         expect(countries).toContainEqual(response.body.correctAnswer);
         const questionCount = await Question.countDocuments();
         expect(questionCount).toBe(4); 
+    }, 300000);
+
+    it('should save questions to the database via POST /questions', async () => {
+        const questions = [
+            {
+                question: "¿Cuál es la capital de Francia?",
+                options: ["París", "Madrid", "Roma", "Berlín"],
+                correctAnswer: "París",
+                category: "country",
+                language: "es",
+                imageUrl: "http://example.com/image1.jpg",
+            },
+            {
+                question: "¿Cuál es la capital de Alemania?",
+                options: ["París", "Madrid", "Roma", "Berlín"],
+                correctAnswer: "Berlín",
+                category: "country",
+                language: "es",
+                imageUrl: "http://example.com/image2.jpg",
+            },
+        ];
+
+        const response = await request(app)
+            .post('/questions')
+            .send({ questions });
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({ message: 'Questions added successfully' });
+
+        const questionCount = await Question.countDocuments();
+        expect(questionCount).toBe(3 + questions.length);
     });
+
+   
 
     it('should return an error if there are no questions', async () => {
         // Limpia la base de datos antes de ejecutar el test

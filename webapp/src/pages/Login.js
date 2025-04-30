@@ -1,9 +1,8 @@
 // src/components/Login.js
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 import { useTranslation } from 'react-i18next';
 
@@ -12,11 +11,24 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { createSession } = useContext(SessionContext);
-
   const { t } = useTranslation();
-
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const navigate = useNavigate();
+  const videoRef = useRef(null);
+
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      const playPromise = video.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(error => {
+        console.warn("Auto-play was prevented:", error);
+      });
+    }
+    }
+  }, []);
 
   const loginUser = async () => {
     try {
@@ -30,8 +42,7 @@ const Login = () => {
       }
 
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
-      if(response)
-        createSession(username);
+      if (response) createSession(username);
       navigate('/homepage');
     } catch (error) {
       if (error.response) {
@@ -45,55 +56,110 @@ const Login = () => {
       } else if (error.request) {
         setError({ field: 'general', message: t('Login.nonRespnse') });
       } else {
-        setError({ field: 'general', message: t('Login.errorRequest')});
+        setError({ field: 'general', message: t('Login.errorRequest') });
       }
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ marginTop: '0.8rem' }}>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        mt: '2vh',
+        mb: '4vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: { xs: '90%', sm: '90%', md: "35%" }, // 90% en pantallas pequeñas, 30% en pantallas más grandes
+        height: { xs: 'auto' }, // Ajusta el alto automáticamente en móviles, 80% en pantallas más grandes
+      }}
+    >
+      <Box
+        sx={{
+          p: { xs: '5%', sm: '10%' },
+          borderRadius: '1rem',
+          boxShadow: 3,
+          backgroundColor: '#fff',
+          width: '100%',
+          height: '100%', // Asegura que el Box ocupe todo el alto del contenedor
+        }}
+      >
 
-      <Box sx={{ padding: '2rem', borderRadius: '8px', boxShadow: 3, backgroundColor: '#fff', width: '100%' }}>
-        <Typography component="h1" variant="h4" align="center" sx={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
+        {/* Video de fondo - Configuración idéntica a HomePage */}
+        <Box
+          component="video"
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            minWidth: "100%",
+            minHeight: "100%",
+            width: "auto",
+            height: "auto",
+            transform: "translate(-50%, -50%)",
+            zIndex: -1,
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/videos/background_white_small.mp4" type="video/mp4" />
+        </Box>
+
+        {/* Capa oscura para mejorar legibilidad - Configuración idéntica */}
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.09)",
+            zIndex: -1,
+          }}
+        />
+
+        <Typography component="h1" variant="h5" align="center" sx={{ mb: '2vh', fontWeight: 'bold' }}>
           {t('Login.sigIn')}
-
         </Typography>
 
         {error && error.field === 'general' && (
-          <Typography variant="body2" color="error" sx={{ marginBottom: '0.5rem' }}>
+          <Typography variant="body2" color="error" sx={{ mb: '2vh' }}>
             {error.message}
           </Typography>
         )}
 
         <TextField
           name="username"
-          margin="normal"
           fullWidth
           label={t('Login.user')}
-
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          sx={{ marginBottom: '0.5rem' }}
+          sx={{ mb: '2vh' }}
         />
         {error && error.field === 'username' && (
-          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: '2vh' }}>
             {error.message}
           </Typography>
         )}
 
         <TextField
           name="password"
-          margin="normal"
           fullWidth
           label={t('Login.password')}
-
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ marginBottom: '0.5rem' }}
+          sx={{ mb: '2vh' }}
         />
         {error && error.field === 'password' && (
-          <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+          <Typography variant="body2" color="error" sx={{ mb: '2vh' }}>
             {error.message}
           </Typography>
         )}
@@ -104,32 +170,27 @@ const Login = () => {
           fullWidth
           onClick={loginUser}
           sx={{
-            marginTop: '0.5rem',
-            padding: '0.75rem',
+            mt: '1vh',
+            py: '1.5vh',
             fontWeight: 'bold',
-            borderRadius: '0.5rem',
+            borderRadius: '1rem',
             backgroundColor: '#9b33c0',
-            '&:hover': { backgroundColor: '#1565c0' },
+            '&:hover': { backgroundColor: '#7e2a9c' },
           }}
         >
           {t('Login.sigInConfirm')}
-
         </Button>
-        {/* Divider and Login Link */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 3 }}>
-          <Divider sx={{ width: '100%', marginBottom: 1 }} />
-          <Typography variant="body2">
-            {t('Login.textForm')}
-            {' '}
-            <Link to="/register" variant="body2" sx={{ color: '#1976d2', textDecoration: 'none' }}>
-              {t('Login.textFormLink')}
 
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '3vh' }}>
+          <Divider sx={{ width: '100%', mb: '1vh' }} />
+          <Typography variant="body2">
+            {t('Login.textForm')}{' '}
+            <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
+              {t('Login.textFormLink')}
             </Link>
           </Typography>
         </Box>
-
       </Box>
-
     </Container>
   );
 };

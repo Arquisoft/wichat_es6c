@@ -1,23 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
 import { Button, Typography, Stack, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
 import { useTranslation } from "react-i18next";
 
+import { keyframes } from "@mui/system";
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+`;
+
 const GameFinished = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [score, setScore] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
   const [maxScore, setMaxScore] = useState(0);
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
+  const videoRef = useRef(null);
 
-
-  const { t } = useTranslation();
+  const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
 
 
   useEffect(() => {
@@ -28,7 +37,6 @@ const GameFinished = () => {
       setGameType(location.state.gameType);
     }
 
-    // Handle the size of the window - confetti
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
       setWindowHeight(window.innerHeight);
@@ -38,8 +46,26 @@ const GameFinished = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [location]);
 
+  // Efecto para reproducir sonido si hay confeti
+  useEffect(() => {
+    if (maxScore > 0 && score >= (maxScore / 2)) {
+      console.log(score, maxScore / 2);
+
+      const winningAudio = winningSoundRef.current;
+      winningAudio.volume = 1;
+      const playPromise = winningAudio.play();
+      if (playPromise !== null && playPromise !== undefined) {
+        playPromise.catch((error) => {
+          // Silenciosamente ignorar el error si autoplay está bloqueado
+          if (error.name !== 'AbortError') {
+            console.warn('Autoplay bloqueado:', error.message);
+          }
+        });
+      }
+    }
+  }, [score, maxScore]);
+
   const handleRestart = () => {
-    console.log(gameType);
     navigate('/game-mode', { state: { type: gameType } });
   };
 
@@ -47,73 +73,165 @@ const GameFinished = () => {
     navigate('/history');
   };
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      const playPromise = video.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(error => {
+        console.warn("Auto-play was prevented:", error);
+      });
+    }
+    }
+  }, []);
+
   return (
     <Stack
       alignItems="center"
       justifyContent="center"
-      spacing={4}
-      sx={{ height: "100vh", textAlign: "center" }}
+      spacing={{ xs: 3, md: 4 }}
+      sx={{ height: "100vh", textAlign: "center", px: 2 }}
     >
-
       {/* Confetti */}
-      {score >= 5 && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
-      <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "3rem", position: "relative", top: "-7vw" }}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: "bold",
+          animation: `${pulse} 2s infinite`,
+          fontSize: { xs: "3rem", md: "3rem" },
+          position: "relative",
+          color:'white',
+          borderRadius:'11px',
+          backgroundColor: '#6A0DAD',
+          top: { xs: "-5vh", md: "-7vw" }
+        }}
+      >
         {t("GameFinished.gameOver")}
       </Typography>
 
       {/* Final score */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, position: "relative", top: "-100px" }}>
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        sx={{ position: "relative", top: { xs: "-2vh", md: "-50px" } }}
+      >,
+        {/* Video de fondo - Configuración idéntica a HomePage */}
+        <Box
+          component="video"
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            minWidth: "100%",
+            minHeight: "100%",
+            width: "auto",
+            height: "auto",
+            transform: "translate(-50%, -50%)",
+            zIndex: -1,
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/videos/background_white_small.mp4" type="video/mp4" />
+        </Box>
+
+        {/* Capa oscura para mejorar legibilidad - Configuración idéntica */}
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.09)",
+            zIndex: -1,
+          }}
+        />
+
         {/* Score */}
-        <Box sx={{
-          padding: 3,
-          border: '2px solid #9b33c0',
-          borderRadius: 2,
-          backgroundColor: '#c7f28e',
-          textAlign: 'center',
-          boxShadow: 3,
-          width: '200px'
-        }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{t("GameFinished.socoreAchieved")}</Typography>
+        <Box
+          sx={{
+            padding: 3,
+            border: '2px solid #9b33c0',
+            borderRadius: 2,
+            backgroundColor: '#c7f28e',
+            textAlign: 'center',
+            boxShadow: 3,
+            width: { xs: '80%', md: '200px' },
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
+            {t("GameFinished.socoreAchieved")}
+          </Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
             {score} / {maxScore}
           </Typography>
         </Box>
 
         {/* Total time */}
-        <Box sx={{
-          padding: 3,
-          border: '2px solid #9b33c0',
-          borderRadius: 2,
-          backgroundColor: '#e3f2fd',
-          textAlign: 'center',
-          boxShadow: 3,
-          width: '200px'
-        }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{t("GameFinished.totalTime")}</Typography>
+        <Box
+          sx={{
+            padding: 3,
+            border: '2px solid #9b33c0',
+            borderRadius: 2,
+            backgroundColor: '#e3f2fd',
+            textAlign: 'center',
+            boxShadow: 3,
+            width: { xs: '80%', md: '200px' },
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
+            {t("GameFinished.totalTime")}
+          </Typography>
           <Typography variant="h5" sx={{ color: '#040502', marginTop: 1 }}>
             {totalTime} {t("GameFinished.seconds")}
           </Typography>
         </Box>
-      </Box>
+      </Stack>
 
-      {/* Buttons */}
       <Stack direction="column" spacing={2} sx={{ alignItems: "center" }}>
-        <Button variant="contained"
-          sx={{ fontSize: "1.2rem", px: 6, py: 2, backgroundColor: '#9b33c0' }}
-          onClick={handleRestart}>
+        <Button
+          variant="contained"
+          sx={{
+            fontSize: { xs: "1rem", md: "1.2rem" },
+            px: 4, // padding horizontal
+            py: 2, // padding vertical
+            backgroundColor: '#9b33c0',
+            minWidth: { xs: '150px', md: '200px' } // tamaño mínimo pero NO ensancha todo
+          }}
+          onClick={handleRestart}
+        >
           {t("GameFinished.playAgain")}
         </Button>
-        <Button variant="contained"
-          sx={{ fontSize: "1.2rem", px: 1, py: 2, backgroundColor: '#e2a4f5', color: 'black' }}
-          onClick={handleGoToHistorical}>
-          {t("GameFinished.viewHistory")}        
-          </Button>
+
+        <Button
+          variant="contained"
+          sx={{
+            fontSize: { xs: "1rem", md: "1.2rem" },
+            px: 4,
+            py: 2,
+            backgroundColor: '#e2a4f5',
+            color: 'black',
+            minWidth: { xs: '150px', md: '200px' }
+          }}
+          onClick={handleGoToHistorical}
+        >
+          {t("GameFinished.viewHistory")}
+        </Button>
       </Stack>
     </Stack>
   );
 };
 
 export default GameFinished;
-

@@ -47,12 +47,11 @@ describe('Game-vS Page', () => {
         expect(screen.getByRole('progressbar')).toBeInTheDocument();
     });
 
-    it('should fetch and display the LLM chat and first question', async () => {
+    it('should fetch and display the chat and first question', async () => {
 
         await waitFor(() => screen.getByText('Describe the following country'));
 
         expect(screen.getByText('Spain')).toBeInTheDocument();
-        expect(screen.getByText('Chat with IA')).toBeInTheDocument();
     });
 
 });

@@ -3,25 +3,6 @@ const dataService = require('./question-data-service');
 const utils = require('../utils/utils');
 const Question = require('../models/question-model');
 
-/*const wikidataCategoriesQueries = {   
-    "country": {  // Eliminar el punto al final del nombre de la categoría
-        query: `
-        SELECT ?city ?cityLabel ?country ?countryLabel ?image
-        WHERE {
-            ?city wdt:P31 wd:Q515.  # Ciudad
-            ?city wdt:P17 ?country.  # País de la ciudad
-            OPTIONAL { ?city wdt:P18 ?image. }  # Imagen de la ciudad (opcional)
-            SERVICE wikibase:label {
-                bd:serviceParam wikibase:language "[AUTO_LANGUAGE]".
-            }
-        }
-        ORDER BY RAND()
-        LIMIT ?limit
-        `,
-    }
-};
-*/
-
 const urlApiWikidata = 'https://query.wikidata.org/sparql';
 
 let wikidataCategoriesQueries;
@@ -75,7 +56,7 @@ async function getImagesFromWikidata(category, language, numImages) {
             if (!fields) {
                 throw new Error(`Fields not defined for category: ${category}`);
             }
-            const { label, image, extra } = fields;
+            const { label, image, solution, es_label,en_label } = fields;
 
             const filteredImages = data
                 .filter(item => item[label] && item[image])  
@@ -83,7 +64,9 @@ async function getImagesFromWikidata(category, language, numImages) {
                 .map(item => ({
                     label: item[label].value,
                     imageUrl: item[image].value,
-                    country: item[extra].value
+                    solution: item[solution].value,
+                    es_label: item[es_label].value,
+                    en_label: item[en_label].value,
                 }));
 
             return filteredImages;
@@ -96,16 +79,41 @@ async function getImagesFromWikidata(category, language, numImages) {
     }
 }
 
-async function getIncorrectOptions(correctCountry, lang) {
-    const sparqlQuery = `
-        SELECT DISTINCT ?countryLabel
-        WHERE {
+function buildSparqlQuery(category, lang) {
+    if ((category === 'country') || (category === 'flag')) {
+        return `
+        SELECT DISTINCT ?label WHERE {
             ?country wdt:P31 wd:Q6256.  # Q6256 = país
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "${lang}". }
+            ?country rdfs:label ?label.
+            FILTER (LANG(?label) = "${lang}")
         }
         LIMIT 50
     `;
+    }
 
+    if (category === 'famous_people') {
+        return `
+       SELECT DISTINCT ?label WHERE {
+    ?actor wdt:P31 wd:Q5;        # Ser humano
+           wdt:P106 wd:Q33999;  # Ocupación: actor
+           wdt:P27 wd:Q29.       # Nacionalidad española
+           ?actor rdfs:label ?label.  # Etiqueta
+    
+    FILTER(LANG(?label) = "${lang}")
+}
+LIMIT 50
+        `;
+    }    
+
+    console.warn(`Unsupported type: ${category}`);
+    return '';
+}
+
+
+async function getIncorrectOptions(correctAnswer, category, lang) {
+    const sparqlQuery = buildSparqlQuery(category, lang);
+    if (!sparqlQuery) return [];
+    
     try {
         const response = await axios.get(urlApiWikidata, {
             params: {
@@ -117,12 +125,12 @@ async function getIncorrectOptions(correctCountry, lang) {
                 'Accept': 'application/json'
             }
         });
-
-        const data = response.data.results.bindings.map(item => item.countryLabel.value).filter(label => label && !/\d/.test(label)); 
+        const data = response.data.results.bindings
+                    .map(item => item.label.value) 
+                    .filter(label => label && !/\d/.test(label));  
+    
+        const incorrectOptions = data.filter(option => option !== correctAnswer);
         
-        const incorrectOptions = data.filter(country => country !== correctCountry);
-
-        // Seleccionamos aleatoriamente 3 opciones incorrectas
         return incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
     } catch (error) {
         console.error(`Error retrieving countries: ${error.message}`);
@@ -133,11 +141,11 @@ async function getIncorrectOptions(correctCountry, lang) {
 async function processQuestions(images,category, language) {
     let questions=[];
     for (const image of images) {
-        const incorrectAnswers = await getIncorrectOptions(image.country,language);
+        const incorrectAnswers = await getIncorrectOptions(image.correctAnswer, category,language);
         if (incorrectAnswers.length < 3) continue; // Si no hay suficientes respuestas incorrectas, saltamos
 
         // Crear opciones y mezclarlas
-        const options = [image.country, ...incorrectAnswers].sort(() => 0.5 - Math.random());
+        const options = [image.solution, ...incorrectAnswers].sort(() => 0.5 - Math.random());
 
         // Generar pregunta
         //const questionText = wikidataCategoriesQueries[category]?.question;
@@ -148,10 +156,12 @@ async function processQuestions(images,category, language) {
         const newQuestion = {
             question: questionText,
             options: options,
-            correctAnswer: image.country,
+            correctAnswer: image.solution,
             category: category,
             language: language,
-            imageUrl: image.imageUrl
+            imageUrl: image.imageUrl,
+            enAnswer: image.en_label,
+            esAnswer: image.es_label
         };
         console.log(newQuestion);
         questions.push(newQuestion);

@@ -14,12 +14,13 @@ import Game from './pages/Game';
 import VS from './pages/Game-VS';
 import GameFinished from './pages/GameFinished';
 import History from './pages/History'; 
+import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
 function App() {
 
   return (
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
           { <NavBar />}
           <Routes>
             <Route path="/" element={<Home />} />
@@ -32,6 +33,7 @@ function App() {
             <Route path="/game-vs" element={<PrivateRoute element={VS} />} />
             <Route path="/game-finished" element={<PrivateRoute element={GameFinished} />} />
             <Route path="/history" element={<PrivateRoute element={History} />} />
+            <Route path="*" element={<NotFound />} /> 
           </Routes>
           
           {<Footer/>}
