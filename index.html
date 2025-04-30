@@ -477,7 +477,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_sistema_general_de_caja_blanca">5.1. Sistema general de caja blanca</a></li>
 <li><a href="#_nivel_2">5.2. Nivel 2</a></li>
-<li><a href="#_level_3">5.3. Level 3</a></li>
+<li><a href="#_nivel_3">5.3. Nivel 3</a></li>
+<li><a href="#_black_box_question_data_service">5.4. <strong>Black Box: Question Data Service</strong></a></li>
+<li><a href="#_black_box_question_service_2">5.5. <strong>Black Box: Question Service</strong></a></li>
+<li><a href="#_black_box_user_service">5.6. <strong>Black Box: User Service</strong></a></li>
 </ul>
 </li>
 <li><a href="#section-runtime-view">6. Vista de ejecución</a>
@@ -491,8 +494,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#section-deployment-view">7. Vista de Despliegue</a>
 <ul class="sectlevel2">
-<li><a href="#_nivel_de_infraestructura_1">7.1. Nivel de Infraestructura 1</a></li>
-<li><a href="#_nivel_de_infraestructura_2">7.2. Nivel de Infraestructura 2</a></li>
+<li><a href="#_introducción">7.1. Introducción</a></li>
+<li><a href="#_nivel_de_infraestructura_1">7.2. Nivel de Infraestructura 1</a></li>
+<li><a href="#_nivel_de_infraestructura_2">7.3. Nivel de Infraestructura 2</a></li>
+<li><a href="#_conclusión">7.4. Conclusión</a></li>
 </ul>
 </li>
 <li><a href="#section-concepts">8. Conceptos tranversales</a>
@@ -607,16 +612,40 @@ Estos incluyen:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>La aplicación WIChat permite a los usuarios participar a un concurso online de preguntas y respuestas similar a "Saber y Ganar".</p>
+<p>La aplicación WIChat permite a los usuarios participar en un concurso online de preguntas y respuestas similar a "Saber y Ganar".</p>
 </div>
 <div class="paragraph">
-<p>El usuario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de que lugar se trata.</p>
+<p>El usuario ve una imagen en pantalla y puede seleccionar diferentes opciones para adivinar de qué lugar se trata.
+El usuario se encontrará con una serie de modos de juego, entre los que se encuentran:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"Modo normal": el usuario tiene un tiempo limitado para adivinar la imagen y se puede pedirle ayuda a un LLM para facilitarle la tarea. Dentro de este modo además hay:</p>
+</li>
+<li>
+<p>"Modo VS": El usuario juega haciendo que el LLM adivine lo que un texto describe. El LLM tiene un tiempo limitado para adivinar.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>El usuario puede recibir pistas sobre la imagen hablando con el chat con inteligencia artificial incluido en el juego.</p>
+<p>Ambos tienen varias submodalidades, como por ejemplo:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"Países": El usuario tendrá que adivinar en base a la foto de un lugar de un país y la ia en base al nombre del país.</p>
+</li>
+<li>
+<p>"Bandera": El usuario tendrá que adivinar por la imagen de una bandera.</p>
+</li>
+<li>
+<p>"Famosos": El usuario tendrá que adivinar por la imagen de una persona famosa y la ia en base a un texto que describe a esa persona.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Tanto las pistas como las imágenes son generadas automaticamnete a partir de Wikidata (<a href="https://www.wikidata.org/" class="bare">https://www.wikidata.org/</a>)</p>
+<p>Tanto las pistas como las imágenes son generadas automáticamnete a partir de Wikidata (<a href="https://www.wikidata.org/" class="bare">https://www.wikidata.org/</a>). En caso de las pistas se tratan cuidadosamente para que no contengan información que pueda dar la respuesta correcta de manera directa.</p>
 </div>
 <div class="sect2">
 <h3 id="_resumen_de_requisitos">1.1. Resumen de Requisitos</h3>
@@ -647,7 +676,7 @@ Si existen documentos de requisitos, este resumen debe referirse a ellos.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Se deberá poder acceder desde la web.</p>
+<p>Se deberá poder acceder desde la web tanto en ordenadores como en teléfonos.</p>
 </li>
 <li>
 <p>El sistema mostrará imagenes, las respuestas y un sistema de pistas.</p>
@@ -659,13 +688,16 @@ Si existen documentos de requisitos, este resumen debe referirse a ellos.</p>
 <p>Los usuarios registrados podrán ver su historial de participaciones.</p>
 </li>
 <li>
+<p>Los usuarios podrán ver su puntuación y la de otros usuarios.</p>
+</li>
+<li>
 <p>Se podrá interactuar con la aplicación para obtener pistas gracias a un modelo de lenguaje.</p>
 </li>
 <li>
-<p>Las preguntas y las pistas serán genrados automaticamente a partir de los datos de Wikidata.</p>
+<p>Las preguntas y las pistas serán generados automáticamente a partir de los datos de Wikidata.</p>
 </li>
 <li>
-<p>El sistema permitirá acceder a los datos de los usuarios y de las preguntas generadas mediante una API.</p>
+<p>El sistema permitirá acceder a los datos de los usuarios y de las preguntas accedidas mediante unas APIs.</p>
 </li>
 <li>
 <p>Habrá un plazo de tiempo determinado para responder a las preguntas.</p>
@@ -734,7 +766,7 @@ Si como arquitecto no sabes cómo se juzgará la calidad de tu trabajo&#8230;&#8
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rendimiento</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">El sistema debe soportar hasta 100 usuarios concurrentes sin degradación del rendimiento. El tiempo de respuesta de la API de Wikidata y del LLM no debe superar los 1000 ms en el 95% de las solicitudes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El sistema debe soportar hasta 50 usuarios concurrentes sin degradación del rendimiento. El tiempo de respuesta de la API de Wikidata y del LLM no debe superar los 5000 ms en el 95% de las solicitudes.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
@@ -830,7 +862,7 @@ Estas partes interesadas determinan el alcance y el nivel de detalle de tu traba
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Empresa/Empathy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em><a href="https://empathy.ai/" class="bare">https://empathy.ai/</a></em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Interesada en que durante el desarrollo se utilice su tecnología de procesamiento de lenguaje natural de la manera más eficiente y adecada para que tengamos un buen aprendizaje y para realizar pruebas que aporten la mayor parte .</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interesada en que durante el desarrollo se utilice su tecnología de procesamiento de lenguaje natural de la manera más eficiente y adecuada para que tengamos un buen aprendizaje y para realizar pruebas que aporten la mayor parte .</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Alumno/Jorge Puente García</p></td>
@@ -1055,7 +1087,7 @@ The title of the table is the name of your system, the three columns contain the
 <p><strong>Wikidata:</strong> Proporciona datos precisos y actualizados que se utilizan para generar las preguntas y respuestas de la aplicación.</p>
 </div>
 <div class="paragraph">
-<p><strong>LLM:</strong> Modelo de inteligencia artificial que procesa las consultas de los usuarios, generando respuestas coherentes y relevantes basadas en el contexto y los datos obtenidos de Wikidata y la base de datos.</p>
+<p><strong>LLM:</strong> Modelo de lenguaje a gran escala que procesa las consultas de los usuarios, generando respuestas coherentes y relevantes basadas en el contexto y los datos obtenidos de Wikidata y la base de datos.</p>
 </div>
 <div class="paragraph">
 <p><strong>Base de datos:</strong> Almacena los datos de los usuarios, estadísticas de juegos y registros de consultas.</p>
@@ -1082,6 +1114,39 @@ together with a mapping table showing the relationships between channels and inp
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="./images/03_technicalContext.png" alt="Diagram 3.2: Contexto Tencológico"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>Wichat App:</strong> Vista con la que interactúa el usaurio. Se conecta con Gateway Service para acceder al resto de los servicios.</p>
+</div>
+<div class="paragraph">
+<p><strong>Gateway Service:</strong> Servicio que actúa como intermediario entre la aplicación y los servicios de backend. Se encarga de enrutar las solicitudes y respuestas entre la aplicación y los servicios.</p>
+</div>
+<div class="paragraph">
+<p><strong>Authentication Service:</strong> Servicio que gestiona la autenticación y autorización de los usuarios. Se encarga de verificar las credenciales de los usuarios y proporcionar tokens de acceso.</p>
+</div>
+<div class="paragraph">
+<p><strong>User Service:</strong> Servicio que gestiona la información de los usuarios y de los perfiles.</p>
+</div>
+<div class="paragraph">
+<p><strong>History Service:</strong> Servicio que gestiona el historial de juegos y estadísticas de los usuarios. Se encarga de almacenar y recuperar la información relacionada con los juegos jugados por los usuarios.</p>
+</div>
+<div class="paragraph">
+<p><strong>LLM Service:</strong> Servicio que se encarga de interactuar con el modelo de lenguaje a gran escala (LLM). Se encarga de enviar las consultas del usuario al LLM y recibir las respuestas generadas por el modelo.</p>
+</div>
+<div class="paragraph">
+<p><strong>Question Service:</strong> Servicio que se encarga de gestionar las peticiones de `reguntas desde la aplicación. Hace de intermediario entre la aplicación y los servicios para guardar y generar preguntas.</p>
+</div>
+<div class="paragraph">
+<p><strong>Question Generate Service:</strong> Servicio que se encarga de generar preguntas a partir de los datos obtenidos de Wikidata. Se encarga de enviar las consultas a la API de Wikidata y recibir las respuestas generadas por el modelo.</p>
+</div>
+<div class="paragraph">
+<p><strong>Question Data Service:</strong> Servicio que se encarga de gestionar los datos de las preguntas generadas. Se encarga de almacenar y recuperar la información relacionada con las preguntas generadas por el modelo. Se comunica con la base de datos para almacenar y recuperar las preguntas.</p>
+</div>
+<div class="paragraph">
+<p><strong>questiondb:</strong> Base de datos que almacena la información relacionada con las preguntas generadas por el modelo. Se encarga de almacenar y recuperar la información relacionada con las preguntas generadas por el modelo.</p>
+</div>
+<div class="paragraph">
+<p><strong>userdb:</strong> Base de datos que almacena la información relacionada con los usuarios y sus perfiles. Se encarga de almacenar y recuperar la información relacionada con los usuarios registrados en la aplicación.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -1143,7 +1208,7 @@ Refer to details in the following sections.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Se ha tomado esta decisión debido a la facilidad de integración con las tecnologías seleccionadas para el desarrollo de la aplicación.</p>
+<p>Se ha tomado esta decisión debido a la facilidad de integración con las tecnologías seleccionadas para el desarrollo de la aplicación así hacemos que todo esté en el mismo lenguaje y favorecemos a todos los desarrolladores.</p>
 </li>
 </ul>
 </div>
@@ -1153,7 +1218,7 @@ Refer to details in the following sections.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Se ha seleccionado React.js por su facilidad de uso y su capacidad para crear interfaces de usuario interactivas y usables.</p>
+<p>Se ha seleccionado React.js por su facilidad de uso y su capacidad para crear interfaces de usuario interactivas y usables. Además, hay una comunidad muy activa y una gran cantidad de recursos disponibles para aprender y resolver problemas.</p>
 </li>
 </ul>
 </div>
@@ -1163,7 +1228,7 @@ Refer to details in the following sections.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Se ha seleccionado Node.js por su capacidad para manejar múltiples conexiones simultáneas y su facilidad de integración con otras tecnologías.</p>
+<p>Se ha seleccionado Node.js por su capacidad para manejar múltiples conexiones simultáneas y su facilidad de integración con otras tecnologías. Además, hay una comunidad muy activa y una gran cantidad de recursos disponibles para aprender y resolver problemas.</p>
 </li>
 </ul>
 </div>
@@ -1173,7 +1238,7 @@ Refer to details in the following sections.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Se ha seleccionado GitHub por su facilidad de uso y su capacidad para gestionar proyectos de software de forma colaborativa.</p>
+<p>Se ha seleccionado GitHub por su facilidad de uso y su capacidad para gestionar proyectos de software de forma colaborativa y segura.</p>
 </li>
 </ul>
 </div>
@@ -1183,7 +1248,7 @@ Refer to details in the following sections.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Se ha seleccionado Docker por su capacidad para crear contenedores ligeros y portátiles que pueden ejecutarse en cualquier entorno.</p>
+<p>Se ha seleccionado Docker por su capacidad para crear contenedores ligeros y portátiles que pueden ejecutarse en cualquier entorno y que facilitan el mantenimiento y el arreglo e problemas.</p>
 </li>
 </ul>
 </div>
@@ -1221,7 +1286,7 @@ Refer to details in the following sections.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Se han considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js.</p>
+<p>Se han considerado otras tecnologías para el desarrollo back-end como Spting Boot, pero finalmente se decidió utilizar JavaScript por su enfoque en el desarrollo ágil junto con la facilidad de integración con Node.js y React.js ya que todo trabaja con javascript.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1246,7 +1311,7 @@ Refer to details in the following sections.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Usabilidad</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Se realizaran pruebas de usabilidad con usuarios reales. Serán al menos 4 tandas de 3 usuarios cada una, teniendo en cuenta qe se aborden diferentes intervalos de edad y de con diferente manejo de la informática.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Se realizarán pruebas de usabilidad con usuarios reales. Serán al menos 4 tandas de 3 usuarios cada una, teniendo en cuenta que se aborden diferentes intervalos de edad y con diferente manejo de la informática.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fiabilidad</p></td>
@@ -1258,7 +1323,7 @@ Refer to details in the following sections.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mantenibilidad</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Se utilizarán patrones de diseño y  buenas prácticas de programación para garantizar la mantenibilidad de la aplicación.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Se utilizarán patrones de diseño y buenas prácticas de programación para garantizar la mantenibilidad de la aplicación.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eficiencia</p></td>
@@ -1275,11 +1340,11 @@ Refer to details in the following sections.</p>
 <h3 id="_decisiones_de_organización_relevantes">4.4. Decisiones de organización relevantes</h3>
 <div class="paragraph">
 <p>El flujo de trabajo se organizará en reuniones semanales, que se llevarán a cabo según sea necesario.
-Una de las reuniones se realizará durante la clase de laboratorio y se centrará en decisiones y tareas menores. Las reuniones posteriores se relaizarán de manera remota y estarán dedicadas a deciones mas detalladas y exhaustivas.</p>
+Una de las reuniones se realizará durante la clase de laboratorio y se centrará en decisiones y tareas menores. Las reuniones posteriores se realizarán de manera remota y estarán dedicadas a decisiones más detalladas y exhaustivas. En estas reuniones será necesaria la asistencia de todos los miembros del equipo para evitar problemas.</p>
 </div>
 <div class="paragraph">
-<p>Cada tarea asignada, así como problemas encontrados, se documentará como un Issue en GitHub. Además se utilizará GitHub Projects para la organización de las tareas del equipo.
-No habrá una división estricta entre front-end y back-end, todos los miembros del equipo trabajarán en ambas áreas. Para cada tarea asiganada, se creará una rama específica, y el trabajo realizado se volcará una rama develop mediante pull requests. Una vez que se haya completado una funcionalidad, se fusionará la rama develop con la rama master.</p>
+<p>Cada tarea asignada, así como problemas encontrados, se documentará como un Issue en GitHub. Además, se utilizará GitHub Projects para la organización de las tareas del equipo.
+No habrá una división estricta entre front-end y back-end, todos los miembros del equipo trabajarán en ambas áreas. Para cada tarea asignada, se creará una rama específica, y el trabajo realizado se volcará en una rama develop mediante pull requests. Una vez que se haya completado una funcionalidad y se sepa que todo va bien, se fusionará la rama develop con la rama master.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -1288,126 +1353,49 @@ No habrá una división estricta entre front-end y back-end, todos los miembros 
 <div class="sect1">
 <h2 id="section-building-block-view">5. Vista de bloques de construcción</h2>
 <div class="sectionbody">
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<div class="title">Content</div>
-<p>The building block view shows the static decomposition of the system into building blocks (modules, components, subsystems, classes, interfaces, packages, libraries, frameworks, layers, partitions, tiers, functions, macros, operations, data structures, &#8230;&#8203;) as well as their dependencies (relationships, associations, &#8230;&#8203;)</p>
-</div>
-<div class="paragraph">
-<p>This view is mandatory for every architecture documentation.
-In analogy to a house this is the <em>floor plan</em>.</p>
-</div>
-<div class="paragraph">
-<div class="title">Motivation</div>
-<p>Maintain an overview of your source code by making its structure understandable through
-abstraction.</p>
-</div>
-<div class="paragraph">
-<p>This allows you to communicate with your stakeholder on an abstract level without disclosing implementation details.</p>
-</div>
-<div class="paragraph">
-<div class="title">Form</div>
-<p>The building block view is a hierarchical collection of black boxes and white boxes
-(see figure below) and their descriptions.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/05_building_blocks-EN.png" alt="Hierarchy of building blocks">
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Level 1</strong> is the white box description of the overall system together with black
-box descriptions of all contained building blocks.</p>
-</div>
-<div class="paragraph">
-<p><strong>Level 2</strong> zooms into some building blocks of level 1.
-Thus it contains the white box description of selected building blocks of level 1, together with black box descriptions of their internal building blocks.</p>
-</div>
-<div class="paragraph">
-<p><strong>Level 3</strong> zooms into selected building blocks of level 2, and so on.</p>
-</div>
-<div class="paragraph">
-<div class="title">Further Information</div>
-<p>See <a href="https://docs.arc42.org/section-5/">Building Block View</a> in the arc42 documentation.</p>
-</div>
-</div>
-</div>
 <div class="sect2">
 <h3 id="_sistema_general_de_caja_blanca">5.1. Sistema general de caja blanca</h3>
-<div class="sidebarblock arc42help">
+<div class="imageblock">
 <div class="content">
-<div class="paragraph">
-<p>Here you describe the decomposition of the overall system using the following white box template. It contains</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>an overview diagram</p>
-</li>
-<li>
-<p>a motivation for the decomposition</p>
-</li>
-<li>
-<p>black box descriptions of the contained building blocks. For these we offer you alternatives:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>use <em>one</em> table for a short and pragmatic overview of all contained building blocks and their interfaces</p>
-</li>
-<li>
-<p>use a list of black box descriptions of the building blocks according to the black box template (see below).
-Depending on your choice of tool this list could be sub-chapters (in text files), sub-pages (in a Wiki) or nested elements (in a modeling tool).</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>(optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
-Since there are so many ways to specify interfaces why do not provide a specific template for them.
- In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
- restrictions, versions, qualities, necessary compatibilities and many things more.
-In the best case you will get away with examples or simple signatures.</p>
-</li>
-</ul>
+<img src="./images/05_whitebox.jpg" alt="Diagram 5.1: Resumen del Sistema">
 </div>
 </div>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="./images/05_whitebox.jpg" alt="Diagram 5.1: Resumen del Sistema"></span></p>
-</div>
+<div class="exampleblock">
+<div class="content">
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Motivation</dt>
+<dt class="hdlist1"><strong>Motivación</strong></dt>
 <dd>
-<p>El propósito principal del sistema es ejecutar un juego de preguntas con imágenes utilizando información obtenida dinámicamente de la Wikidata API y además teniendo la posibilidad de interactuar con un LLM para solicitar su ayuda. Esto permite a los usuarios interactuar con datos reales y actualizados, mejorando la experiencia de usuario y la utilidad de la aplicación.</p>
+<p>El propósito principal del sistema es ejecutar un juego de preguntas con imágenes o texto utilizando información obtenida dinámicamente de la Wikidata API y además teniendo la posibilidad de interactuar con un LLM para solicitar su ayuda o ayudarlo a encontrar la respuesta dependiendo del modo de juego. Esto permite a los usuarios interactuar con datos reales y actualizados, mejorando la experiencia de usuario y la utilidad de la aplicación.</p>
 </dd>
-<dt class="hdlist1">Bloques de construcción contenidos</dt>
 </dl>
 </div>
+</div>
+</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Bloques de construcción contenidos</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 75%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Building Blocks</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">WICHAT</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte principal de la aplicación, que controla el juego y la conexión con el resto de bloques.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte principal de la aplicación, que controla el flujo del juego, maneja la lógica de negocio y coordina la interacción entre los servicios. Implementado en Node.js con un enfoque modular.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BD</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base de datos encargada de almacenar los datos relacionados con los usuarios.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base de datos encargada de almacenar los datos relacionados con los usuarios y con las preguntas. Se utiliza MongoDB.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Wikidata</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fuente de datos a la que se conecta la aplicacion para obtener las imágenes de las preguntas.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fuente de datos a la que se conecta la aplicación para obtener las imágenes, las preguntas y la información para facilitar el trabajo de la aplicación.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LLM</p></td>
@@ -1415,162 +1403,34 @@ In the best case you will get away with examples or simple signatures.</p>
 </tr>
 </tbody>
 </table>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Interfaces importantes</dt>
-<dd>
 <div class="ulist">
+<div class="title">Interfaces importantes</div>
 <ul>
 <li>
 <p>Frontend ↔ API Gateway: Interfaz RESTful para la comunicación entre el frontend y el backend.</p>
 </li>
 <li>
-<p>API Gateway ↔ Backend: Interfaz interna para enrutar solicitudes a los microservicios.</p>
+<p>API Gateway ↔ Backend: Interfaz interna para enrutar solicitudes a los servicios.</p>
 </li>
 <li>
 <p>Backend ↔ Base de Datos: Interfaz para acceder y gestionar los datos almacenados.</p>
 </li>
 </ul>
 </div>
-</dd>
-</dl>
-</div>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Insert your explanations of black boxes from level 1:</p>
-</div>
-<div class="paragraph">
-<p>If you use tabular form you will only describe your black boxes with name and
-responsibility according to the following schema:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"><strong>Name</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Responsibility</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;black box 1&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"> <em>&lt;Text&gt;</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;black box 2&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"> <em>&lt;Text&gt;</em></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If you use a list of black box descriptions then you fill in a separate black box template for every important building block .
-Its headline is the name of the black box.</p>
-</div>
-</div>
-</div>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>==== &lt;Name black box 1&gt;</p>
-</div>
-<div class="paragraph">
-<p>Here you describe &lt;black box 1&gt;
-according the the following black box template:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Purpose/Responsibility</p>
-</li>
-<li>
-<p>Interface(s), when they are not extracted as separate paragraphs. This interfaces may include qualities and performance characteristics.</p>
-</li>
-<li>
-<p>(Optional) Quality-/Performance characteristics of the black box, e.g.availability, run time behavior, &#8230;&#8203;.</p>
-</li>
-<li>
-<p>(Optional) directory/file location</p>
-</li>
-<li>
-<p>(Optional) Fulfilled requirements (if you need traceability to requirements).</p>
-</li>
-<li>
-<p>(Optional) Open issues/problems/risks</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><em>&lt;Purpose/Responsibility&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;Interface(s)&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(Optional) Quality/Performance Characteristics&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(Optional) Directory/File Location&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(Optional) Fulfilled Requirements&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(optional) Open Issues/Problems/Risks&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>==== &lt;Name black box 2&gt;</p>
-</div>
-<div class="paragraph">
-<p><em>&lt;black box template&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>==== &lt;Name black box n&gt;</p>
-</div>
-<div class="paragraph">
-<p><em>&lt;black box template&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>==== &lt;Name interface 1&gt;</p>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
-</div>
-<div class="paragraph">
-<p>==== &lt;Name interface m&gt;</p>
-</div>
-</div>
-</div>
+<hr>
 </div>
 <div class="sect2">
 <h3 id="_nivel_2">5.2. Nivel 2</h3>
-<div class="sidebarblock arc42help">
+<div class="imageblock">
 <div class="content">
-<div class="paragraph">
-<p>Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.</p>
+<img src="./images/05_2_whitebox2.png" alt="Diagram 5.2: Desglose Wichat">
 </div>
-<div class="paragraph">
-<p>You have to decide which building blocks of your system are important enough to justify such a detailed description.
-Please prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.
-Leave out normal, simple, boring or standardized parts of your system</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="./images/05_2_whitebox2.png" alt="Diagram 5.2: Desglose Wichat"></span></p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Contained Building Blocks</dt>
-</dl>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Contained Building Blocks</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 75%;">
 </colgroup>
 <thead>
 <tr>
@@ -1580,21 +1440,28 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WICHAT App</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte central del proyecto, encargada de comunicar al usuario con el resto de servicios de la aplicación.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API Gateway</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Punto de entrada unificado para todas las peticiones del frontend. Redirige solicitudes a los distintos servicios y expone métricas y documentación.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Question Generator Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte de la aplicación encargada de conectarse a Wikidata y obtener imagenes e información para las preguntas del juego.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Question Management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjunto de servicios encargados de gestionar el ciclo de vida de las preguntas en la aplicación. Incluye los siguientes componentes:</p>
+<p class="tableblock">- <strong>Question Generator Service</strong>
+  Parte de la aplicación encargada de conectarse a Wikidata y obtener imágenes e información para las preguntas del juego.</p>
+<p class="tableblock">- <strong>Question Data Service</strong>
+  Parte de la aplicación encargada de tratar con la información de las preguntas conectándose a la base de datos para almacenar esta información y eliminando las preguntas que ya han salido.</p>
+<p class="tableblock">- <strong>Question Service</strong>
+  Parte de la aplicación encargada de gestionar el ciclo de vida de las preguntas en la aplicación. Orquesta dos componentes internos (<code>question-data-service</code> y <code>question-generator-service</code>). Es el encargado de relacionarse con el API Gateway y de recibir las peticiones de preguntas. Se encarga de la lógica de negocio relacionada con las preguntas.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte encargada de tratar la información del usuario: puntuación, historial&#8230;&#8203;.
-Se conecta al base de datos para almacenar esta información.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjunto de servicios encargados de gestionar la información del usuario. Incluye los siguientes componentes:</p>
+<p class="tableblock"> - <strong>User Service</strong>
+  Parte encargada de tratar la información del usuario: puntuación, historial, etc. Se conecta a la base de datos para almacenar esta información.
+ - <strong>Authentication Service</strong>
+  Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.
+ - <strong>History Service</strong>
+  Parte encargada de el tratamiento de los datos de las partidas de todos los usuarios. Se conecta a la base de datos para almacenar esta información.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LLM Service</p></td>
@@ -1602,43 +1469,949 @@ Se conecta al base de datos para almacenar esta información.</p></td>
 </tr>
 </tbody>
 </table>
+<div class="sect3">
+<h4 id="_black_box_api_gateway">5.2.1. Black Box: API Gateway</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><strong>Purpose/Responsibility</strong></dt>
+<dd>
+<p>El API Gateway actúa como un único punto de entrada para todas las peticiones desde el frontend. Es responsable de:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Redirigir solicitudes REST al servicio correspondiente (usuarios, autenticación, historial, preguntas, modelo LLM).</p>
+</li>
+<li>
+<p>Unificar la interfaz de comunicación entre cliente y microservicios.</p>
+</li>
+<li>
+<p>Agregar instrumentación con Prometheus para monitoreo.</p>
+</li>
+<li>
+<p>Publicar documentación del API utilizando Swagger (OpenAPI).</p>
+</li>
+<li>
+<p>Gestionar CORS y errores de red para los servicios backend.</p>
+</li>
+</ul>
 </div>
-<div class="sect2 arc42help">
-<h3 id="_level_3">5.3. Level 3</h3>
-<div class="sidebarblock">
+</dd>
+<dt class="hdlist1"><strong>Interface(s)</strong></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>HTTP REST:</p>
+</li>
+<li>
+<p><code>/questions/:lang/:category</code> → Question Generator Service.</p>
+</li>
+<li>
+<p><code>/createUserHistory</code>, <code>/getUserStats</code>, <code>/getLeaderboard</code> → History Service.</p>
+</li>
+<li>
+<p><code>/user/profile/:username</code>, <code>/user/update/profile/:username</code> → User Service.</p>
+</li>
+<li>
+<p><code>/login</code> → Auth Service.</p>
+</li>
+<li>
+<p><code>/askllm</code> → LLM Service.</p>
+</li>
+<li>
+<p><code>/api-doc</code> → Exposición de documentación Swagger.</p>
+</li>
+<li>
+<p><code>/health</code> → Endpoint para chequeo de estado.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><strong>Quality/Performance Characteristics</strong></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Tolerancia a fallos básica mediante manejo de errores HTTP con axios.</p>
+</li>
+<li>
+<p>Extensible: fácilmente ampliable a nuevos servicios.</p>
+</li>
+<li>
+<p>Observabilidad: expone métricas para Prometheus.</p>
+</li>
+<li>
+<p>Documentado: incluye Swagger/OpenAPI.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><strong>Directory/File Location</strong></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Imagen Docker desplegada en Azure.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><strong>Fulfilled Requirements</strong></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Centraliza la entrada de peticiones HTTP.</p>
+</li>
+<li>
+<p>Permite escalabilidad y desacoplamiento entre frontend y servicios.</p>
+</li>
+<li>
+<p>Facilita pruebas y exploración del sistema vía documentación automática.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><strong>Open Issues/Problems/Risks</strong></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Usa rutas fijas, sin descubrimiento dinámico de servicios.
+---</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_black_box_question_service">5.2.2. Black Box: Question Service</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Se encarga de gestionar el ciclo de vida de las preguntas en el juego. Orquesta dos componentes internos (<code>question-data-service</code> y <code>question-generate-service</code>) para:</p>
+</li>
+<li>
+<p>Verificar si hay suficientes preguntas disponibles en la base de datos.</p>
+</li>
+<li>
+<p>Generar nuevas preguntas si es necesario.</p>
+</li>
+<li>
+<p>Devolver una pregunta aleatoria al usuario.</p>
+</li>
+<li>
+<p>Eliminar la pregunta una vez ha sido servida.</p>
+</li>
+<li>
+<p><strong>Interfaces expuestas</strong></p>
+</li>
+<li>
+<p><code>GET /getQuestionsDb/:lang/:category</code>
+Recibe solicitudes del API Gateway para obtener una pregunta aleatoria de una categoría e idioma concretos. Se asegura de que haya suficientes preguntas generadas y disponibles.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas:</strong></p>
+</li>
+<li>
+<p><code>question-data-service</code>: utilizado para obtener, contar, y eliminar preguntas desde la base de datos.</p>
+</li>
+<li>
+<p><code>question-generate-service</code>: encargado de generar nuevas preguntas usando información de Wikidata si no hay suficientes preguntas en la base de datos.</p>
+</li>
+<li>
+<p>⚡ <strong>Externas:</strong></p>
+</li>
+<li>
+<p>Gateway Service (recibe la solicitud).</p>
+</li>
+<li>
+<p><strong>Datos</strong></p>
+</li>
+<li>
+<p>Aunque no gestiona directamente almacenamiento, manipula datos almacenados en MongoDB a través de <code>question-data-service</code>.</p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Express.js</p>
+</li>
+<li>
+<p><strong>Notas adicionales</strong></p>
+</li>
+<li>
+<p>Incluye lógica de espera y reintento si no hay suficientes preguntas disponibles en la base de datos.</p>
+</li>
+<li>
+<p>No es un microservicio autónomo en términos de almacenamiento: depende de servicios internos para la persistencia y generación.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nivel_3">5.3. Nivel 3</h3>
+<div class="imageblock">
 <div class="content">
-<div class="paragraph">
-<p>Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.</p>
-</div>
-<div class="paragraph">
-<p>When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.</p>
+<img src="./images/05_3_BlackBox_Question_Management.png" alt="Diagram 5.3.1: Desglose de Question Management">
 </div>
 </div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Building Blocks</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Question Generator Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte de la aplicación encargada de conectarse a Wikidata y obtener imágenes e información para las preguntas del juego.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Question Data Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte de la aplicación encargada de tratar con la información de las preguntas conectándose a la base de datos para almacenar esta información y eliminando las preguntas que ya han salido.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Question Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte de la aplicación encargada de gestionar el ciclo de vida de las preguntas en la aplicación. Orquesta dos componentes internos (question-data-service y question-generator-service). Es el encargado de relacionarse con gateway y de recibir las peticiones de preguntas. Se encarga de la lógica de negocio relacionada con las preguntas.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="sect3">
-<h4 id="_white_box_building_block_x_1">5.3.1. White Box &lt;_building block x.1_&gt;</h4>
-<div class="sidebarblock arc42help">
+<h4 id="_black_box_question_generation_service">5.3.1. <strong>Black Box: Question Generation Service</strong></h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Este servicio es responsable de generar preguntas dinámicas a partir de datos obtenidos de <strong>Wikidata</strong>. Su propósito es crear preguntas tipo quiz (imagen + opciones) relacionadas con una categoría temática como "País", "Ciudad", etc. Cada pregunta incluye una imagen, opciones posibles y una respuesta correcta. Las preguntas generadas se almacenan en una base de datos para su uso posterior.</p>
+</li>
+<li>
+<p><strong>Interfaces expuestas</strong></p>
+</li>
+<li>
+<p>Función interna: <code>generateQuestionsByCategory(category, language, numImages)</code>
+Genera preguntas usando datos de Wikidata para una categoría específica.</p>
+</li>
+<li>
+<p><strong>Entrada:</strong></p>
+</li>
+<li>
+<p><code>category</code> (string): Categoría de Wikidata desde donde se obtienen las imágenes (por ejemplo, "country").</p>
+</li>
+<li>
+<p><code>language</code> (string): Idioma para los labels y preguntas.</p>
+</li>
+<li>
+<p><code>numImages</code> (number): Número de preguntas/imágenes a generar.</p>
+</li>
+<li>
+<p><strong>Salida:</strong></p>
+</li>
+<li>
+<p>Lista de preguntas generadas. Cada pregunta tiene:</p>
+</li>
+<li>
+<p><code>question</code> (string): Texto de la pregunta.</p>
+</li>
+<li>
+<p><code>options</code> (array): Opciones posibles (1 correcta + 3 incorrectas).</p>
+</li>
+<li>
+<p><code>correctAnswer</code> (string): Opción correcta.</p>
+</li>
+<li>
+<p><code>imageUrl</code> (string): URL de la imagen.</p>
+</li>
+<li>
+<p><code>category</code>, <code>language</code>: Metadatos.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas:</strong></p>
+</li>
+<li>
+<p><code>utils.readFromFile</code>: para leer el archivo de configuración de queries (<code>queryCategories.json</code>).</p>
+</li>
+<li>
+<p><code>dataService.saveQuestion</code>: para almacenar las preguntas generadas en la base de datos.</p>
+</li>
+<li>
+<p><code>Question</code> (modelo de Mongoose): modelo de pregunta en MongoDB.</p>
+</li>
+<li>
+<p><strong>Externas:</strong></p>
+</li>
+<li>
+<p>Wikidata SPARQL endpoint: fuente principal de imágenes y datos semánticos para construir preguntas.</p>
+</li>
+<li>
+<p><strong>Datos</strong></p>
+</li>
+<li>
+<p><strong>Entrada dinámica:</strong></p>
+</li>
+<li>
+<p>Categoría (por ejemplo, "country")</p>
+</li>
+<li>
+<p>Idioma (por ejemplo, "es", "en")</p>
+</li>
+<li>
+<p>Número de preguntas (ej. 5)</p>
+</li>
+<li>
+<p><strong>Ejemplo de una pregunta generada:</strong>
+<code><code>json
+{
+  "question": "¿A qué país pertenece esta imagen?",
+  "options": ["España", "Italia", "Alemania", "Francia"],
+  "correctAnswer": "España",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/&#8230;&#8203;",
+  "category": "country",
+  "language": "es"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Axios (peticiones HTTP a Wikidata)</p>
+</li>
+<li>
+<p>MongoDB (para guardar preguntas)</p>
+</li>
+<li>
+<p>SPARQL (consultas semánticas a Wikidata)</p>
+</li>
+<li>
+<p><strong>Notas adicionales</strong></p>
+</li>
+<li>
+<p>Se utilizan consultas SPARQL definidas dinámicamente en un archivo JSON externo para obtener imágenes y etiquetas de Wikidata.</p>
+</li>
+<li>
+<p>Las opciones incorrectas se generan con una segunda consulta a países en Wikidata, excluyendo la respuesta correcta.</p>
+</li>
+<li>
+<p>La lógica asegura que cada pregunta tenga 3 distracciones viables antes de ser guardada.</p>
+</li>
+<li>
+<p>Se implementa una mezcla aleatoria de opciones para cada pregunta.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_black_box_question_data_service">5.4. <strong>Black Box: Question Data Service</strong></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Este servicio actúa como capa de acceso a datos para las preguntas generadas por el sistema. Se encarga de guardar, eliminar, contar y obtener preguntas desde la base de datos MongoDB usando el modelo <code>Question</code>.</p>
+</li>
+<li>
+<p><strong>Interfaces expuestas</strong></p>
+</li>
+<li>
+<p><code>saveQuestion(question)</code>
+Guarda una nueva pregunta en la base de datos.</p>
+</li>
+<li>
+<p><strong>Entrada:</strong> Objeto con los campos de una pregunta (<code>question</code>, <code>options</code>, <code>correctAnswer</code>, <code>imageUrl</code>, <code>category</code>, <code>language</code>).</p>
+</li>
+<li>
+<p><strong>Salida:</strong> Ninguna (lanza error si falla).</p>
+</li>
+<li>
+<p><code>getNumberQuestionsByCategory(language, category)</code>
+Devuelve el número total de preguntas en una categoría y idioma específicos.</p>
+</li>
+<li>
+<p><strong>Entrada:</strong></p>
+</li>
+<li>
+<p><code>language</code> (string): Idioma.</p>
+</li>
+<li>
+<p><code>category</code> (string): Categoría.</p>
+</li>
+<li>
+<p><strong>Salida:</strong> Número total de preguntas (integer).</p>
+</li>
+<li>
+<p><code>deleteQuestionById(id)</code>
+Elimina una pregunta según su ID en la base de datos.</p>
+</li>
+<li>
+<p><strong>Entrada:</strong></p>
+</li>
+<li>
+<p><code>id</code> (string): ID de MongoDB de la pregunta.</p>
+</li>
+<li>
+<p><strong>Salida:</strong> Ninguna (lanza error si falla).</p>
+</li>
+<li>
+<p><code>getRandomQuestionByCategory(language, categoryParam)</code>
+Retorna una pregunta aleatoria de una categoría e idioma determinados.</p>
+</li>
+<li>
+<p><strong>Entrada:</strong></p>
+</li>
+<li>
+<p><code>language</code> (string)</p>
+</li>
+<li>
+<p><code>categoryParam</code> (string)</p>
+</li>
+<li>
+<p><strong>Salida:</strong> Objeto con los datos de la pregunta o <code>null</code> si no hay coincidencias.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas:</strong></p>
+</li>
+<li>
+<p>Usa el modelo Mongoose <code>Question</code> para todas las operaciones con MongoDB.</p>
+</li>
+<li>
+<p>🔌 <strong>Externas:</strong></p>
+</li>
+<li>
+<p>Este servicio es utilizado por el Question Generation Service y probablemente por servicios de frontend/juego para recuperar preguntas aleatorias.</p>
+</li>
+<li>
+<p><strong>Datos</strong></p>
+</li>
+<li>
+<p><strong>Modelo <code>Question</code>:</strong>
+<code><code>json
+{
+  "question": "¿A qué país pertenece esta imagen?",
+  "options": ["España", "Italia", "Francia", "Alemania"],
+  "correctAnswer": "España",
+  "imageUrl": "https://upload.wikimedia.org/&#8230;&#8203;",
+  "category": "country",
+  "language": "es"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Colección en MongoDB:</strong> <code>questions</code></p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>MongoDB con Mongoose</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_black_box_question_service_2">5.5. <strong>Black Box: Question Service</strong></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Este servicio se encarga de exponer un endpoint REST para obtener preguntas al usuario. Si no hay suficientes preguntas en la base de datos, coordina la generación automática mediante el <code>question-generate-service</code>.</p>
+</li>
+<li>
+<p><strong>Endpoint expuesto</strong></p>
+</li>
+<li>
+<p><code>GET /getQuestionsDb/:lang/:category</code>
+Devuelve una pregunta aleatoria de una categoría e idioma determinados. Si hay menos de 5 preguntas almacenadas en MongoDB, solicita la generación automática de nuevas preguntas.</p>
+</li>
+<li>
+<p><strong>Parámetros de URL:</strong></p>
+</li>
+<li>
+<p><code>:lang</code> – idioma (por ejemplo, <code>es</code>, <code>en</code>)</p>
+</li>
+<li>
+<p><code>:category</code> – categoría de pregunta (por ejemplo, <code>country</code>)</p>
+</li>
+<li>
+<p><strong>Respuesta:</strong></p>
+</li>
+<li>
+<p><code>200 OK</code>: Objeto con la pregunta</p>
+</li>
+<li>
+<p><code>404 Not Found</code>: No hay más preguntas disponibles</p>
+</li>
+<li>
+<p><code>500 Internal Server Error</code>: Error en el proceso</p>
+</li>
+<li>
+<p><strong>Lógica interna</strong></p>
+</li>
+<li>
+<p>Verifica si hay al menos 5 preguntas en la base de datos.</p>
+</li>
+<li>
+<p>Si no las hay, solicita la creación de nuevas preguntas al <code>question-generate-service</code> (hasta alcanzar 20).</p>
+</li>
+<li>
+<p>Espera activamente (con intentos) hasta que haya al menos 4 preguntas disponibles antes de servir una.</p>
+</li>
+<li>
+<p>Una vez entregada una pregunta, la elimina de la base de datos para evitar repeticiones.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas:</strong></p>
+</li>
+<li>
+<p><code>question-data-service</code>: Para contar, obtener y eliminar preguntas.</p>
+</li>
+<li>
+<p><code>question-generate-service</code>: Para generar nuevas preguntas si no hay suficientes.</p>
+</li>
+<li>
+<p>🌐 <strong>Externa:</strong></p>
+</li>
+<li>
+<p>Consumido por el cliente/juego web o móvil que requiere preguntas una por una.</p>
+</li>
+<li>
+<p><strong>Datos</strong></p>
+</li>
+<li>
+<p>Entrada: idioma (<code>lang</code>), categoría (<code>category</code>)</p>
+</li>
+<li>
+<p>Salida: pregunta en formato:
+<code><code>json
+{
+  "_id": "661bfc&#8230;&#8203;",
+  "question": "¿A qué país pertenece esta imagen?",
+  "options": ["Francia", "Italia", "España", "Alemania"],
+  "correctAnswer": "España",
+  "imageUrl": "https://upload.wikimedia.org/&#8230;&#8203;",
+  "category": "country",
+  "language": "es"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Express.js</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="imageblock">
 <div class="content">
-<div class="paragraph">
-<p>Specifies the internal structure of <em>building block x.1</em>.</p>
+<img src="./images/05_3_BlackBox_User_Management.png" alt="Diagram 5.3.2: Desglose de User Management">
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Building Blocks</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte encargada de tratar la información del usuario: puntuación, historial, etc. Se conecta a la base de datos para almacenar esta información.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte encargada de administrar la autentificación de usuarios. Se conecta a la base de datos para almacenar y comprobar los nombres y contraseñas.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">History Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parte encargada de el tratamiento de los datos de las partidas de todos los usuarios. Se conecta a la base de datos para almacenar esta información.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
+<div class="sect2">
+<h3 id="_black_box_user_service">5.6. <strong>Black Box: User Service</strong></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Este servicio gestiona el registro, consulta y actualización del perfil de los usuarios en la aplicación.</p>
+</li>
+<li>
+<p><strong>Endpoints expuestos</strong></p>
+</li>
+<li>
+<p><code>POST /user</code>
+Registra un nuevo usuario en la base de datos con validación de datos y encriptación de contraseña.</p>
+</li>
+<li>
+<p><strong>Body esperado</strong>:
+<code><code>json
+{
+  "username": "usuario123",
+  "password": "Contraseña123",
+  "name": "Nombre",
+  "surname": "Apellido"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Validaciones</strong>:</p>
+</li>
+<li>
+<p><code>username</code> mínimo 4 caracteres</p>
+</li>
+<li>
+<p><code>password</code> mínimo 8 caracteres, con al menos un número y una mayúscula</p>
+</li>
+<li>
+<p><code>name</code> y <code>surname</code> no vacíos</p>
+</li>
+<li>
+<p><strong>Respuestas</strong>:</p>
+</li>
+<li>
+<p><code>200 OK</code>: Usuario creado exitosamente (sin la contraseña)</p>
+</li>
+<li>
+<p><code>400 Bad Request</code>: Datos inválidos o usuario ya registrado</p>
+</li>
+<li>
+<p><code>GET /user/profile/:username</code>
+Devuelve el perfil de un usuario por su nombre de usuario (sin incluir la contraseña).</p>
+</li>
+<li>
+<p><strong>Respuesta</strong>:</p>
+</li>
+<li>
+<p><code>200 OK</code>: Objeto de usuario</p>
+</li>
+<li>
+<p><code>400 Bad Request</code>: Usuario no encontrado</p>
+</li>
+<li>
+<p><code>PUT /user/update/profile/:username</code>
+Actualiza el perfil de un usuario (nombre, apellido, imagen de perfil y descripción).</p>
+</li>
+<li>
+<p><strong>Body esperado</strong>:
+<code><code>json
+{
+  "name": "NuevoNombre",
+  "surname": "NuevoApellido",
+  "profilePicture": "https://link.to/image.jpg",
+  "description": "Nueva descripción"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Respuestas</strong>:</p>
+</li>
+<li>
+<p><code>200 OK</code>: Usuario actualizado</p>
+</li>
+<li>
+<p><code>400 Bad Request</code>: Datos inválidos o usuario no encontrado</p>
+</li>
+<li>
+<p><strong>Lógica interna</strong></p>
+</li>
+<li>
+<p>Al registrar un usuario, valida todos los campos y encripta la contraseña con bcrypt.</p>
+</li>
+<li>
+<p>Permite recuperar el perfil público de un usuario sin exponer su contraseña.</p>
+</li>
+<li>
+<p>Permite modificar ciertos datos del perfil con validaciones básicas.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas</strong>: utiliza el modelo <code>User</code> de Mongoose.</p>
+</li>
+<li>
+<p>🌐 <strong>Externa</strong>: Consumido por la interfaz del cliente (registro, perfil, edición).</p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Express.js</p>
+</li>
+<li>
+<p>MongoDB con Mongoose</p>
+</li>
+<li>
+<p>Bcrypt para la encriptación de contraseñas</p>
+</li>
+</ul>
 </div>
+<hr>
+<div class="sect3">
+<h4 id="_black_box_authentication_service">5.6.1. Black Box: Authentication Service</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Este servicio se encarga de gestionar la autenticación de los usuarios. Proporciona funcionalidades como iniciar sesión, validando las credenciales del usuario y generando un <strong>token JWT</strong> para autenticar futuras solicitudes. Utiliza la base de datos para verificar las credenciales de usuario.</p>
+</li>
+<li>
+<p><strong>Interfaces expuestas</strong></p>
+</li>
+<li>
+<p><code>POST /login</code>
+Recibe el <code>username</code> y la <code>password</code> de un usuario, verifica que sean correctos, y si lo son, genera un <strong>token JWT</strong> para la autenticación del usuario.</p>
+</li>
+<li>
+<p><strong>Entrada:</strong></p>
+</li>
+<li>
+<p><code>username</code>: Nombre de usuario.</p>
+</li>
+<li>
+<p><code>password</code>: Contraseña del usuario.</p>
+</li>
+<li>
+<p><strong>Salida:</strong></p>
+</li>
+<li>
+<p><code>token</code>: JWT que el cliente puede usar para autenticarse en futuras solicitudes.</p>
+</li>
+<li>
+<p><code>username</code>: El nombre de usuario.</p>
+</li>
+<li>
+<p><code>createdAt</code>: Fecha de creación de la cuenta del usuario.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas:</strong></p>
+</li>
+<li>
+<p>MongoDB: utilizado para almacenar los datos de usuario.</p>
+</li>
+<li>
+<p><code>User</code> (modelo de MongoDB): modelo que define la estructura de los datos de usuario en la base de datos.</p>
+</li>
+<li>
+<p><strong>Externas:</strong></p>
+</li>
+<li>
+<p>API Gateway (gestiona las solicitudes que provienen del frontend y las dirige a este servicio).</p>
+</li>
+<li>
+<p><strong>bcrypt</strong>: para la encriptación y comparación de contraseñas.</p>
+</li>
+<li>
+<p><strong>jwt</strong>: para la generación y validación de tokens de acceso.</p>
+</li>
+<li>
+<p><strong>Datos</strong></p>
+</li>
+<li>
+<p>Almacena los datos del usuario en una base de datos MongoDB, incluyendo:</p>
+</li>
+<li>
+<p><code>username</code>: Nombre de usuario.</p>
+</li>
+<li>
+<p><code>password</code>: Contraseña encriptada del usuario.</p>
+</li>
+<li>
+<p><code>createdAt</code>: Fecha de creación de la cuenta del usuario.</p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Express.js</p>
+</li>
+<li>
+<p>MongoDB</p>
+</li>
+<li>
+<p>bcrypt (para encriptación de contraseñas)</p>
+</li>
+<li>
+<p>jsonwebtoken (para la creación de tokens JWT)</p>
+</li>
+<li>
+<p>express-validator (para validación de datos de entrada)</p>
+</li>
+<li>
+<p><strong>Notas adicionales</strong></p>
+</li>
+<li>
+<p>La autenticación se basa en la comparación de contraseñas encriptadas utilizando <strong>bcrypt</strong>.</p>
+</li>
+<li>
+<p>El servicio genera un <strong>token JWT</strong> válido por una hora, que debe ser incluido en las solicitudes subsecuentes para autenticarse en el usuario.</p>
+</li>
+<li>
+<p>Se valida que los campos <code>username</code> y <code>password</code> sean proporcionados y cumplan con una longitud mínima antes de procesar la solicitud.</p>
+</li>
+<li>
+<p>El token JWT es enviado como respuesta en caso de que las credenciales sean correctas.</p>
+</li>
+<li>
+<p>Si las credenciales son incorrectas, se devuelve un error de autenticación (401).</p>
+</li>
+</ul>
+</div>
+<hr>
 </div>
 <div class="sect3">
-<h4 id="_white_box_building_block_x_2">5.3.2. White Box &lt;_building block x.2_&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_y_1">5.3.3. White Box &lt;_building block y.1_&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
+<h4 id="_black_box_history_service">5.6.2. Black Box: History Service</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Responsabilidad</strong>
+Se encarga de gestionar y almacenar el historial de juegos de los usuarios, incluyendo su puntuación, respuestas correctas/incorrectas, tiempo jugado y modo de juego. También proporciona estadísticas detalladas y el ranking global de los jugadores.</p>
+</li>
+<li>
+<p><strong>Interfaces expuestas</strong></p>
+</li>
+<li>
+<p><code>POST /createUserHistory</code>
+Recibe los datos del historial del juego de un usuario y lo almacena en la base de datos.</p>
+</li>
+<li>
+<p><code>GET /getUserHistory</code>
+Devuelve el historial de juegos de un usuario específico, identificado por su <code>username</code>.</p>
+</li>
+<li>
+<p><code>GET /getUserStats</code>
+Obtiene estadísticas agregadas sobre el rendimiento de un usuario, como el total de juegos jugados, respuestas correctas, incorrectas, tiempo total y puntuación promedio.</p>
+</li>
+<li>
+<p><code>GET /getLeaderboard</code>
+Devuelve el ranking global de los jugadores, ordenado por diferentes métricas como la puntuación total, precisión, tiempo promedio, etc.</p>
+</li>
+<li>
+<p><strong>Relaciones</strong></p>
+</li>
+<li>
+<p>🔁 <strong>Internas:</strong></p>
+</li>
+<li>
+<p>MongoDB: utilizado para almacenar y recuperar los datos de historial de usuario.</p>
+</li>
+<li>
+<p><code>UserHistory</code> (modelo de MongoDB): utilizado para definir y gestionar el esquema de los registros de historial de usuario.</p>
+</li>
+<li>
+<p><strong>Externas:</strong></p>
+</li>
+<li>
+<p>API Gateway (recibe las solicitudes del usuario y las redirige a este servicio).</p>
+</li>
+<li>
+<p><strong>Datos</strong></p>
+</li>
+<li>
+<p>Almacena datos de historial de juego en una base de datos MongoDB, incluyendo:</p>
+</li>
+<li>
+<p><code>username</code></p>
+</li>
+<li>
+<p><code>correctAnswers</code></p>
+</li>
+<li>
+<p><code>wrongAnswers</code></p>
+</li>
+<li>
+<p><code>time</code></p>
+</li>
+<li>
+<p><code>score</code></p>
+</li>
+<li>
+<p><code>gameMode</code></p>
+</li>
+<li>
+<p><strong>Tecnología</strong></p>
+</li>
+<li>
+<p>Node.js</p>
+</li>
+<li>
+<p>Express.js</p>
+</li>
+<li>
+<p>MongoDB</p>
+</li>
+<li>
+<p>Swagger para documentación OpenAPI</p>
+</li>
+<li>
+<p><strong>Notas adicionales</strong></p>
+</li>
+<li>
+<p>Utiliza <strong>agregación</strong> en MongoDB para calcular estadísticas y rankings globales.</p>
+</li>
+<li>
+<p>El servicio soporta filtrado por diferentes criterios (e.g., por <code>username</code>, <code>sortBy</code>).</p>
+</li>
+<li>
+<p>Implementa un sistema de rankings que tiene en cuenta varios criterios y asigna un <strong>ranking global</strong>.</p>
+</li>
+<li>
+<p>Validaciones de entrada básicas para asegurar que los datos sean consistentes antes de almacenarlos o procesarlos.</p>
+</li>
+</ul>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -1747,194 +2520,134 @@ You will mainly capture scenarios in your documentation to communicate your arch
 <div class="sect1">
 <h2 id="section-deployment-view">7. Vista de Despliegue</h2>
 <div class="sectionbody">
-<div class="sidebarblock arc42help">
-<div class="content">
+<div class="sect2">
+<h3 id="_introducción">7.1. Introducción</h3>
 <div class="paragraph">
-<div class="title">Contenido</div>
-<p>La vista de despliegue describe:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>La infraestructura técnica utilizada para ejecutar tu sistema, con elementos como ubicaciones geográficas, entornos, computadoras, procesadores, canales y topologías de red, así como otros elementos de infraestructura.</p>
-</li>
-<li>
-<p>La asignación de los bloques de construcción (software) a esos elementos de infraestructura.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>A menudo, los sistemas se ejecutan en diferentes entornos, por ejemplo, entorno de desarrollo, entorno de pruebas y entorno de producción. En estos casos, se debe documentar todos los entornos relevantes.</p>
-</div>
-<div class="paragraph">
-<p>Especialmente, documenta una vista de despliegue si tu software se ejecuta como un sistema distribuido con más de una computadora, procesador, servidor o contenedor, o cuando diseñas y construyes tus propios procesadores y chips de hardware.</p>
-</div>
-<div class="paragraph">
-<p>Desde una perspectiva de software, es suficiente capturar solo aquellos elementos de la infraestructura que sean necesarios para mostrar el despliegue de tus bloques de construcción. Los arquitectos de hardware pueden ir más allá y describir la infraestructura con el nivel de detalle que necesiten.</p>
-</div>
-<div class="paragraph">
-<div class="title">Motivación</div>
-<p>El software no se ejecuta sin hardware.
-Esta infraestructura subyacente puede influir en el sistema y/o en algunos conceptos transversales. Por lo tanto, es necesario conocer la infraestructura.</p>
-</div>
-<div class="paragraph">
-<div class="title">Formato</div>
-<p>Es posible que un diagrama de despliegue de nivel más alto ya esté incluido en la sección 3.2 como contexto técnico, mostrando tu propia infraestructura como UNA caja negra. En esta sección, puedes hacer zoom en esa caja negra utilizando diagramas de despliegue adicionales:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>UML ofrece diagramas de despliegue para expresar esta vista. Úsalos, posiblemente con diagramas anidados, cuando tu infraestructura sea más compleja.</p>
-</li>
-<li>
-<p>Si los interesados en el hardware prefieren otros tipos de diagramas en lugar de un diagrama de despliegue, permite que utilicen cualquier formato que pueda mostrar nodos y canales de la infraestructura.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<div class="title">Información Adicional</div>
-<p>Consulta <a href="https://docs.arc42.org/section-7/">Vista de Despliegue</a> en la documentación de arc42.</p>
-</div>
+<p>La vista de despliegue describe cómo se implementa el sistema en la infraestructura de hardware y software. Esta sección incluye un diagrama de infraestructura, una descripción de los componentes y su asignación a bloques de construcción, así como las características de calidad y rendimiento que se esperan del sistema.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_nivel_de_infraestructura_1">7.1. Nivel de Infraestructura 1</h3>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Describe (usualmente en una combinación de diagramas, tablas y texto):</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Distribución de un sistema en múltiples ubicaciones, entornos, computadoras, procesadores, etc., así como las conexiones físicas entre ellos.</p>
-</li>
-<li>
-<p>Justificaciones o motivaciones importantes para esta estructura de despliegue.</p>
-</li>
-<li>
-<p>Características de calidad y/o rendimiento de esta infraestructura.</p>
-</li>
-<li>
-<p>Asignación de artefactos de software a elementos de esta infraestructura.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Para múltiples entornos o despliegues alternativos, copia y adapta esta sección de arc42 para todos los entornos relevantes.</p>
-</div>
-</div>
-</div>
+<h3 id="_nivel_de_infraestructura_1">7.2. Nivel de Infraestructura 1</h3>
+<div class="sect3">
+<h4 id="_diagrama_de_infraestructura">7.2.1. Diagrama de Infraestructura</h4>
 <div class="paragraph">
 <p><span class="image"><img src="./images/03_technicalContext.png" alt="Diagram 7.1: Infraestructura"></span></p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Motivación</dt>
-<dd>
-<p>El sistema se desplegará en una infraestructura distribuida (Azure) para garantizar escalabilidad, alta disponibilidad y rendimiento. Esto permite que los componentes del sistema se ejecuten en diferentes entornos (desarrollo, pruebas y producción) y se adapten a las necesidades de los usuarios finales.</p>
-</dd>
-<dt class="hdlist1">Características de Calidad y/o Rendimiento</dt>
-<dd>
+</div>
+<div class="sect3">
+<h4 id="_motivación">7.2.2. Motivación</h4>
+<div class="paragraph">
+<p>El sistema se desplegará en una infraestructura distribuida basada en la nube de Azure para garantizar:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Seguridad y Privacidad: La infraestructura se desplegará en la nube de Azure, que cuenta con certificaciones de seguridad y privacidad. Además, se utilizarán mecanismos de seguridad cifrado y autenticación para proteger los datos y la información del sistema.</p>
+<p><strong>Escalabilidad:</strong> Capacidad de añadir recursos según la demanda.</p>
 </li>
 <li>
-<p>Escalabilidad: La infraestructura está diseñada para escalar horizontalmente, lo que permite añadir más recursos o contenedores según la demanda.</p>
+<p><strong>Alta Disponibilidad:</strong> Uso de virtualización en la nube para minimizar tiempos de inactividad.</p>
 </li>
 <li>
-<p>Alta Disponibilidad: Se utilizará un sistema de virtualización en la nube para favorecer la disponibilidad.</p>
+<p><strong>Seguridad y Privacidad:</strong> Certificaciones de seguridad de Azure, cifrado y autenticación.</p>
 </li>
 <li>
-<p>Portabilidad: La infraestructura se basa en contenedores Docker, lo que permite que los componentes del sistema se ejecuten en cualquier entorno.</p>
+<p><strong>Portabilidad:</strong> Uso de contenedores Docker para facilitar la ejecución en diferentes entornos.</p>
 </li>
 </ul>
-</div>
-</dd>
-<dt class="hdlist1">Asignación de Bloques de Construcción a la Infraestructura</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>Frontend: Desplegado en un servidor web (Apache) al que puedan acceder los usuarios.</p>
-</li>
-<li>
-<p>Backend: Los microservicios (AuthService, UserService, LLM) se ejecutarán en contenedores Docker.</p>
-</li>
-<li>
-<p>Base de Datos: Se utilizará una base de datos mongoDB para toda la gestión de los datos de la aplicación.</p>
-</li>
-<li>
-<p>API Gateway: actúa como punto de entrada único para todas las solicitudes del usuario. Está desplegado en Azure utilizando el servicio Azure API Management, que permite gestionar, monitorizar y proteger las APIs del sistema.</p>
-</li>
-</ul>
-</div>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_nivel_de_infraestructura_2">7.2. Nivel de Infraestructura 2</h3>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Aquí puedes incluir la estructura interna de (algunos) elementos de infraestructura del nivel 1.</p>
-</div>
-<div class="paragraph">
-<p>Copia la estructura del nivel 1 para cada elemento seleccionado.</p>
-</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_docker_contenedores">7.2.1. <em>&lt;Docker (Contenedores)&gt;</em></h4>
+<h4 id="_características_de_calidad_y_rendimiento">7.2.3. Características de Calidad y Rendimiento</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Seguridad:</strong> Implementación de cifrado TLS para comunicaciones y autenticación basada en OAuth2.</p>
+</li>
+<li>
+<p><strong>Rendimiento:</strong> Uso de balanceadores de carga para distribuir el tráfico entre los servicios.</p>
+</li>
+<li>
+<p><strong>Resiliencia:</strong> Configuración de redundancia en los servicios críticos para evitar puntos únicos de fallo.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_asignación_de_bloques_de_construcción_a_la_infraestructura">7.2.4. Asignación de Bloques de Construcción a la Infraestructura</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Frontend:</strong> Desplegado en un servidor web Apache accesible desde internet.</p>
+</li>
+<li>
+<p><strong>Backend:</strong> Microservicios empaquetados en contenedores Docker (AuthService, UserService, LLM).</p>
+</li>
+<li>
+<p><strong>Base de Datos:</strong> MongoDB desplegado en un clúster de alta disponibilidad.</p>
+</li>
+<li>
+<p><strong>API Gateway:</strong> Desplegado en Azure API Management para gestionar y proteger las APIs.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nivel_de_infraestructura_2">7.3. Nivel de Infraestructura 2</h3>
+<div class="sect3">
+<h4 id="_docker_contenedores">7.3.1. Docker (Contenedores)</h4>
 <div class="paragraph">
-<p><span class="image"><img src="./images/DiagramaDocker_g.webp" alt="Diagram 7.2: Docker"></span></p>
+<p><span class="image"><img src="./images/DiagramaDocker_g.png" alt="Diagram 7.2: Docker"></span></p>
 </div>
 <div class="paragraph">
-<p>Explicación:</p>
+<p><strong>Explicación:</strong></p>
 </div>
 <div class="paragraph">
-<p>Docker es la tecnología utilizada para empaquetar los microservicios en contenedores. Cada contenedor incluye:</p>
+<p>Docker se utiliza para empaquetar y desplegar los microservicios. Cada contenedor incluye:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Imágenes Docker: Contienen el código, las dependencias y la configuración necesaria para ejecutar cada microservicio.</p>
+<p><strong>Imágenes Docker:</strong> Código, dependencias y configuración.</p>
 </li>
 <li>
-<p>Volúmenes: Para persistir datos (por ejemplo, logs o archivos temporales).</p>
+<p><strong>Volúmenes:</strong> Persistencia de datos como logs y archivos temporales.</p>
 </li>
 <li>
-<p>Redes Docker: Para facilitar la comunicación entre contenedores.</p>
+<p><strong>Redes Docker:</strong> Comunicación entre contenedores.</p>
 </li>
 </ul>
 </div>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p><em>&lt;diagrama + explicación&gt;</em></p>
 </div>
+<div class="sect3">
+<h4 id="_mongodb_base_de_datos">7.3.2. MongoDB (Base de Datos)</h4>
 <div class="paragraph">
-<p>==== <em>&lt;Elemento de Infraestructura 2&gt;</em></p>
+<p><strong>Explicación:</strong></p>
 </div>
 <div class="paragraph">
-<p><em>&lt;diagrama + explicación&gt;</em></p>
+<p>MongoDB se utiliza como base de datos principal para la aplicación. Características clave:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Alta Disponibilidad:</strong> Configuración de réplicas para garantizar la continuidad del servicio.</p>
+</li>
+<li>
+<p><strong>Escalabilidad Horizontal:</strong> Capacidad de añadir nodos al clúster según sea necesario.</p>
+</li>
+<li>
+<p><strong>Seguridad:</strong> Cifrado de datos en reposo y en tránsito.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conclusión">7.4. Conclusión</h3>
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
-</div>
-<div class="paragraph">
-<p>==== <em>&lt;Elemento de Infraestructura n&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;diagrama + explicación&gt;</em></p>
-</div>
-</div>
+<p>La infraestructura descrita asegura que el sistema cumpla con los requisitos de calidad, rendimiento y seguridad necesarios para operar en entornos de desarrollo, pruebas y producción. La combinación de tecnologías como Azure, Docker y MongoDB permite un despliegue eficiente y adaptable a las necesidades del negocio.</p>
 </div>
 <div style="page-break-after: always;"></div>
-</div>
 </div>
 </div>
 </div>
@@ -2049,40 +2762,31 @@ on this list.</p>
 <div class="sect2">
 <h3 id="_conceptos_de_experiencia_de_usuario_ux">8.2. <em>Conceptos de experiencia de usuario (UX)</em></h3>
 <div class="paragraph">
-<p><em>Aunque el desarrollo aún no ha comenzado, se tiene como objetivo crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida.</em></p>
+<p><em>El objetivo es crear una aplicación intuitiva, accesible y atractiva, que permita a los usuarios disfrutar de la experiencia de juego de manera fluida.</em></p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><em>Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla.</em></p>
-</li>
-<li>
-<p><em>Accesibilidad: Cumplimiento de estándares WCAG para garantizar que la aplicación sea usable por personas con discapacidades.</em></p>
+<p><em>Diseño Responsivo: La aplicación se adaptará a diferentes dispositivos y tamaños de pantalla, desde pantallas grandes como las de ordenador, pasando por pantallas medias como las de tablets hasta dispositivos móviles.</em></p>
 </li>
 <li>
 <p><em>Feedback Visual: Proporcionar retroalimentación visual inmediata para las acciones del usuario.</em></p>
 </li>
 <li>
-<p><em>Prototipos: "url prototipos"</em></p>
+<p><em>Feedback Auditivo: Proporcionar retroalimentación auditiva inmediata para las acciones del usuario favoreciendo el entendimiento de este sobre lo que está ocurriendo.</em></p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_conceptos_de_seguridad_y_protección">8.3. <em>Conceptos de seguridad y protección</em></h3>
-<div class="paragraph">
-<p><em>Aún sin desarrollar. Sin embargo, se contemplan las siguientes consideraciones iniciales:</em></p>
-</div>
 <div class="ulist">
 <ul>
 <li>
-<p><em>Autenticación y Autorización: Se buscará realizrar una correcta autenticación de usuarios.</em></p>
+<p><em>Autenticación y Autorización: Se realiza una correcta autenticación de usuarios evitando que los datos de logueo sean vulnerables.</em></p>
 </li>
 <li>
-<p><em>Protección de Datos: Garantizar la privacidad de los usuarios.</em></p>
-</li>
-<li>
-<p><em>Cifrado: Uso de HTTPS para la transmisión de datos y cifrado de datos sensibles.</em></p>
+<p><em>Protección de Datos: Se garantiza la privacidad de los usuarios encriptando las contraseñas y los datos sensibles.</em></p>
 </li>
 </ul>
 </div>
@@ -2096,30 +2800,27 @@ on this list.</p>
 <p><strong>API Gateway:</strong> <em>Este actúa como punto de entrada único para todas las solicitudes que realice el usuario delegandolas en sus servicios correspondientes.</em></p>
 </div>
 <div class="paragraph">
-<p><strong>Patrón de Micoservicios:</strong> <em>Cada componente, como AuthService, UserService y LLM, es un servicio independiente que se enfoca en una funcionalidad específica, facilitando el mantenimiento del sistema.</em></p>
-</div>
-<div class="paragraph">
-<p><em>Consultar los patrones utilizado en " "</em></p>
+<p><strong>Patrón de Servicios:</strong> <em>Cada componente, como AuthService, UserService, LLM, HistoryService son servicios independientes que se enfocan en una funcionalidad específica, facilitando el mantenimiento del sistema.</em></p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_conceptos_técnicos">8.5. <em>Conceptos técnicos</em></h3>
 <div class="paragraph">
-<p><em>Aún sin desarrollar. Sin embargo, se contemplan las siguientes tecnologías y herramientas:</em></p>
+<p><em>Se contemplan las siguientes tecnologías y herramientas:</em></p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><em>Lenguajes de Programación: JavaScript para el frontend.</em></p>
+<p><em>Lenguajes de Programación: JavaScript para el frontend y el backend aprovechando que se utiliza React y Node.js.</em></p>
 </li>
 <li>
-<p><em>Frameworks: React para el frontend.</em></p>
+<p><em>Frameworks: React para el frontend y Node.js para el backend.</em></p>
 </li>
 <li>
-<p><em>Bases de Datos: MongoDB para la gestión de datos.</em></p>
+<p><em>Bases de Datos: MongoDB para la gestión de todos los datos de la aplicación, ya que es flexible y escalable.</em></p>
 </li>
 <li>
-<p><em>Despliegue: Uso de Docker para la contenerización y orquestación de servicios.</em></p>
+<p><em>Despliegue: Uso de Docker para la contenerización y orquestación de servicios y uso de azure para el despliegue en la nube.</em></p>
 </li>
 </ul>
 </div>
@@ -2135,10 +2836,10 @@ on this list.</p>
 <p><em>Metodología Ágil: Uso de Scrum para la gestión del proyecto.</em></p>
 </li>
 <li>
-<p><em>Control de Versiones: Uso de Git y GitHub para el control de versiones y colaboración.</em></p>
+<p><em>Control de Versiones: Uso de Git y GitHub para el control de versiones y colaboración, favoreciendo que todos los compañeros revisen, aprendan y ayuden lo mejor posible en el desarrollo.</em></p>
 </li>
 <li>
-<p><em>Integración Continua: Con total intención de automatizar pruebas y despliegues.</em></p>
+<p><em>Integración Continua: Todas las pruebas han sido automatizadas, el despliegue y la monitorización también.</em></p>
 </li>
 </ul>
 </div>
@@ -2148,7 +2849,21 @@ on this list.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><em>Monitorización: Es importante asegurarse de que el sistema funcione correctamente en todo momento. Para ello, se utilizarán herramientas que permitan supervisar el rendimiento del sistema, detectar errores y medir el uso de recursos. Esto nos ayudará a identificar problemas antes de que afecten a los usuarios.</em></p>
+<p><em>Monitorización: Es importante asegurarse de que el sistema funcione correctamente en todo momento. Para ello, se utilizarán herramientas que permitan supervisar el rendimiento del sistema, detectar errores y medir el uso de recursos. Esto nos ayudará a identificar problemas antes de que afecten a los usuarios.</em>
+Estas herramientas incluiyen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prometheus: Herramienta de monitorización y alerta que recopila métricas de aplicaciones y sistemas.</p>
+</li>
+<li>
+<p>Grafana: Herramienta de visualización de datos que se integra con Prometheus para crear paneles de control personalizados.</p>
+</li>
+<li>
+<p>Artillery: Herramienta de pruebas de carga que simula múltiples usuarios para evaluar el rendimiento del sistema bajo condiciones de carga diferentes.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -2234,6 +2949,12 @@ A continuación se muestra una lista con las decisiones tomadas y un enlace a su
 </li>
 <li>
 <p><a href="https://github.com/Arquisoft/wichat_es6c/wiki/ADR-08--‐-Mistrailai">ADR 08</a> - Uso de Mistrailai</p>
+</li>
+<li>
+<p><a href="https://github.com/Arquisoft/wichat_es6c/wiki/ADR-09-‐-Servicios">ADR 09</a> - Arquitectura basada en servicios</p>
+</li>
+<li>
+<p><a href="https://github.com/Arquisoft/wichat_es6c/wiki/ADR-10-‐-Grafana-y-Prometheus">ADR 10</a> - Uso de Grafana y Prometheus</p>
 </li>
 </ul>
 </div>
@@ -2460,11 +3181,59 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Trabajo en equipo</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Los miembros del equipo no se conocen ni han trabajado en conjunto anteriormente, se desconoce las formas de trabajo y nivel de compromiso de cada uno. Hay que tener en cuenta la posibilidad de abandono de uno de los integrantes.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dependencia de la API de Wikidata</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación depende de la API de Wikidata para obtener información. Si la API no está disponible o cambia, esto puede afectar el funcionamiento de la aplicación.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dependencia de la API del LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación depende de la API del modelo de lenguaje para obtener información. Si la API no está disponible o cambia, esto puede afectar el funcionamiento de la aplicación.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dependencia de la red electrica</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación depende de la red electrica para su funcionamiento. Si hay un corte de luz o un problema con la red electrica, esto puede afectar el funcionamiento de la aplicación.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
 <h3 id="_deuda_técnica">11.2. Deuda Técnica</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deuda</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Descripcion</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No se cambia de LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación no puede cambiar de modelo de LLM en caso deque el utilizado no esté disponible. Si este fallara no se podría utilizar el chat.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Falta de paginación en el historial</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación no tiene paginación en el historial de mensajes. Esto puede afectar el rendimiento de la aplicación si hay muchos mensajes en el historial y hacer incomodo para el usuario buscar partidas.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mal funcionamiento del juego al acabar la partida</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación no funciona perfectamente al finalizar una partida, tarda más tiempo del esperado y proboca que los sonidos se comporten de forma extrña.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No se utiliza un modelo de mricroservisios</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación divide el código de una forma parecida a est aruitectura, pero comparten la misma base de datos y no están completamente desacoplados. Esto puede afectar el rendimiento de la aplicación y hacer que sea más difícil de escalar.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lentitud en la carga de preguntas desde Wikidata</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La aplicación tarda mucho tiempo en cargar las preguntas desde Wikidata. Esto afecta al rendimiento de la aplicación y se necesita esperar mucho tiempo si al inicar una partida no hay preguntas en la base de datos.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Malas contestaciones del LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El LLM responde cosas que no tienen sentido o no son correctas. Esto puede afectar la experiencia del usuario y hacer que el juego sea menos divertido.</p></td>
+</tr>
+</tbody>
+</table>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -2540,7 +3309,7 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-02-20 00:01:11 +0100
+Last updated 2025-04-29 23:47:43 +0200
 </div>
 </div>
 </body>
