@@ -131,7 +131,7 @@
         "totalTime": "Tiempo total"
     },
     "AIGreeting": {
-        "message": "Da la bienvenida al usuario de manera cálida, amigable y motivadora máximo ocho palabras. Usa emojis atractivos como 😊, 🎮, 📜 y 🎉 para hacerlo animado. ¡Anímalo a divertirse y pregúntale si está listo para empezar a jugar!",
+        "message": "Da la bienvenida al usuario, con un máximo de ocho palabras. Usa emojis atractivos como 😊, 🎮, 📜 y 🎉.",
         "messageFail": "¡Hola! ¡Espero que tengas un gran día!"
     },
     "Footer": {

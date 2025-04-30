@@ -39,7 +39,7 @@ function GameType() {
   }, []);
 
   return (
-    <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <Box sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
       {/* Video de fondo - Configuración idéntica a HomePage */}
       <Box
         component="video"

@@ -484,13 +484,16 @@ if (playPromise !== undefined) {
 
 
   return (
-    <Stack alignItems="center" justifyContent="center"
+    <Stack
+      alignItems="center"
+      justifyContent="center"
       sx={{
-        height: "75%",
+        height: "84%", // Cambiado de "75%" a "100vh" para ocupar toda la altura de la ventana
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center"
-      }}>
+        backgroundPosition: "center",
+      }}
+    >
 
 
       {/* Sonido de fondo */}
@@ -538,11 +541,11 @@ if (playPromise !== undefined) {
           {questionData.question}
         </Typography>
 
+        
+
         {/* Imagen */}
         <Box
           sx={{
-            width: "80%",
-            height: "60%",
             overflow: "hidden",
             borderRadius: "10px",
             position: "relative",
@@ -557,7 +560,7 @@ if (playPromise !== undefined) {
               src={questionData.imageUrl}
               alt="Imagen de la pregunta"
               style={{
-                width: "100%",
+                maxWidth: "100%",
                 height: "100%",
                 objectFit: "cover",
                 opacity: imageOpacity,
