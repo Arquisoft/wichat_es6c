@@ -31,7 +31,7 @@ const GameFinished = () => {
   const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+  //const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
   useEffect(() => {
     if (location.state) {
