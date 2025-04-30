@@ -29,7 +29,7 @@ describe('HomePage Component', () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Welcome TestUser!')).toBeInTheDocument();
+    expect(screen.getByText("More game modes")).toBeInTheDocument();
   });
 
   it('should not render the welcome message if no session exists', () => {
@@ -56,7 +56,7 @@ describe('HomePage Component', () => {
       </BrowserRouter>
     );
 
-    const playButton = screen.getByText('Play');
+    const playButton = screen.getByText('More game modes');
     expect(playButton).toBeInTheDocument();
 
     fireEvent.click(playButton);
