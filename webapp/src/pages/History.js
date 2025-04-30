@@ -62,7 +62,7 @@ export default function UserHistory() {
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
-  }, [editMode]);
+  }, [editMode, gatewayService]);
 
   useEffect(() => {
     if (username) {
