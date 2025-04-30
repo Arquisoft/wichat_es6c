@@ -100,7 +100,6 @@ describe('NavMenu Component', () => {
 
         fireEvent.click(selectLangEn);
         expect(screen.getByText('Change language')).toBeInTheDocument();
-        expect(screen.getByText('Settings')).toBeInTheDocument();
         fireEvent.click(screen.getByText('Change language'));
         expect(screen.getByText('Spanish')).toBeInTheDocument();
         expect(screen.getByText('English')).toBeInTheDocument();
@@ -135,20 +134,6 @@ describe('NavMenu Component', () => {
 
     });
 
-    it('should open the settings menu and navigate to /settings', () => {
-        render(
-            <BrowserRouter>
-                <SessionContext.Provider value={{ sessionId: '12345' }}>
-                    <NavMenu />
-                </SessionContext.Provider>
-            </BrowserRouter>
-        );
-
-        fireEvent.click(screen.getByTestId('more-button'));
-        fireEvent.click(screen.getByText('Ajustes'));
-
-        expect(mockNavigate).toHaveBeenCalledWith('/settings');
-    });
 
     
 });

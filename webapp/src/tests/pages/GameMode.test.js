@@ -37,7 +37,7 @@ describe('GameMode Page', () => {
         expect(screen.getByText('Choose a theme')).toBeInTheDocument();
 
         await waitFor(() => {
-            expect(screen.getByAltText('Famosos')).toBeInTheDocument();
+            expect(screen.getByAltText('Celebrities')).toBeInTheDocument();
         });
     });
 
@@ -53,7 +53,7 @@ describe('GameMode Page', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByAltText('Banderas')).toBeInTheDocument();
+            expect(screen.getByAltText('Countries')).toBeInTheDocument();
         });
     });
 
@@ -68,7 +68,7 @@ describe('GameMode Page', () => {
             </MemoryRouter>
         );
 
-        const countryButton = screen.getByAltText('Países');
+        const countryButton = screen.getByAltText('Countries');
         fireEvent.click(countryButton);
 
         await waitFor(() => {
