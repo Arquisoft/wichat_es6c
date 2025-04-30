@@ -16,17 +16,16 @@ const Login = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
 
-
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
       video.playbackRate = 0.5; // Reduce la velocidad si es necesario
       const playPromise = video.play();
-    if (playPromise && typeof playPromise.then === "function") {
-      playPromise.catch(error => {
-        console.warn("Auto-play was prevented:", error);
-      });
-    }
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(error => {
+          console.warn("Auto-play was prevented:", error);
+        });
+      }
     }
   }, []);
 
@@ -66,14 +65,14 @@ const Login = () => {
       component="main"
       maxWidth="xs"
       sx={{
-        mt: '2vh',
+        mt: '2vh', // Align to the top of the screen
         mb: '4vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start', // Align content to the top
         alignItems: 'center',
-        width: { xs: '90%', sm: '90%', md: "35%" }, // 90% en pantallas pequeñas, 30% en pantallas más grandes
-        height: { xs: 'auto' }, // Ajusta el alto automáticamente en móviles, 80% en pantallas más grandes
+        width: { xs: '90%', sm: '90%', md: "35%" },
+        height: { xs: '100%' },
       }}
     >
       <Box
@@ -83,7 +82,7 @@ const Login = () => {
           boxShadow: 3,
           backgroundColor: '#fff',
           width: '100%',
-          height: '100%', // Asegura que el Box ocupe todo el alto del contenedor
+          height: 'auto', // Asegura que el Box ocupe todo el alto del contenedor
         }}
       >
 
