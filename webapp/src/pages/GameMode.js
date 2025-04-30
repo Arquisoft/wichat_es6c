@@ -20,12 +20,12 @@ function GameMode() {
     { text: t("GameMode.countryText"), path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
     { text: t("GameMode.celebrityText"), path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
     { text: t("GameMode.flagText"), path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
-  ], []);
+  ], [t]);
 
   const vsButtonList = useMemo(() => [
     { text: t("GameMode.celebrityText"), path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
     { text: t("GameMode.countryText"), path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
-  ], []);
+  ], [t]);
 
   useEffect(() => {
     if (location.state?.type) {
