@@ -48,3 +48,5 @@ A continuación se muestra una lista con las decisiones tomadas y un enlace a su
 - https://github.com/Arquisoft/wichat_es6c/wiki/ADR-06--%E2%80%90-MongoDB[ADR 06] - Uso de MongoDB
 - https://github.com/Arquisoft/wichat_es6c/wiki/ADR-07--%E2%80%90-Docker[ADR 07] - Uso de Docker
 - https://github.com/Arquisoft/wichat_es6c/wiki/ADR-08--‐-Mistrailai[ADR 08] - Uso de Mistrailai
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-09-‐-Servicios[ADR 09] - Arquitectura basada en servicios
+- https://github.com/Arquisoft/wichat_es6c/wiki/ADR-10-‐-Grafana-y-Prometheus[ADR 10] - Uso de Grafana y Prometheus

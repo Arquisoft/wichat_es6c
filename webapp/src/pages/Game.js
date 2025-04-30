@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
-import { IconButton, Button, Stack, Typography, Box, CircularProgress, useMediaQuery} from "@mui/material";
+import { IconButton, Button, Stack, Typography, Box, CircularProgress, useMediaQuery } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatIcon from "@mui/icons-material/Chat";
@@ -177,11 +177,12 @@ function Game() {
     if (failAudioRef.current) {
       failAudioRef.current.currentTime = 0;
       failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
-      if (failAudioRef.current.play()) {
-        failAudioRef.current.play().catch(error => {
-          console.error("Error reproduciendo el sonido de fallo:", error);
-        });
-      }
+      const playPromise = failAudioRef.current.play();
+if (playPromise !== undefined) {
+  playPromise.catch(error => {
+    console.error("Error reproduciendo el sonido de fallo:", error);
+  });
+}
     }
 
     setShowFeedback(true);
@@ -218,7 +219,7 @@ function Game() {
         }
       }, TRANSITION_ROUND_TIME); // Duración fija para la animación
     }, FEEDBACK_QUESTIONS_TIME);
-  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode,volumeLevel]);
+  }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode, volumeLevel]);
 
   useEffect(() => {
     console.log("volumen:", volumeLevel);
@@ -231,17 +232,18 @@ function Game() {
       console.log("volumen audio:", audio.volume);
     }
 
-    if (audio.play()) {
-      audio.play().catch(error => {
-        console.error("Error al reproducir el audio:", error);
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.error("Error reproduciendo el sonido de fallo:", error);
       });
     }
 
     return () => {
-      if(audio){
+      if (audio) {
         audio.pause();
       }
-      
+
     };
   }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
 
@@ -290,9 +292,10 @@ function Game() {
       if (hurryAudioRef.current) {
         hurryAudioRef.current.currentTime = 0;
         hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-        if (hurryAudioRef.current.play()) {
-          hurryAudioRef.current.play().catch(error => {
-            console.error("Error reproduciendo el sonido de prisa:", error);
+        const playPromise = hurryAudioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.error("Error reproduciendo el sonido de fallo:", error);
           });
         }
       }
@@ -300,7 +303,7 @@ function Game() {
         //audioRef.current.pause();
       }
     }
-  }, [timeLeft, hurryMode,volumeLevel]);
+  }, [timeLeft, hurryMode, volumeLevel]);
 
   useEffect(() => {
     if (animationComplete && imageLoaded) {
@@ -313,9 +316,10 @@ function Game() {
     if (chooseAudioRef.current) {
       chooseAudioRef.current.currentTime = 0;
       chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-      if (chooseAudioRef.current.play()) {
-        chooseAudioRef.current.play().catch(error => {
-          console.error("Error reproduciendo el sonido de elección:", error);
+      const playPromise = chooseAudioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.error("Error reproduciendo el sonido de fallo:", error);
         });
       }
     }
@@ -348,17 +352,19 @@ function Game() {
         if (isCorrect && correctAudioRef.current) {
           correctAudioRef.current.currentTime = 0;
           correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-          if (correctAudioRef.current.play()) {
-            correctAudioRef.current.play().catch(error => {
-              console.error("Error reproduciendo el sonido de acierto:", error);
+          const playPromise = correctAudioRef.current.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              console.error("Error reproduciendo el sonido de fallo:", error);
             });
           }
         } else {
           if (failAudioRef.current) {
             failAudioRef.current.currentTime = 0;
             failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-            if (failAudioRef.current.play()) {
-              failAudioRef.current.play().catch(error => {
+            const playPromise = failAudioRef.current.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(error => {
                 console.error("Error reproduciendo el sonido de fallo:", error);
               });
             }
@@ -520,11 +526,11 @@ function Game() {
         }}
       >
         {/* Pregunta */}
-        <Typography 
-          variant="h5" 
-          fontWeight="bold" 
-          sx={{ 
-            mb: 2, 
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{
+            mb: 2,
             fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' }, // Tamaño de fuente adaptable
             textAlign: { xs: 'center', sm: 'left' } // Alineación adaptable
           }}
@@ -535,8 +541,8 @@ function Game() {
         {/* Imagen */}
         <Box
           sx={{
-            width: "80%", 
-            height: "60%", 
+            width: "80%",
+            height: "60%",
             overflow: "hidden",
             borderRadius: "10px",
             position: "relative",
@@ -587,8 +593,8 @@ function Game() {
         <Box
           sx={{
             position: "absolute",
-            top: { xs: "5%", sm: "18%", md: "20%" }, 
-            left: { xs: "-20%", sm: "-25%", md: "-30%" }, 
+            top: { xs: "5%", sm: "18%", md: "20%" },
+            left: { xs: "-20%", sm: "-25%", md: "-30%" },
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -622,14 +628,14 @@ function Game() {
         </Box>
 
         {/* Opciones de respuesta */}
-        <Stack 
-          direction="column" 
-          spacing={2} 
-          sx={{ 
-            width: "100%", 
+        <Stack
+          direction="column"
+          spacing={2}
+          sx={{
+            width: "100%",
             height: "40%", // Ahora ocupa el 40% del espacio
-            marginTop: "1.5rem", 
-            visibility: imageLoaded ? "visible" : "hidden", 
+            marginTop: "1.5rem",
+            visibility: imageLoaded ? "visible" : "hidden",
             alignItems: "center", // Centrar horizontalmente
             justifyContent: "center" // Centrar verticalmente
           }}
@@ -723,18 +729,18 @@ function Game() {
       </Box>
 
 
-      <IconButton 
-        onClick={() => setChatOpen(!chatOpen)} 
+      <IconButton
+        onClick={() => setChatOpen(!chatOpen)}
         aria-label={chatOpen ? 'close chat' : 'open chat'}
-        sx={{ 
-          position: "fixed", 
-          bottom: "5%", 
-          right: "8%", 
-          backgroundColor: "white", 
-          borderRadius: "50%", 
-          boxShadow: 3, 
-          width: "60px", 
-          height: "60px", 
+        sx={{
+          position: "fixed",
+          bottom: "5%",
+          right: "8%",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          boxShadow: 3,
+          width: "60px",
+          height: "60px",
           zIndex: 10000,
           // Responsive
           '@media (max-width: 1065px)': {
@@ -745,44 +751,44 @@ function Game() {
         {chatOpen ? <CloseIcon fontSize="large" /> : <ChatIcon fontSize="large" />}
       </IconButton>
 
-      <Box sx={{ 
-        position: "fixed", 
-        bottom: "12%", 
-          right: chatOpen ? "5%" : "-30%", 
-          width: "24%", 
-          height: "70%", 
-          backgroundColor: "white", 
-          borderRadius: "1%", 
-          boxShadow: 3, 
-          transition: "right 0.3s ease-in-out", 
-          overflow: "hidden", 
-          display: "flex", 
-          flexDirection: "column", 
-          zIndex: 999,
-          // Responsive
-          '@media (max-width: 1065px)': {
-            width: "90vw",
-            right: chatOpen ? "5%" : "-100%",
-            bottom: "auto",
-            top: "50%",
-            transform: "translateY(-50%)",
-            height: "70%"
-          }
-        }}>
-          {chatOpen && (
-            <Box sx={{
-              flexShrink: 0,
-              height: "100%",
-              overflowY: "auto"
-            }}>
-              <Chat questionData={questionData} 
-                    header={"Knowing that there is a picture of the " + gameModeName +" "+ questionData.correctAnswer + " and the user thinks that may be one of these " + questionData.options + ", answer vaguely to this WITHOUT EVER revealing the answer, in a short phrase:"}                    
-                    isMobile={isMobile}
-                    hideHeader={false}
-              />
-            </Box>
-          )}
+      <Box sx={{
+        position: "fixed",
+        bottom: "12%",
+        right: chatOpen ? "5%" : "-30%",
+        width: "24%",
+        height: "70%",
+        backgroundColor: "white",
+        borderRadius: "1%",
+        boxShadow: 3,
+        transition: "right 0.3s ease-in-out",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        zIndex: 999,
+        // Responsive
+        '@media (max-width: 1065px)': {
+          width: "90vw",
+          right: chatOpen ? "5%" : "-100%",
+          bottom: "auto",
+          top: "50%",
+          transform: "translateY(-50%)",
+          height: "70%"
+        }
+      }}>
+        {chatOpen && (
+          <Box sx={{
+            flexShrink: 0,
+            height: "100%",
+            overflowY: "auto"
+          }}>
+            <Chat questionData={questionData}
+              header={"Knowing that there is a picture of the " + gameModeName + " " + questionData.correctAnswer + " and the user thinks that may be one of these " + questionData.options + ", answer vaguely to this WITHOUT EVER revealing the answer, in a short phrase:"}
+              isMobile={isMobile}
+              hideHeader={false}
+            />
           </Box>
+        )}
+      </Box>
     </Stack>
   );
 }
