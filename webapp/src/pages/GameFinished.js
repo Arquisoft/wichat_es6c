@@ -90,7 +90,7 @@ const GameFinished = () => {
     <Stack
       alignItems="center"
       justifyContent="center"
-      spacing={{ xs: 3, md: 4 }}
+      spacing={{ xs: 3, md: 0 }}
       sx={{ height: "100%", textAlign: "center", px: 2 }}
     >
       {/* Confetti */}
