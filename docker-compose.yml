@@ -119,6 +119,8 @@ services:
     profiles: ["dev", "prod"]
     networks:
       - mynetwork
+    environment:
+      - PROMETHEUS_LISTEN_ADDRESS=0.0.0.0:9090  
     volumes:
       - ./gatewayservice/monitoring/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
