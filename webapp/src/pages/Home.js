@@ -14,6 +14,7 @@ const Home = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
+    console.log('Session ID:', sessionId); // Log the session ID to the console
     if (sessionId) {
       navigate('/homepage');
     }
@@ -38,14 +39,18 @@ const Home = () => {
 
   return (
     <>
-      <Container component="main">
+      <Container 
+        component="main" 
+        style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }} // Ajusta el diseño
+      >
         {showLogin ? <Login /> : <AddUser />}
         
-        {/*  Button to toggle between Login and Register */}
+        {/* Botón para alternar entre Login y Register */}
         <Button 
           fullWidth
           onClick={toggleView}
         >
+         
         </Button>
       </Container>
 
@@ -59,4 +64,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;
