@@ -110,11 +110,16 @@ En estas pruebas ya no se buscaba hacer una prueba de carga extrema, sino ver el
 
 image::PruebaCargaDeploy.png["Table 13.2.1: Prueba de carga deploy "]
 
-Se puede ver que ha rendido adecuadamene para los usuarios esperados que se marcaron en la documentación, aguantando a 50 a la vez sin problemas.
+Se puede ver que ha rendido adecuadamene para los usuarios esperados que se marcaron en la documentación, aguantando a 50 a la vez sin problemas graves.
 
 image::PruebaCargaDeploy-info.png["Table 13.2.1: Información de la prueba de carga deploy"]
 
 Aquí se puede apreciar algún time out también en el llm y en el servicio de preguntas, pero no ha sido un problema para la aplicación ya que ha sido un porcentaje ínfimo comparado con todas las peticiones que se han hecho. En esta prueba se han simulado aproximadamente 50 usuarios a la vez y ha aguantado sin problemas.
+
+Las respuestas que más tiempo han tardado han sido las del servicio de preguntas y del llm, que son los que más tiempo tardan en responder. En el caso del llm, esto es normal ya que es un servicio externo y no podemos controlar su rendimiento además que se tiene que generar la respuesta.
+
+Se han dado algunos errores 401 pero se deben al intento de logueo con el mismo usuario en la aplicación.
+
 
 === _Monitorización_
 
