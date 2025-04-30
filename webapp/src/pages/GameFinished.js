@@ -97,7 +97,7 @@ const GameFinished = () => {
       spacing={isMobile ? 1.3 : 3}
       sx={{
         textAlign: "center",
-        ...(isMobile ? { maxHeight: "100%" } : { height: "100%" })
+        ...(isMobile ? { height: "100%" } : { height: "100%" })
       }}
     >
       {/* Confetti */}
@@ -175,7 +175,8 @@ const GameFinished = () => {
             backgroundColor: '#c7f28e',
             textAlign: 'center',
             boxShadow: 3,
-            width: { xs: '80%', md: '20%' },
+            width: { xs: '80%', md: 'auto' },
+            height: { xs: 'auto', md: '60%' },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
@@ -195,7 +196,8 @@ const GameFinished = () => {
             backgroundColor: '#e3f2fd',
             textAlign: 'center',
             boxShadow: 3,
-            width: { xs: '80%', md: '20%' },
+            width: { xs: '80%', md: 'auto' },
+            height: { xs: 'auto', md: '60%' },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
