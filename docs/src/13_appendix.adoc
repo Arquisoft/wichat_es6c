@@ -4,14 +4,37 @@ ifndef::imagesdir[:imagesdir: ../images]
 == Anexos
 
 === _Pruebas unitarias_
+Se han realizado pruebas unitarias en todos los servicios del sistema. Con ellas se intentan probar todas las funcionalidades de cada uno de los servicios. Para llevarlas acabo se han utilizado las siguiente tecnologías:
+
+* Jest: framework de pruebas en JavaScript.
+* Supertest: librería para realizar pruebas HTTP en Node.js.
+* Axios: librería para realizar peticiones HTTP en Node.js.
+
+==== _Resultado de cobertura de código_
+En las siguientes imagenes se puede observar la cobertura de código de cada uno de los servicios del sistema. La cobertura de código es un indicador que mide el porcentaje de código fuente que ha sido ejecutado durante las pruebas.
+
+===== _User Service_
+image::13_coverage_user.png["Table 13.1.1: Coverage of user service"]
+===== _Authentication Service_
+image::13_coverage_auth.png["Table 13.1.1: Coverage of authentication service"]
+===== _History Service_
+image::13_coverage_history.png["Table 13.1.1: Coverage of history service"]
+===== _Gateway Service_
+image::13_coverage_gateway.png["Table 13.1.1: Coverage of gateway service"]
+===== _LLM Service_
+image::13_coverage_llm.png["Table 13.1.1: Coverage of llm service"]
+===== _Question Service_
+image::13_coverage_question.png["Table 13.1.1: Coverage of question service"]
+===== _WebApp_
+image::13_coverage_webapp.png["Table 13.1.1: Coverage of webapp"]
 
 === _Pruebas de aceptación_
-
-=== _Pruebas de usabilidad_
+Para realizar estas pruebas se han creado pruebas e2e (end to end) para el login, signup y el acceso al juego de preguntas.
+Se han utilizado las siguientes tecnologías:
+* Puppeteer: una librería que permite controlar navegadores web de manera automatizada.
+* Jest: framework de pruebas en JavaScript.
 
 === _Pruebas de carga_
-
-=== _Resultado de cobertura de código_
 
 === _Monitorización_
 
