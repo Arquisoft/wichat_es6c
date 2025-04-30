@@ -381,7 +381,7 @@ const HomePage = () => {
         </Grid>
 
         {/* Columna derecha - Info usuario */}
-        <Grid
+        {!isMobile && (<Grid
           item
           xs={12}
           lg={3}
@@ -392,6 +392,7 @@ const HomePage = () => {
             justifyContent: "center",
             overflow: "hidden",
             p: { xs: 1, sm: 2 },
+            
           }}
         >
           {loadingStats ? (
@@ -462,7 +463,9 @@ const HomePage = () => {
             </Box>
           ) : null}
         </Grid>
+        )}
       </Grid>
+      
     </Box>
   );
 };
