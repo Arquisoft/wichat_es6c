@@ -22,7 +22,7 @@ jobs:
     - run: npm --prefix webapp ci
     - run: npm --prefix users/authservice test -- --coverage
     - run: npm --prefix users/userservice test -- --coverage
-    -  run: npm --prefix users/history test -- --coverage
+    - run: npm --prefix users/historyserice test -- --coverage
     - run: npm --prefix questionservice test -- --coverage
     - run: npm --prefix llmservice test -- --coverage
     - run: npm --prefix gatewayservice test -- --coverage
