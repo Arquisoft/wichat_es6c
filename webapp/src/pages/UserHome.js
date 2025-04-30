@@ -34,6 +34,7 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [loadingStats, setLoadingStats] = useState(false);
   const videoRef = useRef(null);
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
   const theme = createTheme({
     palette: {
@@ -81,10 +82,10 @@ const HomePage = () => {
       console.log("Fetching user stats and profile for:", username);
       Promise.all([
         axios.get(
-          `http://localhost:8000/getUserStats`, { params: { username } })
+          `${apiEndpoint}/getUserStats`, { params: { username } })
         ,
         axios.get(
-          `${process.env.HISTORY_SERVICE_URL || "http://localhost:8000"}/user/profile/${username}`
+          `${apiEndpoint}/user/profile/${username}`
         ),
       ])
         .then(([statsRes, profileRes]) => {
