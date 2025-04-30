@@ -623,7 +623,8 @@ function Game() {
           display: "flex",
           flexDirection: "column",
           height: "90%",
-          overflow: "hidden",
+          overflowX: "hidden",
+          overflowY: "auto",
           padding: "2%",
           borderRadius: { xs: "1rem", md: "0" }, // Bordes redondeados en móviles
           boxShadow: { xs: "0px 4px 10px rgba(0, 0, 0, 0.2)", md: "none" }, // Sombra en móviles
