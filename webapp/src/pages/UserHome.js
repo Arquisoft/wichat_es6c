@@ -443,7 +443,7 @@ const HomePage = () => {
 
                   <LinearProgress
                     variant="determinate"
-                    value={((userStats.totalCorrect / (userStats.totalWrong + userStats.totalCorrect)) * 100).toFixed(2)}
+                    value={parseFloat(((userStats.totalCorrect / (userStats.totalWrong + userStats.totalCorrect)) * 100).toFixed(2))}
                     sx={{
                       height: 8,
                       borderRadius: 4,

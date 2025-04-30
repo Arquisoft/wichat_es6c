@@ -43,7 +43,7 @@ const NavMenu = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "#9b33c0" }}>
+      <AppBar position="static" sx={{ backgroundColor: "#9b33c0", zIndex: 10 }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           {/* Logo y Nombre */}
           <IconButton onClick={() => navigate("/")} sx={{ p: 0, background: "transparent" }}>
