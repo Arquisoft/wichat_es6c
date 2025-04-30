@@ -294,7 +294,8 @@ paths:
               required:
                 - username
                 - password
-                - email
+                - name
+                - surname
               properties:
                 username:
                   type: string
@@ -302,10 +303,12 @@ paths:
                 password:
                   type: string
                   example: "Pass1234"
-                email:
+                name:
                   type: string
-                  format: email
-                  example: "juan@example.com"
+                  example: "juan"
+                surname:
+                  type: string
+                  example: "perez"
       responses:
         201:
           description: Usuario creado exitosamente

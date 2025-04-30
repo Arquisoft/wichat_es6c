@@ -46,6 +46,7 @@ const HomePage = () => {
     },
   });
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
   const gameModes = [
     {
@@ -135,7 +136,7 @@ const HomePage = () => {
   };
 
   return (
-    <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <Box sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
       {/* Video de fondo */}
       <Box
         component="video"
@@ -179,7 +180,7 @@ const HomePage = () => {
         container
         spacing={2}
         sx={{
-          height: "100vh",
+          height: "100%",
           p: { xs: 2, md: 4 },
           overflow: "auto",
           alignItems: "flex-start",
@@ -382,7 +383,7 @@ const HomePage = () => {
         </Grid>
 
         {/* Columna derecha - Info usuario */}
-        {!isMobile && (<Grid
+        {isDesktop && (<Grid
           item
           xs={12}
           lg={3}

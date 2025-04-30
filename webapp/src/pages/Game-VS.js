@@ -420,7 +420,7 @@ function Game() {
 
   if (!questionData) {
     return (
-      <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+      <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
         <Typography variant="h4" sx={{ marginTop: 2 }}>{t("Game-VS.loading")}</Typography>
         <CircularProgress />
       </Stack>
@@ -494,7 +494,7 @@ function Game() {
     <Stack
       direction={{ xs: "column", md: "row" }} // Columna en móviles, fila en ordenadores
       sx={{
-        height: "100vh",
+        height: "100%",
         width: "100vw",
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",

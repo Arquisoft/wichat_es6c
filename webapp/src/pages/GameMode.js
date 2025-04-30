@@ -23,7 +23,7 @@ function GameMode() {
   ], [t]);
 
   const vsButtonList = useMemo(() => [
-    { text: t("GameMode.celebrityText"), path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: t("GameMode.celebrityText"), path: '/game-vs', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
     { text: t("GameMode.countryText"), path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
   ], [t]);
 

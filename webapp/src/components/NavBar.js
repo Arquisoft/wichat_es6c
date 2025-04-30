@@ -43,65 +43,146 @@ const NavMenu = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "#9b33c0", zIndex: 10 }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <AppBar 
+  position="static" 
+  sx={{ 
+    backgroundColor: "#9b33c0", 
+    zIndex: 10, 
+    height: "8vh", // Limita la altura al 8% de la vista disponible
+    maxHeight: "8vh", // Asegura que no exceda el 8%
+    overflow: "hidden" // Evita que el contenido se desborde
+  }}
+>
+        <Toolbar 
+  sx={{ 
+    display: "flex", 
+    justifyContent: "space-between", 
+    alignItems: "center", 
+    px: { xs: 1, sm: 2 }, // Espaciado horizontal dinámico
+    height: "100%" // Asegura que el contenido ocupe toda la altura del AppBar
+  }}
+>
           {/* Logo y Nombre */}
-          <IconButton onClick={() => navigate("/")} sx={{ p: 0, background: "transparent" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img src="/icon-app.ico" alt="Logo" style={{ width: 40, height: 40, marginRight: 10 }} />
-              <Typography variant="h6" sx={{ color: "white" }}> {t('NavBar.nameApp')}
-              </Typography>
-            </Box>
-          </IconButton>
+          <IconButton 
+    onClick={() => navigate("/")} 
+    sx={{ 
+      p: 0, 
+      background: "transparent", 
+      display: "flex", 
+      alignItems: "center" 
+    }}
+  >
+    <Box 
+      sx={{ 
+        display: "flex", 
+        alignItems: "center", 
+        gap: { xs: 1, sm: 2 } // Ajusta el espacio entre el logo y el texto
+      }}
+    >
+      <img 
+        src="/icon-app.ico" 
+        alt="Logo" 
+        style={{ 
+          width: "auto", 
+          height: "4vh", // Ajusta dinámicamente la altura del logo
+          marginRight: 10 
+        }} 
+      />
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          color: "white", 
+          fontSize: { xs: "0.9rem", sm: "1.2rem" } // Tamaño de fuente responsivo
+        }}
+      >
+        {t('NavBar.nameApp')}
+      </Typography>
+    </Box>
+  </IconButton>
 
           {/* Menú de navegación */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            {!isMobile && sessionId && (
-              <>
-                <Button color="inherit" startIcon={<Person />} onClick={() => navigate('/history')}>
-                  {t('NavBar.profile')}
-                </Button>
-                <Button color="inherit" startIcon={<HelpOutline />} onClick={handleHelpOpen}>
-                  {t('NavBar.howToPlay')}
-                </Button>
-                <Button color="inherit" startIcon={<Logout />} onClick={logout}>
-                  {t('NavBar.logout')}
-                </Button>
-              </>
-            )}
+          <Box 
+    sx={{ 
+      display: "flex", 
+      alignItems: "center", 
+      gap: { xs: 1, sm: 2 }, // Espaciado dinámico entre elementos
+      flexWrap: "wrap" // Permite que los elementos se ajusten en pantallas pequeñas
+    }}
+  >
+    {!isMobile && sessionId && (
+      <>
+        <Button 
+          color="inherit" 
+          startIcon={<Person />} 
+          onClick={() => navigate('/history')} 
+          sx={{ 
+            fontSize: { xs: "0.8rem", sm: "1rem" } // Tamaño de fuente responsivo
+          }}
+        >
+          {t('NavBar.profile')}
+        </Button>
+        <Button 
+          color="inherit" 
+          startIcon={<HelpOutline />} 
+          onClick={handleHelpOpen} 
+          sx={{ 
+            fontSize: { xs: "0.8rem", sm: "1rem" } 
+          }}
+        >
+          {t('NavBar.howToPlay')}
+        </Button>
+        <Button 
+          color="inherit" 
+          startIcon={<Logout />} 
+          onClick={logout} 
+          sx={{ 
+            fontSize: { xs: "0.8rem", sm: "1rem" } 
+          }}
+        >
+          {t('NavBar.logout')}
+        </Button>
+      </>
+    )}
 
-            {/* Nueva opción: More Options Games */}
-            {isMobile && sessionId && (
-              <Button
-                color="inherit"
-                startIcon={<Games />}
-                onClick={() => navigate('/game-type')}
-                sx={{
-                  color: "white",
-                  borderRadius: "20px",
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  border: "2px solid white",
-                  "&:hover": {
-                    backgroundColor: "#9b33c0",
-                  },
-                  fontSize: { xs: '0.8rem', sm: '0.9rem' },
-                  minWidth: 'auto',
-                  margin: { xs: '0.5rem', sm: '0' },
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {t('UserHome.moreOptions')}
-              </Button>
-            )}
+    {/* Nueva opción: More Options Games */}
+    {isMobile && sessionId && (
+      <Button
+        color="inherit"
+        startIcon={<Games />}
+        onClick={() => navigate('/game-type')}
+        sx={{
+          color: "white",
+          borderRadius: "20px",
+          px: { xs: 2, sm: 3 },
+          py: 1,
+          fontWeight: "bold",
+          textTransform: "none",
+          border: "2px solid white",
+          "&:hover": {
+            backgroundColor: "#9b33c0",
+          },
+          fontSize: { xs: '0.8rem', sm: '0.9rem' },
+          minWidth: 'auto',
+          margin: { xs: '0.5rem', sm: '0' },
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {t('UserHome.moreOptions')}
+      </Button>
+    )}
 
-            {/* Menú de configuración */}
-            <IconButton color="inherit" onClick={handleMenuOpen} data-testid="more-button">
-              <MoreVert />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+    {/* Menú de configuración */}
+    <IconButton 
+      color="inherit" 
+      onClick={handleMenuOpen} 
+      data-testid="more-button"
+      sx={{ 
+        fontSize: { xs: "0.8rem", sm: "1rem" } 
+      }}
+    >
+      <MoreVert />
+    </IconButton>
+    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
               {/* Agregar opciones móviles si hay sesión iniciada */}
               {isMobile && sessionId && (
                 <>
@@ -145,8 +226,9 @@ const NavMenu = () => {
                 </MenuItem>
               </Menu>
             </Menu>
-          </Box>
-        </Toolbar>
+
+  </Box>
+</Toolbar>
       </AppBar>
 
       {/* Diálogo de ayuda */}
