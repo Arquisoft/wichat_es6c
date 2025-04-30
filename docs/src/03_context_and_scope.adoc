@@ -85,3 +85,24 @@ endif::arc42help[]
 
 image:03_technicalContext.png["Diagram 3.2: Contexto Tencológico"]
 
+**Wichat App:** Vista con la que interactúa el usaurio. Se conecta con Gateway Service para acceder al resto de los servicios.
+
+**Gateway Service:** Servicio que actúa como intermediario entre la aplicación y los servicios de backend. Se encarga de enrutar las solicitudes y respuestas entre la aplicación y los servicios.
+
+**Authentication Service:** Servicio que gestiona la autenticación y autorización de los usuarios. Se encarga de verificar las credenciales de los usuarios y proporcionar tokens de acceso.
+
+**User Service:** Servicio que gestiona la información de los usuarios y de los perfiles.
+
+**History Service:** Servicio que gestiona el historial de juegos y estadísticas de los usuarios. Se encarga de almacenar y recuperar la información relacionada con los juegos jugados por los usuarios.
+
+**LLM Service:** Servicio que se encarga de interactuar con el modelo de lenguaje a gran escala (LLM). Se encarga de enviar las consultas del usuario al LLM y recibir las respuestas generadas por el modelo.
+
+**Question Service:** Servicio que se encarga de gestionar las peticiones de `reguntas desde la aplicación. Hace de intermediario entre la aplicación y los servicios para guardar y generar preguntas.
+
+**Question Generate Service:** Servicio que se encarga de generar preguntas a partir de los datos obtenidos de Wikidata. Se encarga de enviar las consultas a la API de Wikidata y recibir las respuestas generadas por el modelo.
+
+**Question Data Service:** Servicio que se encarga de gestionar los datos de las preguntas generadas. Se encarga de almacenar y recuperar la información relacionada con las preguntas generadas por el modelo. Se comunica con la base de datos para almacenar y recuperar las preguntas.
+
+**questiondb:** Base de datos que almacena la información relacionada con las preguntas generadas por el modelo. Se encarga de almacenar y recuperar la información relacionada con las preguntas generadas por el modelo.
+
+**userdb:** Base de datos que almacena la información relacionada con los usuarios y sus perfiles. Se encarga de almacenar y recuperar la información relacionada con los usuarios registrados en la aplicación.
