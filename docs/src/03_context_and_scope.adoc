@@ -61,7 +61,7 @@ image:03_businessContext.png["Diagram 3.1: Contexto de negocio"]
 
 **Wikidata:** Proporciona datos precisos y actualizados que se utilizan para generar las preguntas y respuestas de la aplicación.
 
-**LLM:** Modelo de inteligencia artificial que procesa las consultas de los usuarios, generando respuestas coherentes y relevantes basadas en el contexto y los datos obtenidos de Wikidata y la base de datos.
+**LLM:** Modelo de lenguaje a gran escala que procesa las consultas de los usuarios, generando respuestas coherentes y relevantes basadas en el contexto y los datos obtenidos de Wikidata y la base de datos.
 
 **Base de datos:** Almacena los datos de los usuarios, estadísticas de juegos y registros de consultas. 
 

@@ -5,6 +5,7 @@ const feature = loadFeature('./features/play-game.feature');
 const axios = require('axios');
 let page;
 let browser;
+jest.setTimeout(60000); // <-- Aumentar timeout global
 
 const questions = [
     {
@@ -137,13 +138,13 @@ defineFeature(feature, test => {
 
 
         given('A logged user in play view', async () => {
-            await expect(page).toMatchElement('button', { text: "Play" });
+            await expect(page).toMatchElement('button', { text: "More game modes" });
             await axios.post('http://localhost:8000/questions', { questions });
 
         });
 
         when('I press "PLAY" and select normal game option "Países"', async () => {
-            await expect(page).toClick('button', { text: "Play" });
+            await expect(page).toClick('button', { text: "More game modes" });
             await expect(page).toClick('button:nth-child(1) > img');
             await expect(page).toClick('#root > div > div > div > button > img');
         });

@@ -1,5 +1,5 @@
 // src/components/Login.js
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Box, Divider, Container, Typography, TextField, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,6 +14,21 @@ const Login = () => {
   const { t } = useTranslation();
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const navigate = useNavigate();
+  const videoRef = useRef(null);
+
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      const playPromise = video.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(error => {
+        console.warn("Auto-play was prevented:", error);
+      });
+    }
+    }
+  }, []);
 
   const loginUser = async () => {
     try {
@@ -57,8 +72,8 @@ const Login = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        width: { xs: '90%', sm: '90%' , md: "35%"  }, // 90% en pantallas pequeñas, 30% en pantallas más grandes
-        height: { xs: 'auto'}, // Ajusta el alto automáticamente en móviles, 80% en pantallas más grandes
+        width: { xs: '90%', sm: '90%', md: "35%" }, // 90% en pantallas pequeñas, 30% en pantallas más grandes
+        height: { xs: 'auto' }, // Ajusta el alto automáticamente en móviles, 80% en pantallas más grandes
       }}
     >
       <Box
@@ -71,6 +86,45 @@ const Login = () => {
           height: '100%', // Asegura que el Box ocupe todo el alto del contenedor
         }}
       >
+
+        {/* Video de fondo - Configuración idéntica a HomePage */}
+        <Box
+          component="video"
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            minWidth: "100%",
+            minHeight: "100%",
+            width: "auto",
+            height: "auto",
+            transform: "translate(-50%, -50%)",
+            zIndex: -1,
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/videos/background_white_small.mp4" type="video/mp4" />
+        </Box>
+
+        {/* Capa oscura para mejorar legibilidad - Configuración idéntica */}
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.09)",
+            zIndex: -1,
+          }}
+        />
+
         <Typography component="h1" variant="h5" align="center" sx={{ mb: '2vh', fontWeight: 'bold' }}>
           {t('Login.sigIn')}
         </Typography>

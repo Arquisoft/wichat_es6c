@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback,useRef } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { Stack, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -155,14 +155,14 @@ function Game() {
     setHurryMode(false);
     if (hurryAudioRef.current) hurryAudioRef.current.pause();
     failSoundPlayedRef.current = false;
-  }, [nextQuestionData, fetchQuestion, preloadNextQuestion,failSoundPlayedRef]);
+  }, [nextQuestionData, fetchQuestion, preloadNextQuestion, failSoundPlayedRef]);
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
-    
+
     setShowFeedback(true);
-    
-    
+
+
     setTempScore(0);
     setTimeout(() => {
       setShowFeedback(false);
@@ -190,51 +190,51 @@ function Game() {
   }, [showFeedback, showTransition, starAnimation, handleNextRound, round, TOTAL_ROUNDS, score, totalTime, navigate, createUserHistory, gameMode]);
 
   useEffect(() => {
-      if (timeLeft === 12 && !hurryMode) {
-        setHurryMode(true);
-  
-        if (hurryAudioRef.current) {
-          hurryAudioRef.current.currentTime = 0;
-          hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
-          const playPromise = hurryAudioRef.current.play();
-          if (playPromise !== null && playPromise !== undefined) {
-            playPromise.catch((error) => {
-              console.error("Error reproduciendo el sonido de prisa:", error);
-            });
-          }
-        }
-        if (audioRef.current) {
-          //audioRef.current.pause();
-        }
-      }
-    }, [timeLeft, hurryMode,volumeLevel]);
+    if (timeLeft === 12 && !hurryMode) {
+      setHurryMode(true);
 
-   useEffect(() => {
-      console.log("volumen:", volumeLevel);
-      if (!audioRef.current) return; // Asegurarse de que la referencia del audio esté disponible
-      const audio = audioRef.current;
-      audio.volume = volumeLevel; // Ajustar volumen normal
-      if (hurryMode || starAnimation || showFeedback || showTransition) {
-        console.log(hurryMode, starAnimation, showFeedback, showTransition);
-        audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
-      } else {
-        audio.volume = 1; // Ajustar volumen normal
-        console.log("volumen audio:", audio.volume);
+      if (hurryAudioRef.current) {
+        hurryAudioRef.current.currentTime = 0;
+        hurryAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
+        const playPromise = hurryAudioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.error("Error reproduciendo el sonido de fallo:", error);
+          });
+        }
       }
-  
+      if (audioRef.current) {
+        //audioRef.current.pause();
+      }
+    }
+  }, [timeLeft, hurryMode, volumeLevel]);
+
+  useEffect(() => {
+    console.log("volumen:", volumeLevel);
+    if (!audioRef.current) return; // Asegurarse de que la referencia del audio esté disponible
+    const audio = audioRef.current;
+    audio.volume = volumeLevel; // Ajustar volumen normal
+    if (hurryMode || starAnimation || showFeedback || showTransition) {
       console.log(hurryMode, starAnimation, showFeedback, showTransition);
-      const playPromise = audio.play();
-      if (playPromise !== null && playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.error("Error reproduciendo el sonido de fondo:", error);
-        });
-      }
-  
-      return () => {
-  
-        audio.pause();
-      };
-    }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
+      audio.volume = volumeLevel * 0.1; // Ajustar volumen reducido
+    } else {
+      audio.volume = 1; // Ajustar volumen normal
+      console.log("volumen audio:", audio.volume);
+    }
+
+    console.log(hurryMode, starAnimation, showFeedback, showTransition);
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(error => {
+        console.warn("Error reproduciendo el sonido de fondo:", error);
+      });
+    }
+
+    return () => {
+
+      audio.pause();
+    };
+  }, [audioRef, hurryMode, starAnimation, showFeedback, showTransition, volumeLevel]); // Agregar dependencias aquí
 
   useEffect(() => {
     if (location.state?.mode) {
@@ -264,8 +264,8 @@ function Game() {
               failAudioRef.current.currentTime = 0;
               failAudioRef.current.volume = volumeLevel;
               const playPromise = failAudioRef.current.play();
-              if (playPromise !== null && playPromise !== undefined) {
-                playPromise.catch((error) => {
+              if (playPromise && playPromise !== undefined) {
+                playPromise.catch(error => {
                   console.error("Error reproduciendo el sonido de fallo:", error);
                 });
               }
@@ -298,9 +298,9 @@ function Game() {
       chooseAudioRef.current.currentTime = 0;
       chooseAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
       const playPromise = chooseAudioRef.current.play();
-      if (playPromise !== null && playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.error("Error reproduciendo el sonido de elección:", error);
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.error("Error reproduciendo el sonido de fallo:", error);
         });
       }
     }
@@ -330,13 +330,13 @@ function Game() {
           correctAudioRef.current.currentTime = 0;
           correctAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido
           const playPromise = correctAudioRef.current.play();
-          if (playPromise !== null && playPromise !== undefined) {
-            playPromise.catch((error) => {
-              console.error("Error reproduciendo el sonido de acierto:", error);
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              console.error("Error reproduciendo el sonido de fallo:", error);
             });
           }
         } else {
-          
+
         }
         setStarAnimation(true);
       }
@@ -369,13 +369,13 @@ function Game() {
 
     console.log(questionData);
     setUserMessages((prevMessages) => [...prevMessages, message]);
-    
+
     if (!questionData) return; // Asegurar que questionData existe
-    
+
     // Desestructurar con valores por defecto
     const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
     const messageLower = message.toLowerCase();
-    
+
     if (
       messageLower.includes(correctAnswer.toLowerCase()) ||
       (enAnswer && messageLower.includes(enAnswer.toLowerCase())) ||
@@ -386,8 +386,8 @@ function Game() {
         failAudioRef.current.currentTime = 0;
         failAudioRef.current.volume = volumeLevel;
         const playPromise = failAudioRef.current.play();
-        if (playPromise !== null && playPromise !== undefined) {
-          playPromise.catch((error) => {
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
             console.error("Error reproduciendo el sonido de fallo:", error);
           });
         }
@@ -395,19 +395,19 @@ function Game() {
 
 
       setTimeLeft(0);
-      
+
     }
   };
 
   const handleBotResponse = (response) => {
     console.log("Respuesta del bot:", response);
-    
+
     if (!questionData) return; // Asegurar que questionData existe
-    
+
     // Desestructurar con valores por defecto
     const { correctAnswer = '', enAnswer = '', esAnswer = '' } = questionData;
     const responseLower = response.toLowerCase();
-    
+
     if (
       responseLower.includes(correctAnswer.toLowerCase()) ||
       (enAnswer && responseLower.includes(enAnswer.toLowerCase())) ||
@@ -507,7 +507,7 @@ function Game() {
     >
 
       {/* Sonido de fondo */}
-            <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
+      <audio ref={audioRef} src="sound/bg_sound.wav" loop autoPlay />
       <audio ref={hurryAudioRef} src="sound/hurry_sound.mp3" />
       {/* Sonido de fallo */}
       <audio ref={failAudioRef} src="sound/fail.wav" />
@@ -563,7 +563,7 @@ function Game() {
             </Typography>
           </Box>
         </Box>
-      
+
         {/* Pregunta */}
         <Box
           sx={{
@@ -607,10 +607,10 @@ function Game() {
             {questionData.correctAnswer}
           </Typography>
           <Typography variant="body2" sx={{ mt: 2, color: "#666" }}>
-                    {t("Game.rounds", { round, TOTAL_ROUNDS })}
-          
-                  </Typography>
-          
+            {t("Game.rounds", { round, TOTAL_ROUNDS })}
+
+          </Typography>
+
         </Box>
       </Stack>
 
@@ -629,20 +629,20 @@ function Game() {
           boxShadow: { xs: "0px 4px 10px rgba(0, 0, 0, 0.2)", md: "none" }, // Sombra en móviles
         }}
       >
-  
-          <Chat
-            questionData={questionData}
-            onUserMessage={handleUserMessage}
-            onBotResponse={handleBotResponse}
-            hideHeader={true}
-            header={
-              "Tienes que adivinar un " +
-              gameModeName +
-              ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
-              userMessages.join(", ")
-            }
-            mode="vs"
-          />
+
+        <Chat
+          questionData={questionData}
+          onUserMessage={handleUserMessage}
+          onBotResponse={handleBotResponse}
+          hideHeader={true}
+          header={
+            "Tienes que adivinar un " +
+            gameModeName +
+            ". Intenta usar menos de 15 palabras. Te doy las siguientes pistas: " +
+            userMessages.join(", ")
+          }
+          mode="vs"
+        />
       </Box>
 
       {/* Pantalla de Transición */}
