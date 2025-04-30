@@ -107,7 +107,7 @@ const GameFinished = () => {
           color:'white',
           borderRadius:'11px',
           backgroundColor: '#6A0DAD',
-          top: { xs: "-5vh", md: "-7vw" }
+          top: { xs: "1vh", md: "-7vw" }
         }}
       >
         {t("GameFinished.gameOver")}

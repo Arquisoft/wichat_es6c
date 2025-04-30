@@ -98,6 +98,7 @@
         "countryName": "país",
         "countryText": "Países",
         "flagText": "Banderas",
+        "celebrityText": "Famosos",
         "goBack": "Volver atrás"
 
     },
@@ -119,7 +120,8 @@
         "totalScore": "Puntuación total",
         "loading": "Cargando ronda...",
         "rounds": "{{round}} de {{TOTAL_ROUNDS}} rondas",
-        "describeMode-country": "Describe el siguiente país"
+        "describeMode-country": "Describe el siguiente país",
+        "describeMode-celebrity": "Describe al siguiente famoso"
     },
     "GameFinished": {
         "gameOver": "¡Juego terminado!",

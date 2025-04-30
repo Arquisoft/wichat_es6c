@@ -20,7 +20,7 @@ function App() {
 
   return (
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh',gap: '0vh' }}>
           { <NavBar />}
           <Routes>
             <Route path="/" element={<Home />} />
