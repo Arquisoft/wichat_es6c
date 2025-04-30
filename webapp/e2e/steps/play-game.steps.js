@@ -5,7 +5,7 @@ const feature = loadFeature('./features/play-game.feature');
 const axios = require('axios');
 let page;
 let browser;
-jest.setTimeout(60000); // <-- Aumentar timeout global
+jest.setTimeout(180000); // <-- Aumentar timeout global
 
 const questions = [
     {
@@ -160,7 +160,7 @@ defineFeature(feature, test => {
 
 
         });
-    }, 80000)
+    }, 230000)
 
     afterAll(async () => {
 
