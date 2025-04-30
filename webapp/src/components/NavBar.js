@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
-import { Person, Settings, Games, Logout, MoreVert, Language, HelpOutline } from "@mui/icons-material";
+import { Person, Games, Logout, MoreVert, Language, HelpOutline } from "@mui/icons-material";
 import { SessionContext } from '../SessionContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -117,11 +117,6 @@ const NavMenu = () => {
                 </>
               )}
 
-              {sessionId && (
-                <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
-                  <Settings sx={{ mr: 1 }} /> {t('NavBar.settings')}
-                </MenuItem>
-              )}
 
               <MenuItem onClick={handleLanguageMenuOpen}>
                 <Language sx={{ mr: 1 }} /> {t('NavBar.changeLanguage')}
