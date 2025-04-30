@@ -21,6 +21,7 @@ jobs:
     - run: npm --prefix questionservice ci
     - run: npm --prefix users/authservice test -- --coverage
     - run: npm --prefix users/userservice test -- --coverage
+    - run: npm --prefix users/historyserice test -- --coverage
     - run: npm --prefix questionservice test -- --coverage
     - run: npm --prefix llmservice test -- --coverage
     - run: npm --prefix gatewayservice test -- --coverage
