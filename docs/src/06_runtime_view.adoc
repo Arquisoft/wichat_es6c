@@ -73,6 +73,10 @@ image:06_play.png["Diagrama 6.3: Jugar"]
 
 image:06_history.png["Diagrama 6.4 Ver historial"]
 
+=== Consultar estadísticas
+
+image:06_stats.png["Diagrama 6.5 Ver estadísticas"]
+
 === Interactuar con el chat
 
-image:06_userLlm.png["Diagrama 6.5: Jugar"]
+image:06_userLlm.png["Diagrama 6.6: Jugar"]
