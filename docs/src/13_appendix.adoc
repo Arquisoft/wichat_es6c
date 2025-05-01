@@ -118,4 +118,31 @@ Aquí se puede apreciar algún time out también en el llm y en el servicio de p
 
 === _Monitorización_
 
+Hemos realizado el monitoreo del sistema mediante el dashboard de Grafana que nos ha permitido identificar el comportamiento del servicio web en términos de carga, latencia, errores y disponibilidad durante el periodo del 29 de abril al 1 de mayo. 
 
+image::13_0_monitorizacion.png["Table Grafana: Información de la monitorización peticiones"]
+
+* Se pueden observar dos picos notables de peticiones por minuto, fuera de esos eventos puntuales, la actividad fue mínima.
+
+image::13_2_monitorizacion.png["Table Grafana: Información de la monitorización duración"]
+
+* Durante el pico del 29/04 se detectó un incremento en el percentil 90  del tiempo de respuesta, alcanzando aproximadamente 1.3 segundos. El resto del tiempo, el sistema no presentó actividad significativa.
+
+
+image::13_3_monitorizacion.png["Table Grafana: Información de la monitorización errores"]
+
+image::13_4_monitorizacion.png["Table Grafana: Información de la monitorización errores contador por HTTP"]
+
+image::13_5_monitorizacion.png["Table Grafana: Información de la monitorización estado"]
+
+* Coincidiendo con el pico de carga, se registró un aumento de errores HTTP, como 401 que indica solicitudes del cliente rechazadas. 
+
+* No se observaron errores de tipo 500 (Internal Server Error), lo que sugiere que la aplicación no presentó fallas críticas a nivel interno.
+
+image::13_6_monitorizacion.png["Table Grafana: Información de la monitorización ratio de errores"]
+ 
+* La tasa de error global se mantuvo por debajo del 0.05%.
+
+image::13_7_monitorizacion.png["Table Grafana: Información de la monitorización salud"]
+
+* El servicio fue reportado como saludable hasta aproximadamente el 30/04. A partir de ese momento y hasta el final del periodo observado (01/05), el estado fue crítico, indicando que el servicio no estaba disponible.
