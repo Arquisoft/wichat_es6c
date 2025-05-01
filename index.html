@@ -478,8 +478,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_sistema_general_de_caja_blanca">5.1. Sistema general de caja blanca</a></li>
 <li><a href="#_nivel_2">5.2. Nivel 2</a></li>
 <li><a href="#_nivel_3">5.3. Nivel 3</a></li>
-<li><a href="#_black_box_question_management">5.4. Black Box: Question Management</a></li>
-<li><a href="#_black_box_user_management">5.5. <strong>Black Box: User Management</strong></a></li>
 </ul>
 </li>
 <li><a href="#section-runtime-view">6. Vista de ejecución</a>
@@ -1687,10 +1685,8 @@ Recibe solicitudes del API Gateway para obtener una pregunta aleatoria de una ca
 </div>
 <div class="sect2">
 <h3 id="_nivel_3">5.3. Nivel 3</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_black_box_question_management">5.4. Black Box: Question Management</h3>
+<div class="sect3">
+<h4 id="_black_box_question_management">5.3.1. Black Box: Question Management</h4>
 <div class="imageblock">
 <div class="content">
 <img src="./images/05_3_BlackBox_Question_Management.png" alt="Diagram 5.3.1: Desglose de Question Management">
@@ -1722,8 +1718,9 @@ Recibe solicitudes del API Gateway para obtener una pregunta aleatoria de una ca
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect3">
-<h4 id="_black_box_question_generation_service">5.4.1. <strong>Black Box: Question Generation Service</strong></h4>
+<h4 id="_black_box_question_generation_service">5.3.2. <strong>Black Box: Question Generation Service</strong></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><strong>Responsabilidad</strong></dt>
@@ -1882,7 +1879,7 @@ Genera preguntas usando datos de Wikidata para una categoría específica.</p>
 <hr>
 </div>
 <div class="sect3">
-<h4 id="_black_box_question_data_service">5.4.2. <strong>Black Box: Question Data Service</strong></h4>
+<h4 id="_black_box_question_data_service">5.3.3. <strong>Black Box: Question Data Service</strong></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><strong>Responsabilidad</strong></dt>
@@ -1992,7 +1989,7 @@ Retorna una pregunta aleatoria de una categoría e idioma determinados.
 <hr>
 </div>
 <div class="sect3">
-<h4 id="_black_box_question_service_2">5.4.3. <strong>Black Box: Question Service</strong></h4>
+<h4 id="_black_box_question_service_2">5.3.4. <strong>Black Box: Question Service</strong></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><strong>Responsabilidad</strong></dt>
@@ -2123,9 +2120,8 @@ Devuelve una pregunta aleatoria de una categoría e idioma determinados. Si hay 
 </div>
 <hr>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_black_box_user_management">5.5. <strong>Black Box: User Management</strong></h3>
+<div class="sect3">
+<h4 id="_black_box_user_management">5.3.5. <strong>Black Box: User Management</strong></h4>
 <div class="imageblock">
 <div class="content">
 <img src="./images/05_3_BlackBox_User_Management.png" alt="Diagram 5.3.2: Desglose de User Management">
@@ -2157,8 +2153,9 @@ Devuelve una pregunta aleatoria de una categoría e idioma determinados. Si hay 
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect3">
-<h4 id="_black_box_user_service">5.5.1. <strong>Black Box: User Service</strong></h4>
+<h4 id="_black_box_user_service">5.3.6. <strong>Black Box: User Service</strong></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><strong>Responsabilidad</strong></dt>
@@ -2314,7 +2311,7 @@ Actualiza el perfil de un usuario (nombre, apellido, imagen de perfil y descripc
 <hr>
 </div>
 <div class="sect3">
-<h4 id="_black_box_authentication_service">5.5.2. Black Box: Authentication Service</h4>
+<h4 id="_black_box_authentication_service">5.3.7. Black Box: Authentication Service</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><strong>Responsabilidad</strong></dt>
@@ -2458,7 +2455,7 @@ Recibe el <code>username</code> y la <code>password</code> de un usuario, verifi
 <hr>
 </div>
 <div class="sect3">
-<h4 id="_black_box_history_service">5.5.3. Black Box: History Service</h4>
+<h4 id="_black_box_history_service">5.3.8. Black Box: History Service</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><strong>Responsabilidad</strong></dt>
