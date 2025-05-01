@@ -527,6 +527,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#section-glossary">12. Glosario</a></li>
+<li><a href="#section-appendix">13. Anexos</a>
+<ul class="sectlevel2">
+<li><a href="#_pruebas_unitarias">13.1. <em>Pruebas unitarias</em></a></li>
+<li><a href="#_pruebas_de_aceptación">13.2. <em>Pruebas de aceptación</em></a></li>
+<li><a href="#_pruebas_de_carga">13.3. <em>Pruebas de carga</em></a></li>
+<li><a href="#_monitorización">13.4. <em>Monitorización</em></a></li>
+<li><a href="#_pruebas_de_usabilidad">13.5. <em>Pruebas de usabilidad</em></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -3474,13 +3483,466 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </tr>
 </tbody>
 </table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-appendix">13. Anexos</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pruebas_unitarias">13.1. <em>Pruebas unitarias</em></h3>
+<div class="paragraph">
+<p>Se han realizado pruebas unitarias en todos los servicios del sistema. Con ellas se intentan probar todas las funcionalidades de cada uno de los servicios. Para llevarlas acabo se han utilizado las siguiente tecnologías:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Jest: framework de pruebas en JavaScript.</p>
+</li>
+<li>
+<p>Supertest: librería para realizar pruebas HTTP en Node.js.</p>
+</li>
+<li>
+<p>Axios: librería para realizar peticiones HTTP en Node.js.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_resultado_de_cobertura_de_código">13.1.1. <em>Resultado de cobertura de código</em></h4>
+<div class="paragraph">
+<p>En las siguientes imagenes se puede observar la cobertura de código de cada uno de los servicios del sistema. La cobertura de código es un indicador que mide el porcentaje de código fuente que ha sido ejecutado durante las pruebas.</p>
+</div>
+<div class="sect4">
+<h5 id="_user_service"><em>User Service</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_user.png" alt="Table 13.1.1: Coverage of user service">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_authentication_service"><em>Authentication Service</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_auth.png" alt="Table 13.1.1: Coverage of authentication service">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_history_service"><em>History Service</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_history.png" alt="Table 13.1.1: Coverage of history service">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_gateway_service"><em>Gateway Service</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_gateway.png" alt="Table 13.1.1: Coverage of gateway service">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_llm_service"><em>LLM Service</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_llm.png" alt="Table 13.1.1: Coverage of llm service">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_question_service"><em>Question Service</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_question.png" alt="Table 13.1.1: Coverage of question service">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_webapp"><em>WebApp</em></h5>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_coverage_webapp.png" alt="Table 13.1.1: Coverage of webapp">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pruebas_de_aceptación">13.2. <em>Pruebas de aceptación</em></h3>
+<div class="paragraph">
+<p>Para realizar estas pruebas se han creado pruebas e2e (end to end) para el login, signup y el acceso al juego de preguntas.
+Se han utilizado las siguientes tecnologías:
+* Puppeteer: una librería que permite controlar navegadores web de manera automatizada.
+* Jest: framework de pruebas en JavaScript.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pruebas_de_carga">13.3. <em>Pruebas de carga</em></h3>
+<div class="paragraph">
+<p>Hemos realizado pruebas de carga sobre toda la aplicación. Para ello hemos utilizado la herramienta Artillery, que permite simular múltiples usuarios realizando peticiones al servicio con una interfáz muy buena.</p>
+</div>
+<div class="paragraph">
+<p>En el desarrollo de las pruebas hemos hecho 2 tipos de pruebas:</p>
+</div>
+<div class="paragraph">
+<p>Esto ha sido así para favorecer la calidad de las pruebas y entender lo mejor posible el funcionamiento de la aplicación ya que la máquina virtual está más limitada que la máquina local.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pruebas locales:</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/PruebaCargaLocalExtrema.png" alt="Table 13.2.1: Prueba de carga local más potente">
+</div>
+</div>
+<div class="paragraph">
+<p>Esta prueba se han simulado varias fases:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">phases:
+  - name: Calentamiento rápido
+    rampTo: 20
+    duration: 30
+    arrivalRate: 5
+  - name: Carga pesada
+    rampTo: 100
+    duration: 180
+    arrivalRate: 20
+  - name: Estres máximo
+    rampTo: 250
+    duration: 300
+    arrivalRate: 100
+  - name: Descenso controlado
+    rampTo: 0
+    duration: 60
+    arrivalRate: 250</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Calentamiento rápido</strong>: Incrementa gradualmente las peticiones para preparar el sistema.</p>
+</li>
+<li>
+<p><strong>Carga pesada</strong>: Simula un alto volumen de usuarios durante un tiempo prolongado.</p>
+</li>
+<li>
+<p><strong>Estrés máximo</strong>: Lleva el sistema al límite para identificar su capacidad máxima.</p>
+</li>
+<li>
+<p><strong>Descenso controlado</strong>: Reduce las peticiones para observar cómo el sistema se recupera.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Con esta prueba en la que buscábamos ver el rendimiento de la aplicación para conocer los límites que podía tener hemos visto lo siguiente:
+* La aplicación se ha comportado de manera correcta y sin apenas errores hasta las 50 peticiones por segundo y 600 vistas simultáneas.
+* A partir de 50 peticiones por segundo la aplicación ha empezado a dar errores de time out porque los servicios externos que utilzabamos para el LLM y de wikidata han empezado a dejar de contestar porque no estaban preparados para tantas peticiones.</p>
+</div>
+<div class="paragraph">
+<p>La información de las peticiones que han sido respondidas ha sido esta:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/PruebaCargaLocalExtrema-info.png" alt="Table 13.2.2: Información de la prueba de carga local extrema">
+</div>
+</div>
+<div class="paragraph">
+<p>Aquí podemosinterpretar que los mayores tiempos de respuesta vienen por parte del llm y de questions siendo estos dos cuellos de botella en la aplicación.
+También se pueden ver algunos errores 500 de algunos servicios que se ven saturados en los momentos donde hay mayor cantidad de peticiones. Lo que indoca nuevos puntos de mejora en la aplicación.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pruebas de la página desplegada:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">target: http://48.209.11.56:8000
+phases:
+  - name: Preparación
+    duration: 10
+    arrivalRate: 1
+  - name: Fase inicial
+    rampTo: 12
+    duration: 60
+    arrivalRate: 1
+  - name: Carga sostenida
+    rampTo: 19
+    duration: 120
+    arrivalRate: 5</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Preparación</strong>: Inicia con una baja tasa de peticiones para estabilizar el sistema.</p>
+</li>
+<li>
+<p><strong>Fase inicial</strong>: Incrementa gradualmente las peticiones para simular un aumento de usuarios.</p>
+</li>
+<li>
+<p><strong>Carga sostenida</strong>: Mantiene una carga constante para evaluar el rendimiento en condiciones normales.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>En estas pruebas ya no se buscaba hacer una prueba de carga extrema, sino ver el rendimiento de la aplicación en un entorno real. En esta prueba hemos visto que la aplicación se comporta de manera correcta y no ha dado errores.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/PruebaCargaDeploy.png" alt="Table 13.2.1: Prueba de carga deploy ">
+</div>
+</div>
+<div class="paragraph">
+<p>Se puede ver que ha rendido adecuadamene para los usuarios esperados que se marcaron en la documentación, aguantando a 50 a la vez sin problemas graves.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/PruebaCargaDeploy-info.png" alt="Table 13.2.1: Información de la prueba de carga deploy">
+</div>
+</div>
+<div class="paragraph">
+<p>Aquí se puede apreciar algún time out también en el llm y en el servicio de preguntas, pero no ha sido un problema para la aplicación ya que ha sido un porcentaje ínfimo comparado con todas las peticiones que se han hecho. En esta prueba se han simulado aproximadamente 50 usuarios a la vez y ha aguantado sin problemas.</p>
+</div>
+<div class="paragraph">
+<p>Las respuestas que más tiempo han tardado han sido las del servicio de preguntas y del llm, que son los que más tiempo tardan en responder. En el caso del llm, esto es normal ya que es un servicio externo y no podemos controlar su rendimiento además que se tiene que generar la respuesta.</p>
+</div>
+<div class="paragraph">
+<p>Se han dado algunos errores 401 pero se deben al intento de logueo con el mismo usuario en la aplicación.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_monitorización">13.4. <em>Monitorización</em></h3>
+<div class="paragraph">
+<p>Hemos realizado el monitoreo del sistema mediante el dashboard de Grafana que nos ha permitido identificar el comportamiento del servicio web en términos de carga, latencia, errores y disponibilidad durante el periodo del 29 de abril al 1 de mayo.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_0_monitorizacion.png" alt="Table Grafana: Información de la monitorización peticiones">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Se pueden observar dos picos notables de peticiones por minuto, fuera de esos eventos puntuales, la actividad fue mínima.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_2_monitorizacion.png" alt="Table Grafana: Información de la monitorización duración">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Durante el pico del 29/04 se detectó un incremento en el percentil 90  del tiempo de respuesta, alcanzando aproximadamente 1.3 segundos. El resto del tiempo, el sistema no presentó actividad significativa.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_3_monitorizacion.png" alt="Table Grafana: Información de la monitorización errores">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_4_monitorizacion.png" alt="Table Grafana: Información de la monitorización errores contador por HTTP">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_5_monitorizacion.png" alt="Table Grafana: Información de la monitorización estado">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Coincidiendo con el pico de carga, se registró un aumento de errores HTTP, como 401 que indica solicitudes del cliente rechazadas.</p>
+</li>
+<li>
+<p>No se observaron errores de tipo 500 (Internal Server Error), lo que sugiere que la aplicación no presentó fallas críticas a nivel interno.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_6_monitorizacion.png" alt="Table Grafana: Información de la monitorización ratio de errores">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La tasa de error global se mantuvo por debajo del 0.05%.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/13_7_monitorizacion.png" alt="Table Grafana: Información de la monitorización salud">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>El servicio fue reportado como saludable hasta aproximadamente el 30/04. A partir de ese momento y hasta el final del periodo observado (01/05), el estado fue crítico, indicando que el servicio no estaba disponible.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pruebas_de_usabilidad">13.5. <em>Pruebas de usabilidad</em></h3>
+<div class="paragraph">
+<p>Dado el tiempo limitado disponible para realizar pruebas de usabilidad exhaustivas, se optó por llevar a cabo un análisis con un grupo reducido de usuarios. Este enfoque permitió identificar áreas de mejora clave en la experiencia de usuario, aunque no se alcanzó una muestra representativa amplia. Los participantes se clasificaron en tres grupos según su nivel de competencia informática: alto, medio y bajo. A continuación, se detallan las observaciones y propuestas de mejora derivadas de estas pruebas.</p>
+</div>
+<div class="sect3">
+<h4 id="_resultados">13.5.1. <em>Resultados</em></h4>
+<div class="sect4">
+<h5 id="_usuarios_con_un_nivel_informático_alto">Usuarios con un nivel informático alto</h5>
+<div class="paragraph">
+<p>Los usuarios con un nivel avanzado de conocimientos informáticos mostraron una rápida adaptación a la aplicación, destacando su facilidad de uso y diseño responsive. No encontraron barreras significativas para acceder a las funcionalidades principales y valoraron positivamente la alta capacidad de interacción en todos los puntos de la aplicación, incluyendo el saludo del llm como algo muy positivo. Sin embargo, identificaron algunos aspectos que podrían optimizarse para mejorar la experiencia general.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Observaciones</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Interfaz intuitiva y fácil de usar.</p>
+</li>
+<li>
+<p>Diseño responsive que facilita la navegación en todo tipo de dispositivos.</p>
+</li>
+<li>
+<p>Elementos auditivos y visuales que acompañana a la experiencia de manera positiva.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Propuestas de mejora</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Se dieron problemas con el tiempo de espera cada cierto número de preguntas ya que era demasiado larga la espera y esto afectaba a la experiencia de juego.</p>
+</li>
+<li>
+<p>La estética del llm podría mejorarse para que fuera más adaptable a en pantallas pequeñas.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_usuarios_con_un_nivel_informático_medio">Usuarios con un nivel informático medio</h5>
+<div class="paragraph">
+<p>Los usuarios con conocimientos intermedios lograron comprender la aplicación tras un breve periodo de adaptación.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Observaciones</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Interacción alterada por los sonidos y las animaciones ya que sacaban de ritmo a las personas que dudaban.</p>
+</li>
+<li>
+<p>La mayoría de los usuarios no exploraron todas las funcionalidades disponibles, lo que limitó su experiencia general.</p>
+</li>
+<li>
+<p>Los usuarios no se sintieron cómodos con el temporizador y la música, ya que les generaba ansiedad y a preferian silenciarlo.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Propuestas de mejora</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Facilitar el silenciamiento de la música y el temporizador para que los usuarios puedan jugar a su ritmo.</p>
+</li>
+<li>
+<p>Mejorar la estética del llm para que fuera más adaptable a pantallas pequeñas.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_usuarios_con_un_nivel_informático_bajo">Usuarios con un nivel informático bajo</h5>
+<div class="paragraph">
+<p>Los usuarios con menor experiencia informática enfrentaron mayores desafíos al interactuar con la aplicación. Encontraron la temática interesante y entretenida,  pudieron tener una experiencia relativamente intuitiva, especialmente en la versión de escritorio.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Observaciones</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Comprensión buena de la aplicación, especialmente en la versión de escritorio ya que podian acceder a los juegos sin problemas pero ignoraban ciertos puntos como toda la parte de información de usuario.</p>
+</li>
+<li>
+<p>Problemas para leer textos debido al tamaño reducido de la fuente en dispositivos móviles.</p>
+</li>
+<li>
+<p>Dificultades para interpretar las imágenes.</p>
+</li>
+<li>
+<p>Poca o nula interacción con el llm, ya que no entendían su función y no sabían cómo interactuar con él. Tampoco entedian el botón para hacer que apareciese y lo ignoraban en muchos casos.</p>
+</li>
+<li>
+<p>La música y los sonidos podian resultar molestos, ya que no podían silenciarlo y les generaba ansiedad. Algunos usuarios optaron por silenciar el dispositivo o cerrar la aplicación.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Propuestas de mejora</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Incluir un botón para silenciar la música y los sonidos de la aplicación.</p>
+</li>
+<li>
+<p>Favorecer la presencia del LLM para que la gente que no cuente con ello lo tenga en cuenta.</p>
+</li>
+<li>
+<p>Incrementar el tamaño de la fuente para mejorar la legibilidad.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-04-29 23:47:43 +0200
+Last updated 2025-05-01 16:36:13 +0200
 </div>
 </div>
 </body>
