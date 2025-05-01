@@ -1,6 +1,6 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
-[[section-concepts]]
+[[section-appendix]]
 == Anexos
 
 === _Pruebas unitarias_
@@ -196,3 +196,9 @@ Los usuarios con menor experiencia informática enfrentaron mayores desafíos al
   - Incluir un botón para silenciar la música y los sonidos de la aplicación.
   - Favorecer la presencia del LLM para que la gente que no cuente con ello lo tenga en cuenta.
   - Incrementar el tamaño de la fuente para mejorar la legibilidad.
+
+=== _Menciones_
+
+Para la realización de este trabajo nos gustaría mencionar el proyecto del que que se ha obtenido inspiración, además de código en situaciones concretas:
+
+- https://github.com/Arquisoft/wiq_es04a[wiq_es04a]
