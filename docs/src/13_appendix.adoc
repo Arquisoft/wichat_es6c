@@ -4,15 +4,195 @@ ifndef::imagesdir[:imagesdir: ../images]
 == Anexos
 
 === _Pruebas unitarias_
+Se han realizado pruebas unitarias en todos los servicios del sistema. Con ellas se intentan probar todas las funcionalidades de cada uno de los servicios. Para llevarlas acabo se han utilizado las siguiente tecnologías:
+
+* Jest: framework de pruebas en JavaScript.
+* Supertest: librería para realizar pruebas HTTP en Node.js.
+* Axios: librería para realizar peticiones HTTP en Node.js.
+
+==== _Resultado de cobertura de código_
+En las siguientes imagenes se puede observar la cobertura de código de cada uno de los servicios del sistema. La cobertura de código es un indicador que mide el porcentaje de código fuente que ha sido ejecutado durante las pruebas.
+
+===== _User Service_
+image::13_coverage_user.png["Table 13.1.1: Coverage of user service"]
+===== _Authentication Service_
+image::13_coverage_auth.png["Table 13.1.1: Coverage of authentication service"]
+===== _History Service_
+image::13_coverage_history.png["Table 13.1.1: Coverage of history service"]
+===== _Gateway Service_
+image::13_coverage_gateway.png["Table 13.1.1: Coverage of gateway service"]
+===== _LLM Service_
+image::13_coverage_llm.png["Table 13.1.1: Coverage of llm service"]
+===== _Question Service_
+image::13_coverage_question.png["Table 13.1.1: Coverage of question service"]
+===== _WebApp_
+image::13_coverage_webapp.png["Table 13.1.1: Coverage of webapp"]
 
 === _Pruebas de aceptación_
-
-=== _Pruebas de usabilidad_
+Para realizar estas pruebas se han creado pruebas e2e (end to end) para el login, signup y el acceso al juego de preguntas.
+Se han utilizado las siguientes tecnologías:
+* Puppeteer: una librería que permite controlar navegadores web de manera automatizada.
+* Jest: framework de pruebas en JavaScript.
 
 === _Pruebas de carga_
 
-=== _Resultado de cobertura de código_
+Hemos realizado pruebas de carga sobre toda la aplicación. Para ello hemos utilizado la herramienta Artillery, que permite simular múltiples usuarios realizando peticiones al servicio con una interfáz muy buena.
+
+En el desarrollo de las pruebas hemos hecho 2 tipos de pruebas:
+
+Esto ha sido así para favorecer la calidad de las pruebas y entender lo mejor posible el funcionamiento de la aplicación ya que la máquina virtual está más limitada que la máquina local.
+
+- Pruebas locales:
+
+image::PruebaCargaLocalExtrema.png["Table 13.2.1: Prueba de carga local más potente"]
+
+Esta prueba se han simulado varias fases:
+
+[source,yaml]
+----
+phases:
+  - name: Calentamiento rápido
+    rampTo: 20
+    duration: 30
+    arrivalRate: 5
+  - name: Carga pesada
+    rampTo: 100
+    duration: 180
+    arrivalRate: 20
+  - name: Estres máximo
+    rampTo: 250
+    duration: 300
+    arrivalRate: 100
+  - name: Descenso controlado
+    rampTo: 0
+    duration: 60
+    arrivalRate: 250
+----
+* **Calentamiento rápido**: Incrementa gradualmente las peticiones para preparar el sistema.
+* **Carga pesada**: Simula un alto volumen de usuarios durante un tiempo prolongado.
+* **Estrés máximo**: Lleva el sistema al límite para identificar su capacidad máxima.
+* **Descenso controlado**: Reduce las peticiones para observar cómo el sistema se recupera.
+
+Con esta prueba en la que buscábamos ver el rendimiento de la aplicación para conocer los límites que podía tener hemos visto lo siguiente:
+* La aplicación se ha comportado de manera correcta y sin apenas errores hasta las 50 peticiones por segundo y 600 vistas simultáneas.
+* A partir de 50 peticiones por segundo la aplicación ha empezado a dar errores de time out porque los servicios externos que utilzabamos para el LLM y de wikidata han empezado a dejar de contestar porque no estaban preparados para tantas peticiones.
+
+La información de las peticiones que han sido respondidas ha sido esta:
+
+image::PruebaCargaLocalExtrema-info.png["Table 13.2.2: Información de la prueba de carga local extrema"]
+
+Aquí podemosinterpretar que los mayores tiempos de respuesta vienen por parte del llm y de questions siendo estos dos cuellos de botella en la aplicación.
+También se pueden ver algunos errores 500 de algunos servicios que se ven saturados en los momentos donde hay mayor cantidad de peticiones. Lo que indoca nuevos puntos de mejora en la aplicación.
+
+- Pruebas de la página desplegada:
+
+[source,yaml]
+----
+target: http://48.209.11.56:8000
+phases:
+  - name: Preparación
+    duration: 10
+    arrivalRate: 1
+  - name: Fase inicial
+    rampTo: 12
+    duration: 60
+    arrivalRate: 1
+  - name: Carga sostenida
+    rampTo: 19
+    duration: 120
+    arrivalRate: 5
+----
+* **Preparación**: Inicia con una baja tasa de peticiones para estabilizar el sistema.
+* **Fase inicial**: Incrementa gradualmente las peticiones para simular un aumento de usuarios.
+* **Carga sostenida**: Mantiene una carga constante para evaluar el rendimiento en condiciones normales.
+
+En estas pruebas ya no se buscaba hacer una prueba de carga extrema, sino ver el rendimiento de la aplicación en un entorno real. En esta prueba hemos visto que la aplicación se comporta de manera correcta y no ha dado errores.
+
+image::PruebaCargaDeploy.png["Table 13.2.1: Prueba de carga deploy "]
+
+Se puede ver que ha rendido adecuadamene para los usuarios esperados que se marcaron en la documentación, aguantando a 50 a la vez sin problemas graves.
+
+image::PruebaCargaDeploy-info.png["Table 13.2.1: Información de la prueba de carga deploy"]
+
+Aquí se puede apreciar algún time out también en el llm y en el servicio de preguntas, pero no ha sido un problema para la aplicación ya que ha sido un porcentaje ínfimo comparado con todas las peticiones que se han hecho. En esta prueba se han simulado aproximadamente 50 usuarios a la vez y ha aguantado sin problemas.
+
+Las respuestas que más tiempo han tardado han sido las del servicio de preguntas y del llm, que son los que más tiempo tardan en responder. En el caso del llm, esto es normal ya que es un servicio externo y no podemos controlar su rendimiento además que se tiene que generar la respuesta.
+
+Se han dado algunos errores 401 pero se deben al intento de logueo con el mismo usuario en la aplicación.
+
 
 === _Monitorización_
 
+Hemos realizado el monitoreo del sistema mediante el dashboard de Grafana que nos ha permitido identificar el comportamiento del servicio web en términos de carga, latencia, errores y disponibilidad durante el periodo del 29 de abril al 1 de mayo. 
 
+image::13_0_monitorizacion.png["Table Grafana: Información de la monitorización peticiones"]
+
+* Se pueden observar dos picos notables de peticiones por minuto, fuera de esos eventos puntuales, la actividad fue mínima.
+
+image::13_2_monitorizacion.png["Table Grafana: Información de la monitorización duración"]
+
+* Durante el pico del 29/04 se detectó un incremento en el percentil 90  del tiempo de respuesta, alcanzando aproximadamente 1.3 segundos. El resto del tiempo, el sistema no presentó actividad significativa.
+
+
+image::13_3_monitorizacion.png["Table Grafana: Información de la monitorización errores"]
+
+image::13_4_monitorizacion.png["Table Grafana: Información de la monitorización errores contador por HTTP"]
+
+image::13_5_monitorizacion.png["Table Grafana: Información de la monitorización estado"]
+
+* Coincidiendo con el pico de carga, se registró un aumento de errores HTTP, como 401 que indica solicitudes del cliente rechazadas. 
+
+* No se observaron errores de tipo 500 (Internal Server Error), lo que sugiere que la aplicación no presentó fallas críticas a nivel interno.
+
+image::13_6_monitorizacion.png["Table Grafana: Información de la monitorización ratio de errores"]
+ 
+* La tasa de error global se mantuvo por debajo del 0.05%.
+
+image::13_7_monitorizacion.png["Table Grafana: Información de la monitorización salud"]
+
+* El servicio fue reportado como saludable hasta aproximadamente el 30/04. A partir de ese momento y hasta el final del periodo observado (01/05), el estado fue crítico, indicando que el servicio no estaba disponible.
+
+=== _Pruebas de usabilidad_
+
+Dado el tiempo limitado disponible para realizar pruebas de usabilidad exhaustivas, se optó por llevar a cabo un análisis con un grupo reducido de usuarios. Este enfoque permitió identificar áreas de mejora clave en la experiencia de usuario, aunque no se alcanzó una muestra representativa amplia. Los participantes se clasificaron en tres grupos según su nivel de competencia informática: alto, medio y bajo. A continuación, se detallan las observaciones y propuestas de mejora derivadas de estas pruebas.
+
+==== _Resultados_
+
+===== Usuarios con un nivel informático alto
+Los usuarios con un nivel avanzado de conocimientos informáticos mostraron una rápida adaptación a la aplicación, destacando su facilidad de uso y diseño responsive. No encontraron barreras significativas para acceder a las funcionalidades principales y valoraron positivamente la alta capacidad de interacción en todos los puntos de la aplicación, incluyendo el saludo del llm como algo muy positivo. Sin embargo, identificaron algunos aspectos que podrían optimizarse para mejorar la experiencia general.
+
+* **Observaciones**:
+  - Interfaz intuitiva y fácil de usar.
+  - Diseño responsive que facilita la navegación en todo tipo de dispositivos.
+  - Elementos auditivos y visuales que acompañana a la experiencia de manera positiva.
+
+* **Propuestas de mejora**:
+  - Se dieron problemas con el tiempo de espera cada cierto número de preguntas ya que era demasiado larga la espera y esto afectaba a la experiencia de juego.
+  - La estética del llm podría mejorarse para que fuera más adaptable a en pantallas pequeñas.
+
+===== Usuarios con un nivel informático medio
+Los usuarios con conocimientos intermedios lograron comprender la aplicación tras un breve periodo de adaptación.
+
+* **Observaciones**:
+  - Interacción alterada por los sonidos y las animaciones ya que sacaban de ritmo a las personas que dudaban.
+  - La mayoría de los usuarios no exploraron todas las funcionalidades disponibles, lo que limitó su experiencia general.
+  - Los usuarios no se sintieron cómodos con el temporizador y la música, ya que les generaba ansiedad y a preferian silenciarlo.
+
+* **Propuestas de mejora**:
+  - Facilitar el silenciamiento de la música y el temporizador para que los usuarios puedan jugar a su ritmo.
+  - Mejorar la estética del llm para que fuera más adaptable a pantallas pequeñas.
+
+===== Usuarios con un nivel informático bajo
+Los usuarios con menor experiencia informática enfrentaron mayores desafíos al interactuar con la aplicación. Encontraron la temática interesante y entretenida,  pudieron tener una experiencia relativamente intuitiva, especialmente en la versión de escritorio.
+
+* **Observaciones**:
+  - Comprensión buena de la aplicación, especialmente en la versión de escritorio ya que podian acceder a los juegos sin problemas pero ignoraban ciertos puntos como toda la parte de información de usuario.
+  - Problemas para leer textos debido al tamaño reducido de la fuente en dispositivos móviles.
+  - Dificultades para interpretar las imágenes.
+  - Poca o nula interacción con el llm, ya que no entendían su función y no sabían cómo interactuar con él. Tampoco entedian el botón para hacer que apareciese y lo ignoraban en muchos casos.
+  - La música y los sonidos podian resultar molestos, ya que no podían silenciarlo y les generaba ansiedad. Algunos usuarios optaron por silenciar el dispositivo o cerrar la aplicación.
+
+* **Propuestas de mejora**:
+  - Incluir un botón para silenciar la música y los sonidos de la aplicación.
+  - Favorecer la presencia del LLM para que la gente que no cuente con ello lo tenga en cuenta.
+  - Incrementar el tamaño de la fuente para mejorar la legibilidad.
