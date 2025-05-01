@@ -152,6 +152,7 @@ function Game() {
   }, [apiEndpoint, username]);
 
   const handleNextRound = useCallback(() => {
+    
     console.log("handleNextRound ejecutado");
     if (nextQuestionData) {
       setQuestionData(nextQuestionData); // Usar la pregunta precargada
@@ -173,7 +174,7 @@ function Game() {
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
-
+    setTempScore(0);
     if (failAudioRef.current) {
       failAudioRef.current.currentTime = 0;
       failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
@@ -328,7 +329,7 @@ if (playPromise !== undefined) {
     setShowFeedback(true);
     let correct = corectAnswers;
     let thisScore = score;
-
+    setTempScore(0);
     if (isCorrect) {
       correct = corectAnswers + 1;
       setCorrectAnswers(correct);
@@ -484,13 +485,16 @@ if (playPromise !== undefined) {
 
 
   return (
-    <Stack alignItems="center" justifyContent="center"
+    <Stack
+      alignItems="center"
+      justifyContent="center"
       sx={{
-        height: "75%",
+        height: "84%", // Cambiado de "75%" a "100vh" para ocupar toda la altura de la ventana
         backgroundImage: "url('/background-quiz.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center"
-      }}>
+        backgroundPosition: "center",
+      }}
+    >
 
 
       {/* Sonido de fondo */}
@@ -538,11 +542,11 @@ if (playPromise !== undefined) {
           {questionData.question}
         </Typography>
 
+        
+
         {/* Imagen */}
         <Box
           sx={{
-            width: "80%",
-            height: "60%",
             overflow: "hidden",
             borderRadius: "10px",
             position: "relative",
@@ -557,7 +561,7 @@ if (playPromise !== undefined) {
               src={questionData.imageUrl}
               alt="Imagen de la pregunta"
               style={{
-                width: "100%",
+                maxWidth: "100%",
                 height: "100%",
                 objectFit: "cover",
                 opacity: imageOpacity,

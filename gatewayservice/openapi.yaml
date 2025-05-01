@@ -6,7 +6,7 @@ info:
 servers:
    - url: http://localhost:8000
      description: Development server
-   - url: http://48.209.11.56:8000
+   - url: http://20.0.80.6:8000
      description: Production server
 
 paths:
@@ -294,7 +294,8 @@ paths:
               required:
                 - username
                 - password
-                - email
+                - name
+                - surname
               properties:
                 username:
                   type: string
@@ -302,10 +303,12 @@ paths:
                 password:
                   type: string
                   example: "Pass1234"
-                email:
+                name:
                   type: string
-                  format: email
-                  example: "juan@example.com"
+                  example: "juan"
+                surname:
+                  type: string
+                  example: "perez"
       responses:
         201:
           description: Usuario creado exitosamente

@@ -34,6 +34,7 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [loadingStats, setLoadingStats] = useState(false);
   const videoRef = useRef(null);
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
   const theme = createTheme({
     palette: {
@@ -45,6 +46,7 @@ const HomePage = () => {
     },
   });
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
   const gameModes = [
     {
@@ -81,10 +83,10 @@ const HomePage = () => {
       console.log("Fetching user stats and profile for:", username);
       Promise.all([
         axios.get(
-          `http://localhost:8000/getUserStats`, { params: { username } })
+          `${apiEndpoint}/getUserStats`, { params: { username } })
         ,
         axios.get(
-          `${process.env.HISTORY_SERVICE_URL || "http://localhost:8000"}/user/profile/${username}`
+          `${apiEndpoint}/user/profile/${username}`
         ),
       ])
         .then(([statsRes, profileRes]) => {
@@ -93,7 +95,7 @@ const HomePage = () => {
         })
         .finally(() => setLoadingStats(false));
     }
-  }, [username]);
+  }, [username,apiEndpoint]);
 
   // Efecto para manejar la reproducción del video
   useEffect(() => {
@@ -134,7 +136,7 @@ const HomePage = () => {
   };
 
   return (
-    <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <Box sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
       {/* Video de fondo */}
       <Box
         component="video"
@@ -178,7 +180,7 @@ const HomePage = () => {
         container
         spacing={2}
         sx={{
-          height: "100vh",
+          height: "100%",
           p: { xs: 2, md: 4 },
           overflow: "auto",
           alignItems: "flex-start",
@@ -381,7 +383,7 @@ const HomePage = () => {
         </Grid>
 
         {/* Columna derecha - Info usuario */}
-        <Grid
+        {isDesktop && (<Grid
           item
           xs={12}
           lg={3}
@@ -392,6 +394,7 @@ const HomePage = () => {
             justifyContent: "center",
             overflow: "hidden",
             p: { xs: 1, sm: 2 },
+            
           }}
         >
           {loadingStats ? (
@@ -443,7 +446,7 @@ const HomePage = () => {
 
                   <LinearProgress
                     variant="determinate"
-                    value={((userStats.totalCorrect / (userStats.totalWrong + userStats.totalCorrect)) * 100).toFixed(2)}
+                    value={parseFloat(((userStats.totalCorrect / (userStats.totalWrong + userStats.totalCorrect)) * 100).toFixed(2))}
                     sx={{
                       height: 8,
                       borderRadius: 4,
@@ -462,7 +465,9 @@ const HomePage = () => {
             </Box>
           ) : null}
         </Grid>
+        )}
       </Grid>
+      
     </Box>
   );
 };

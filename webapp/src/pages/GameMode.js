@@ -17,15 +17,15 @@ function GameMode() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const isVerySmallScreen = useMediaQuery('(max-width:400px)');
   const normalButtonList = useMemo(() => [
-    { text: 'Países', path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
-    { text: 'Famosos', path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
-    { text: 'Banderas', path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
-  ], []);
+    { text: t("GameMode.countryText"), path: '/game', mode: 'country', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+    { text: t("GameMode.celebrityText"), path: '/game', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: t("GameMode.flagText"), path: '/game', mode: 'flag', name: "flag", imageSrc: '/images/gameMode/flag-gameMode.jpg' },
+  ], [t]);
 
   const vsButtonList = useMemo(() => [
-    { text: 'Famosos', path: '/game', mode: 'famous_people', name: "famous people", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
-    { text: 'Banderas', path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
-  ], []);
+    { text: t("GameMode.celebrityText"), path: '/game-vs', mode: 'famous_people', name: "celebrity", imageSrc: '/images/gameMode/famous-gameMode.jpg' },
+    { text: t("GameMode.countryText"), path: '/game-vs', mode: 'flag', name: "country", imageSrc: '/images/gameMode/pais-gameMode.jpg' },
+  ], [t]);
 
   useEffect(() => {
     if (location.state?.type) {

@@ -214,11 +214,17 @@ describe('History Service /GET UserStats', () => {
         expect(response.body).toHaveProperty('totalTime', 100);
         expect(response.body).toHaveProperty('averageScore', 100);
     });
-    it('Should return error 404 if th username does not have games', async () => {
+    it('Should return 200 if th username does not have games', async () => {
         const response = await request(app).get('/getUserStats').query({ username: 'NonExistentUser' });
 
-        expect(response.status).toBe(404);
-        expect(response.body.error).toBe("No hay datos para este usuario");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            totalGames: 0,
+            totalCorrect: 0,
+            totalWrong: 0,
+            totalTime: 0,
+            averageScore: 0
+          });
     });
 
     it('Should return error 400 if not usarname provided', async () => {

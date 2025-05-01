@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTheme } from '@mui/material/styles';
 
-import { Button, Typography, Stack, Box } from "@mui/material";
+import { Button, Typography, Stack, Box, useMediaQuery } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
 import { useTranslation } from "react-i18next";
@@ -25,9 +26,12 @@ const GameFinished = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
   const videoRef = useRef(null);
+  const theme = useTheme();
 
   const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
 
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  //const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
   useEffect(() => {
     if (location.state) {
@@ -78,11 +82,11 @@ const GameFinished = () => {
     if (video) {
       video.playbackRate = 0.5; // Reduce la velocidad si es necesario
       const playPromise = video.play();
-    if (playPromise && typeof playPromise.then === "function") {
-      playPromise.catch(error => {
-        console.warn("Auto-play was prevented:", error);
-      });
-    }
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(error => {
+          console.warn("Auto-play was prevented:", error);
+        });
+      }
     }
   }, []);
 
@@ -90,11 +94,14 @@ const GameFinished = () => {
     <Stack
       alignItems="center"
       justifyContent="center"
-      spacing={{ xs: 3, md: 4 }}
-      sx={{ height: "100vh", textAlign: "center", px: 2 }}
+      spacing={isMobile ? 1.3 : 3}
+      sx={{
+        textAlign: "center",
+        ...(isMobile ? { height: "100%" } : { height: "100%" })
+      }}
     >
       {/* Confetti */}
-      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= (maxScore / 2) && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
       <Typography
@@ -104,10 +111,10 @@ const GameFinished = () => {
           animation: `${pulse} 2s infinite`,
           fontSize: { xs: "3rem", md: "3rem" },
           position: "relative",
-          color:'white',
-          borderRadius:'11px',
+          color: 'white',
+          borderRadius: '11px',
           backgroundColor: '#6A0DAD',
-          top: { xs: "-5vh", md: "-7vw" }
+          top: { xs: "1vh", md: "-7vw" }
         }}
       >
         {t("GameFinished.gameOver")}
@@ -168,7 +175,8 @@ const GameFinished = () => {
             backgroundColor: '#c7f28e',
             textAlign: 'center',
             boxShadow: 3,
-            width: { xs: '80%', md: '200px' },
+            width: { xs: '80%', md: 'auto' },
+            height: { xs: 'auto', md: '60%' },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
@@ -188,7 +196,8 @@ const GameFinished = () => {
             backgroundColor: '#e3f2fd',
             textAlign: 'center',
             boxShadow: 3,
-            width: { xs: '80%', md: '200px' },
+            width: { xs: '80%', md: 'auto' },
+            height: { xs: 'auto', md: '60%' },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>

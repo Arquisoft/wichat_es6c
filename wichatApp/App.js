@@ -16,7 +16,7 @@ export default function App() {
   return (
     <SafeAreaView style={{flex:1}}>
       <WebView
-        source={{ uri: 'http://48.209.11.56:3000/' }}
+        source={{ uri: 'http://20.0.80.6:3000/' }}
         style={styles.webview}
       />
     </SafeAreaView>

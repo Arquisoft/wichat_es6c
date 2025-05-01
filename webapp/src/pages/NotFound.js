@@ -8,7 +8,7 @@ const NotFound = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh',  }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', margin: '0 auto' }}>
             <Typography variant="h2" gutterBottom style={{  marginBottom: '20px' }}>
                 {t("NotFound.title")}
             </Typography>

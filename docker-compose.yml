@@ -116,9 +116,11 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus-wichat_es6c
-    profiles: ["dev"]
+    profiles: ["dev", "prod"]
     networks:
       - mynetwork
+    environment:
+      - PROMETHEUS_LISTEN_ADDRESS=0.0.0.0:9090  
     volumes:
       - ./gatewayservice/monitoring/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -130,7 +132,7 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana-wichat_es6c
-    profiles: ["dev"]
+    profiles: ["dev", "prod"]
     networks:
       - mynetwork
     volumes:
