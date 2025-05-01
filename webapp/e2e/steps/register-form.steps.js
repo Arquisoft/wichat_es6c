@@ -49,7 +49,7 @@ defineFeature(feature, test => {
     });
 
     then('I should be redirect to the homepage', async () => {
-        await expect(page).toMatchElement('button', { text: "Play" });
+        await expect(page).toMatchElement('button', { text: "More game modes" });
 
       });
   })

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Typography, Stack, Box } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
+
+import { Button, Typography, Stack, Box, useMediaQuery } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
 import { useTranslation } from "react-i18next";
@@ -23,9 +25,13 @@ const GameFinished = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [gameType, setGameType] = useState('normal');
+  const videoRef = useRef(null);
+  const theme = useTheme();
 
   const winningSoundRef = useRef(new Audio("/sound/winning.mp3")); // Ajusta la ruta
 
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  //const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
   useEffect(() => {
     if (location.state) {
@@ -71,15 +77,31 @@ const GameFinished = () => {
     navigate('/history');
   };
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Reduce la velocidad si es necesario
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(error => {
+          console.warn("Auto-play was prevented:", error);
+        });
+      }
+    }
+  }, []);
+
   return (
     <Stack
       alignItems="center"
       justifyContent="center"
-      spacing={{ xs: 3, md: 4 }}
-      sx={{ height: "100vh", textAlign: "center", px: 2 }}
+      spacing={isMobile ? 1.3 : 3}
+      sx={{
+        textAlign: "center",
+        ...(isMobile ? { height: "100%" } : { height: "100%" })
+      }}
     >
       {/* Confetti */}
-      {score >= (maxScore/2) && <Confetti width={windowWidth} height={windowHeight} />}
+      {score >= (maxScore / 2) && <Confetti width={windowWidth} height={windowHeight} />}
 
       {/* Title */}
       <Typography
@@ -89,7 +111,10 @@ const GameFinished = () => {
           animation: `${pulse} 2s infinite`,
           fontSize: { xs: "3rem", md: "3rem" },
           position: "relative",
-          top: { xs: "-5vh", md: "-7vw" }
+          color: 'white',
+          borderRadius: '11px',
+          backgroundColor: '#6A0DAD',
+          top: { xs: "1vh", md: "-7vw" }
         }}
       >
         {t("GameFinished.gameOver")}
@@ -102,7 +127,45 @@ const GameFinished = () => {
         justifyContent="center"
         alignItems="center"
         sx={{ position: "relative", top: { xs: "-2vh", md: "-50px" } }}
-      >
+      >,
+        {/* Video de fondo - Configuración idéntica a HomePage */}
+        <Box
+          component="video"
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            minWidth: "100%",
+            minHeight: "100%",
+            width: "auto",
+            height: "auto",
+            transform: "translate(-50%, -50%)",
+            zIndex: -1,
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/videos/background_white_small.mp4" type="video/mp4" />
+        </Box>
+
+        {/* Capa oscura para mejorar legibilidad - Configuración idéntica */}
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.09)",
+            zIndex: -1,
+          }}
+        />
+
         {/* Score */}
         <Box
           sx={{
@@ -112,7 +175,8 @@ const GameFinished = () => {
             backgroundColor: '#c7f28e',
             textAlign: 'center',
             boxShadow: 3,
-            width: { xs: '80%', md: '200px' },
+            width: { xs: '80%', md: 'auto' },
+            height: { xs: 'auto', md: '60%' },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>
@@ -132,7 +196,8 @@ const GameFinished = () => {
             backgroundColor: '#e3f2fd',
             textAlign: 'center',
             boxShadow: 3,
-            width: { xs: '80%', md: '200px' },
+            width: { xs: '80%', md: 'auto' },
+            height: { xs: 'auto', md: '60%' },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: "1rem", md: "1.25rem" } }}>

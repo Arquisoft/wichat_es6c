@@ -1,7 +1,7 @@
 {
     "UserHome": {
         "welcome": "¡Bienvenido {{username}}!",
-        "play": "Jugar"
+        "moreOptions": "Más modos de juego"
     },
     "NavBar": {
         "nameApp": "WICHAT",
@@ -11,7 +11,13 @@
         "changeLanguage": "Cambiar idioma",
         "APIDocs": "API Docs",
         "spanish": "Español",
-        "english": "Inglés"
+        "english": "Inglés",
+        "howToPlay": "¿Cómo jugar?",
+        "close": "Cerrar",
+        "normalType": "Modo Normal: Desafío de Conocimiento",
+        "vsIAType": "Modo VS IA: El Juego de las pistas",
+        "normalTypeDescription": "Adivina el país correcto basado en imágenes. Elige entre las opciones antes de que se agote el tiempo. ¡Respuestas rápidas dan más puntos!",
+        "vsIATypeDescription": "Describe imágenes a la IA sin decir la respuesta. Gana puntos cuando adivine gracias a tus pistas creativas."
     },
     "Register": {
         "signUp": "Registrarse",
@@ -79,14 +85,20 @@
         "percentageHits": "% Aciertos",
         "games": "Partidas",
         "ex": "Ejemplo:"
-
     },
     "GameType": {
-        "chooseGame": "Elige un modo de juego"
+        "chooseGame": "Elige un modo de juego",
+        "normal": "Normal",
+        "vs": "VS IA",
+        "normalDescription": "Adivina el país a partir de una imagen y una IA",
+        "vsDescription": "Haz que la IA adivine lo que estás viendo"
     },
     "GameMode": {
         "chooseTheme": "Elige una temática",
         "countryName": "país",
+        "countryText": "Países",
+        "flagText": "Banderas",
+        "celebrityText": "Famosos",
         "goBack": "Volver atrás"
 
     },
@@ -108,7 +120,8 @@
         "totalScore": "Puntuación total",
         "loading": "Cargando ronda...",
         "rounds": "{{round}} de {{TOTAL_ROUNDS}} rondas",
-        "describeMode-country": "Describe el siguiente país"
+        "describeMode-country": "Describe el siguiente país",
+        "describeMode-celebrity": "Describe al siguiente famoso"
     },
     "GameFinished": {
         "gameOver": "¡Juego terminado!",
@@ -118,11 +131,15 @@
         "socoreAchieved": "Puntuación obtenida",
         "totalTime": "Tiempo total"
     },
-    "Footer":{
-
+    "AIGreeting": {
+        "message": "Da la bienvenida al usuario, con un máximo de ocho palabras. Usa emojis atractivos como 😊, 🎮, 📜 y 🎉.",
+        "messageFail": "¡Hola! ¡Espero que tengas un gran día!"
+    },
+    "Footer": {
         "title": "Wichat",
         "github": "GitHub",
-        "apiDocs": "API Docs"
+        "apiDocs": "API Docs",
+        "appMovil": "App Android"
     },
     "NotFound":{
         "title": "Página no encontrada",

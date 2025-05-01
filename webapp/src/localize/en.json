@@ -1,7 +1,8 @@
 {
     "UserHome": {
         "welcome": "Welcome {{username}}!",
-        "play": "Play"
+        "play": "Play",
+        "moreOptions": "More game modes"
     },
     "NavBar": {
         "nameApp": "WICHAT",
@@ -11,7 +12,14 @@
         "changeLanguage": "Change language",
         "APIDocs": "API Docs",
         "spanish": "Spanish",
-        "english": "English"
+        "english": "English",
+        "howToPlay": "How to play?",
+        "close": "Close",
+        "normalType": "Normal Mode: Knowledge Challenge",
+        "vsIAType": "VS IA Mode: The Clue Game",
+        "normalTypeDescription": "Guess the correct country based on pictures. Choose from the options before time runs out. Quick answers give more points!",
+        "vsIATypeDescription": "Describe pictures to the AI ​​without saying the answer. Earn points when it guesses thanks to your creative clues."
+
     },
     "Register": {
         "signUp": "Sign Up",
@@ -81,11 +89,18 @@
         "ex": "Example:"
     },
     "GameType": {
-        "chooseGame": "Choose a game mode"
+        "chooseGame": "Choose a game mode",
+        "normal": "Normal",
+        "vs": "VS IA",
+        "normalDescription": "Guess the country from an image and AI",
+        "vsDescription": "Make the AI guess what you're seeing"
     },
     "GameMode": {
         "chooseTheme": "Choose a theme",
         "countryName": "country",
+        "countryText": "Countries",
+        "flagText": "Flags",
+        "celebrityText": "Celebrities",
         "goBack": "Go back"
 
     },
@@ -107,7 +122,8 @@
         "totalScore": "Total score",
         "loading": "Loading round...",
         "rounds": "{{round}} of {{TOTAL_ROUNDS}} rounds",
-        "describeMode-country": "Describe the following country"
+        "describeMode-country": "Describe the following country",
+        "describeMode-celebrity": "Describe the following celebrity"
     },
     "GameFinished": {
         "gameOver": "Game over!",
@@ -117,11 +133,18 @@
         "socoreAchieved": "Score achieved",
         "totalTime": "Total time"
     },
+    "AIGreeting": {
+        "message": "Welcome the user warmly in a concise, friendly, and motivating tone maximum eight words. Use engaging emojis like 😊, 🎮, 📜, and 🎉 to make it lively. Encourage them to have fun and ask if they're ready to start playing!", 
+
+
+        "messageFail": "Hello! I hope you have a great day!"
+    },
     "Footer":{
 
         "title": "Wichat",
         "github": "GitHub",
-        "apiDocs": "API Docs"
+        "apiDocs": "API Docs",
+        "appMovil": "App Android"
     },
     "NotFound":{
         "title": "Page not found",

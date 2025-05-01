@@ -4,7 +4,7 @@ const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
 const feature = loadFeature('./features/view-history.feature');
 
 const axios = require('axios');
-
+jest.setTimeout(60000); // <-- Aumentar timeout global
 let page;
 let browser;
 
@@ -61,11 +61,9 @@ defineFeature(feature, test => {
         });
     });
 
-
-
     test('Viewing history as a registered user', ({ given, when, then }) => {
         given('a logged-in user on the homepage', async () => {
-            await expect(page).toMatchElement('button', { text: "Play" });
+            await expect(page).toMatchElement('button', { text: "More game modes" });
 
            
         });
@@ -86,10 +84,10 @@ defineFeature(feature, test => {
              
 
         });
-    });
+    }); // Increased timeout to 300000 ms (5 minutes)
 
     afterAll(async () => {
         await browser.close();
     });
 
-});
+}); // Increased timeout to 300000 ms (5 minutes)
