@@ -151,3 +151,48 @@ image::13_6_monitorizacion.png["Table Grafana: Información de la monitorizació
 image::13_7_monitorizacion.png["Table Grafana: Información de la monitorización salud"]
 
 * El servicio fue reportado como saludable hasta aproximadamente el 30/04. A partir de ese momento y hasta el final del periodo observado (01/05), el estado fue crítico, indicando que el servicio no estaba disponible.
+
+=== _Pruebas de usabilidad_
+
+Dado el tiempo limitado disponible para realizar pruebas de usabilidad exhaustivas, se optó por llevar a cabo un análisis con un grupo reducido de usuarios. Este enfoque permitió identificar áreas de mejora clave en la experiencia de usuario, aunque no se alcanzó una muestra representativa amplia. Los participantes se clasificaron en tres grupos según su nivel de competencia informática: alto, medio y bajo. A continuación, se detallan las observaciones y propuestas de mejora derivadas de estas pruebas.
+
+==== _Resultados_
+
+===== Usuarios con un nivel informático alto
+Los usuarios con un nivel avanzado de conocimientos informáticos mostraron una rápida adaptación a la aplicación, destacando su facilidad de uso y diseño responsive. No encontraron barreras significativas para acceder a las funcionalidades principales y valoraron positivamente la alta capacidad de interacción en todos los puntos de la aplicación, incluyendo el saludo del llm como algo muy positivo. Sin embargo, identificaron algunos aspectos que podrían optimizarse para mejorar la experiencia general.
+
+* **Observaciones**:
+  - Interfaz intuitiva y fácil de usar.
+  - Diseño responsive que facilita la navegación en todo tipo de dispositivos.
+  - Elementos auditivos y visuales que acompañana a la experiencia de manera positiva.
+
+* **Propuestas de mejora**:
+  - Se dieron problemas con el tiempo de espera cada cierto número de preguntas ya que era demasiado larga la espera y esto afectaba a la experiencia de juego.
+  - La estética del llm podría mejorarse para que fuera más adaptable a en pantallas pequeñas.
+
+===== Usuarios con un nivel informático medio
+Los usuarios con conocimientos intermedios lograron comprender la aplicación tras un breve periodo de adaptación.
+
+* **Observaciones**:
+  - Interacción alterada por los sonidos y las animaciones ya que sacaban de ritmo a las personas que dudaban.
+  - La mayoría de los usuarios no exploraron todas las funcionalidades disponibles, lo que limitó su experiencia general.
+  - Los usuarios no se sintieron cómodos con el temporizador y la música, ya que les generaba ansiedad y a preferian silenciarlo.
+
+* **Propuestas de mejora**:
+  - Facilitar el silenciamiento de la música y el temporizador para que los usuarios puedan jugar a su ritmo.
+  - Mejorar la estética del llm para que fuera más adaptable a pantallas pequeñas.
+
+===== Usuarios con un nivel informático bajo
+Los usuarios con menor experiencia informática enfrentaron mayores desafíos al interactuar con la aplicación. Encontraron la temática interesante y entretenida,  pudieron tener una experiencia relativamente intuitiva, especialmente en la versión de escritorio.
+
+* **Observaciones**:
+  - Comprensión buena de la aplicación, especialmente en la versión de escritorio ya que podian acceder a los juegos sin problemas pero ignoraban ciertos puntos como toda la parte de información de usuario.
+  - Problemas para leer textos debido al tamaño reducido de la fuente en dispositivos móviles.
+  - Dificultades para interpretar las imágenes.
+  - Poca o nula interacción con el llm, ya que no entendían su función y no sabían cómo interactuar con él. Tampoco entedian el botón para hacer que apareciese y lo ignoraban en muchos casos.
+  - La música y los sonidos podian resultar molestos, ya que no podían silenciarlo y les generaba ansiedad. Algunos usuarios optaron por silenciar el dispositivo o cerrar la aplicación.
+
+* **Propuestas de mejora**:
+  - Incluir un botón para silenciar la música y los sonidos de la aplicación.
+  - Favorecer la presencia del LLM para que la gente que no cuente con ello lo tenga en cuenta.
+  - Incrementar el tamaño de la fuente para mejorar la legibilidad.
