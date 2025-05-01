@@ -72,7 +72,7 @@ const Footer = () => {
           <Description sx={{ mr: 0.5, fontSize: { xs: '0.9rem', sm: '1.2rem' } }} /> {t('Footer.apiDocs')}
         </Link>
         <Link
-          href="https://mega.nz/file/FNJjkBRR#nJWkNnFYPI3MOagahFg-U02UnW_vbEl_RkjvmR9zJ1E"
+          href="https://mega.nz/file/UBRxAQ7Q#VKM_4UVP55RlRPYV_OFXjK3Za4_wGP3qfi4PgjACdFE"
           target="_blank"
           rel="noopener noreferrer"
           sx={{
