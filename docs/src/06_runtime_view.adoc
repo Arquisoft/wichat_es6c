@@ -39,9 +39,6 @@ See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== Registro
-image:06_register.png["Diagrama 6.1: Registro"]
-
 
 .* _<insert runtime diagram or textual description of the scenario>_
 .* _<insert description of the notable aspects of the interactions between the
@@ -61,6 +58,9 @@ image:06_register.png["Diagrama 6.1: Registro"]
 .Alice <-- Bob: another authentication Response
 .----
 
+=== Registro
+image:06_register.png["Diagrama 6.1: Registro"]
+
 === Inicio de sesión
 
 image:06_login.png["Diagrama 6.2: Login"]
@@ -73,6 +73,10 @@ image:06_play.png["Diagrama 6.3: Jugar"]
 
 image:06_history.png["Diagrama 6.4 Ver historial"]
 
+=== Consultar estadísticas
+
+image:06_stats.png["Diagrama 6.5 Ver estadísticas"]
+
 === Interactuar con el chat
 
-image:06_userLlm.png["Diagrama 6.5: Jugar"]
+image:06_userLlm.png["Diagrama 6.6: Jugar"]

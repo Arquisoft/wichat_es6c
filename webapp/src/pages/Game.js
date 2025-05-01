@@ -152,6 +152,7 @@ function Game() {
   }, [apiEndpoint, username]);
 
   const handleNextRound = useCallback(() => {
+    
     console.log("handleNextRound ejecutado");
     if (nextQuestionData) {
       setQuestionData(nextQuestionData); // Usar la pregunta precargada
@@ -173,7 +174,7 @@ function Game() {
 
   const handleTimeUp = useCallback(() => {
     if (showFeedback || showTransition || starAnimation) return;
-
+    setTempScore(0);
     if (failAudioRef.current) {
       failAudioRef.current.currentTime = 0;
       failAudioRef.current.volume = volumeLevel; // Ajustar volumen reducido  
@@ -328,7 +329,7 @@ if (playPromise !== undefined) {
     setShowFeedback(true);
     let correct = corectAnswers;
     let thisScore = score;
-
+    setTempScore(0);
     if (isCorrect) {
       correct = corectAnswers + 1;
       setCorrectAnswers(correct);
